@@ -85,7 +85,9 @@ reported_incidents = [
         "reporter": "professor_x",
         "status": "Resolved",
         "solution": "Configured DMARC rejection rules for the spoofed domain name.",
-        "timestamp": "2026-07-19 07:30:15"
+        "timestamp": "2026-07-19 07:30:15",
+        "image_data": None,
+        "voice_data": None
     }
 ]
 
@@ -170,6 +172,8 @@ class IncidentRequest(BaseModel):
     category: str
     description: str
     reporter: str
+    image_data: Optional[str] = None
+    voice_data: Optional[str] = None
 
 class SolveRequest(BaseModel):
     id: int
@@ -260,7 +264,9 @@ async def create_incident(req: IncidentRequest, request: Request):
         "reporter": reporter_clean,
         "status": "Pending",
         "solution": "",
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "image_data": req.image_data,
+        "voice_data": req.voice_data
     })
 
     log_activity(reporter_clean, "user", f"Reported threat incident #{new_id}", client_ip)
@@ -274,6 +280,8 @@ async def create_incident(req: IncidentRequest, request: Request):
         f"Category: {req.category}\n"
         f"Title: {req.title}\n"
         f"Description: {req.description}\n"
+        f"Has Image Attachment: {'Yes' if req.image_data else 'No'}\n"
+        f"Has Voice Recording: {'Yes' if req.voice_data else 'No'}\n"
         f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
     )
     dispatch_email_async(subject, body)
@@ -704,23 +712,34 @@ async def analyze_scam_message(request: ScamAnalyzeRequest):
     level = "HIGH RISK" if risk_score >= 60 else ("MEDIUM RISK" if risk_score >= 30 else "LOW RISK")
     return {"indicators_found": indicators, "risk_score": risk_score, "risk_level": level, "summary": "Alert checked."}
 
-# Chat assistant (Enriched Technical Responses)
+# Chat assistant (Enriched Technical Responses & Wide Knowledge Support)
 @app.post("/api/chat")
 async def chat_assistant(request: ChatRequest):
     user_msg = request.message.lower().strip()
     
-    if "ransomware" in user_msg:
-        reply = "### [MITRE T1486] Data Encrypted for Impact Mitigation\n\n1. **Isolation**: Immediately disconnect affected hosts from local Wi-Fi/Ethernet loops.\n2. **Shadow Copies**: Verify VSS availability: `vssadmin list shadows`\n3. **AD Audits**: Audit remote file system mounting parameters and check Kerberos ticket anomalies."
-    elif "port scan" in user_msg or "nmap" in user_msg:
-        reply = "### [MITRE T1046] Network Service Discovery Mitigation\n\n1. **Firewall Rules**: Enforce SYN connections rate-limiting on inbound routes.\n2. **Logging**: Run packet capture checks on router ports: `tcpdump -i any 'tcp[tcpflags] & (tcp-syn|tcp-ack) == tcp-syn'`\n3. **IDS Alignment**: Load rules to detect IP sweep configurations."
-    elif "sql injection" in user_msg or "sqli" in user_msg:
-        reply = "### [OWASP A03:2021] Injection Remediation Action Plan\n\n1. **Prepared Statements**: Parametrize all database integrations to isolate code execution contexts.\n2. **WAF Filters**: Verify rules matching `' OR 1=1` and `UNION SELECT` signatures.\n3. **Type-Checking**: Implement rigorous server-side input format verification."
-    elif "phishing" in user_msg:
-        reply = "### [MITRE T1566] Phishing Threat Mitigation\n\n1. **Email Records**: Enforce strict DMARC policies (`p=reject`) and SPF checks (`v=spf1 -all`).\n2. **SSL Cert Audits**: Match lookalike domains against registry registration timestamps.\n3. **Filtering**: Block high-risk macro execution parameters at mail gateways."
-    elif "mfa" in user_msg or "authentication" in user_msg:
+    # Advanced pattern match rules for broad cybersecurity and internet queries
+    if "ransomware" in user_msg or "malware" in user_msg or "virus" in user_msg:
+        reply = "### [MITRE T1486] Data Encrypted for Impact Mitigation\n\n1. **Isolation**: Immediately disconnect affected hosts from local Wi-Fi/Ethernet loops to stop lateral spread.\n2. **Shadow Copies**: Verify VSS availability: `vssadmin list shadows`\n3. **Backups**: Retrieve immutable offsite backup snapshots.\n4. **Audit**: Run malware scan via Windows Defender: `MpCmdRun.exe -SignatureUpdate`"
+    elif "port scan" in user_msg or "nmap" in user_msg or "scanning" in user_msg:
+        reply = "### [MITRE T1046] Network Service Discovery Mitigation\n\n1. **Firewall Rules**: Enforce SYN connections rate-limiting on inbound routes.\n2. **Logging**: Run packet capture checks on router ports: `tcpdump -i any 'tcp[tcpflags] & (tcp-syn|tcp-ack) == tcp-syn'`\n3. **IDS Alignment**: Configure Snort/Suricata rules to identify and drop rapid IP sweeps."
+    elif "sql injection" in user_msg or "sqli" in user_msg or "database hack" in user_msg:
+        reply = "### [OWASP A03:2021] Injection Remediation Action Plan\n\n1. **Prepared Statements**: Parametrize all database integrations to isolate code execution contexts.\n2. **WAF Filters**: Verify rules matching `' OR 1=1` and `UNION SELECT` signatures.\n3. **Sanitization**: Strictly filter out query characters like single quotes, semi-colons, and dashes from input parameters."
+    elif "phishing" in user_msg or "fake email" in user_msg or "scam link" in user_msg:
+        reply = "### [MITRE T1566] Phishing Threat Mitigation\n\n1. **Email Records**: Enforce strict DMARC policies (`p=reject`) and SPF checks (`v=spf1 -all`).\n2. **Header Audits**: Look at the sender address headers to spot character substitutions (typosquatting).\n3. **Training**: Never click links requesting sudden credentials confirmation or prompt bank transfers."
+    elif "mfa" in user_msg or "authentication" in user_msg or "login secure" in user_msg:
         reply = "### [MITRE T1556] Authenticator Protections\n\n1. **Hardware Keys**: Enforce FIDO2 / WebAuthn standard security keys over SMS validation.\n2. **Conditional Access**: Block credential validation from unverified browser agents.\n3. **Session Expiring**: Reduce token lifetime to minimize hijack exposures."
+    elif "wi-fi" in user_msg or "router" in user_msg or "wireless" in user_msg:
+        reply = "### Wireless Network Security Standards\n\n1. **Encryption**: Always configure WPA3-SAE. Avoid outdated WEP/WPA protocols.\n2. **AP Isolation**: Enable AP Isolation on routers to prevent peers from sniffing packet streams.\n3. **Credentials**: Change the default admin interface password (e.g. admin/admin) to prevent takeover."
+    elif "ip address" in user_msg or "subnet" in user_msg:
+        reply = "### IP Address Protocol Overview\n\nAn IP (Internet Protocol) address is a unique identifier assigned to devices on a network. IPv4 uses 32-bit values (e.g. `192.168.1.1`), while IPv6 uses 128-bit hexadecimal strings (e.g. `2001:0db8::`). Keep public IPs masked using a VPN to prevent location tracking."
+    elif "cookie" in user_msg or "browser hijack" in user_msg:
+        reply = "### Browser Cookie Protection Guidelines\n\nCookies store user session parameters. Mitigate hijacks by setting HTTP headers: `Secure` (forces HTTPS transmission), `HttpOnly` (blocks access via JavaScript/XSS), and `SameSite=Strict` (prevents CSRF attacks)."
+    elif "dns" in user_msg or "domain name" in user_msg:
+        reply = "### Domain Name System (DNS) Security\n\nDNS translates domain names (e.g. google.com) to IP addresses. Ensure you configure DNSSEC to authenticate lookups, or use Encrypted DNS (DNS over HTTPS/TLS) to prevent local network ISP tracking."
+    elif "hello" in user_msg or "hi" in user_msg or "who are you" in user_msg:
+        reply = "### NCAS CyberShield Assistant\n\nI am your advanced cybersecurity intelligence agent. You can ask me any questions about network defense, email phishing, Wi-Fi security, malware, or database hardening!"
     else:
-        reply = "### NCAS Security Intelligence System\n\nEnter query terms (e.g. `ransomware`, `phishing`, `SQLi`, `MFA`, `port scan`) to retrieve MITRE ATT&CK mitigation guidelines."
+        reply = f"### Defensive Intelligence Report\n\nRegarding your query about **'{user_msg}'**:\n\nEnsure that you evaluate system access controls, inspect network logs for anomalies, enforce transport layer security (TLS 1.3), and consult security guidelines such as OWASP Top 10 or MITRE ATT&CK."
         
     return {"reply": reply}
 

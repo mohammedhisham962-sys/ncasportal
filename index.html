@@ -1228,9 +1228,10 @@
             <h2 class="panel-title">AI Cyber Assistant</h2>
             <div class="chat-container">
                 <div class="chat-messages" id="chat-messages">
-                    <div class="chat-bubble assistant">Hello! Ask me any cybersecurity question. Type `phishing` or `ransomware` for technical playbooks.</div>
+                    <div class="chat-bubble assistant">Hello! Ask me any cybersecurity query. You can type or click the microphone icon 🎤 to speak. You can also click 🔊 next to responses to read aloud.</div>
                 </div>
                 <div class="chat-input-area">
+                    <button onclick="startVoiceChat()" id="btn-chat-mic" style="background:none; border:none; padding:0 18px; color:var(--accent-red); font-size:1.35rem; cursor:pointer;">🎤</button>
                     <input type="text" id="chat-input" placeholder="Ask a security query..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
                     <button onclick="sendChatMessage()">Send</button>
                 </div>
@@ -1244,7 +1245,7 @@
             <button class="btn" id="btn-next-quiz" style="margin-top: 15px; display: none;" onclick="loadNextQuestion()">Next Question</button>
         </div>
 
-        <!-- 13. INCIDENT THREAT REPORTING (USER VIEW - ISOLATED BY LOGGED ID) -->
+        <!-- 13. INCIDENT THREAT REPORTING -->
         <div id="panel-threat-reporting" class="panel">
             <h2 class="panel-title">Report Threat & Track Resolutions</h2>
             
@@ -1252,17 +1253,32 @@
                 <div class="result-header">File Security Incident</div>
                 <div class="auth-field">
                     <label>Incident / Complaint Title</label>
-                    <input type="text" id="threat-title" class="input-text" placeholder="e.g. Urgent email request for bank transfer">
+                    <input type="text" id="threat-title" class="input-text" placeholder="e.g. Phishing mail requesting transfer">
                 </div>
                 <div class="auth-field" style="margin-top: 15px;">
                     <label>Category</label>
-                    <input type="text" id="threat-category" class="input-text" placeholder="Phishing, Scam text, Policy violation">
+                    <input type="text" id="threat-category" class="input-text" placeholder="Phishing, Malware, Eavesdropping">
                 </div>
                 <div class="auth-field" style="margin-top: 15px;">
                     <label>Incident Description</label>
-                    <textarea id="threat-desc" class="textarea-input" placeholder="Describe the threat vectors or suspect parameters."></textarea>
+                    <textarea id="threat-desc" class="textarea-input" placeholder="Describe the threat parameters."></textarea>
                 </div>
-                <button class="btn" onclick="submitThreatReport(event)">Submit Report</button>
+                
+                <div class="auth-field" style="margin-top: 15px;">
+                    <label>Attach Screenshot / Media Image</label>
+                    <input type="file" id="threat-image-input" class="input-text" accept="image/*" style="padding: 10px;">
+                </div>
+
+                <div class="auth-field" style="margin-top: 15px;">
+                    <label>Record Voice Note Alert</label>
+                    <div style="display: flex; gap: 10px; align-items: center; margin-top: 5px;">
+                        <button type="button" id="btn-voice-rec" class="btn btn-secondary" style="padding: 8px 16px;" onclick="toggleVoiceRecording()">Record Voice</button>
+                        <span id="voice-rec-status" style="font-size: 0.9rem; color: var(--text-muted);">Idle</span>
+                    </div>
+                    <audio id="voice-rec-playback" controls style="display: none; margin-top: 10px; width: 100%;"></audio>
+                </div>
+
+                <button class="btn" style="margin-top: 20px;" onclick="submitThreatReport(event)">Submit Report</button>
                 <div id="report-confirm" style="margin-top: 15px; color: var(--accent-red); display: none;">Report successfully submitted.</div>
             </div>
 
@@ -1698,7 +1714,60 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             }
         }
 
-        // Incidents
+        // Threat Incident Reporting Media Attachments logic
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordedVoiceBase64 = null;
+        let isRecordingVoice = false;
+
+        async function toggleVoiceRecording() {
+            const btn = document.getElementById('btn-voice-rec');
+            const status = document.getElementById('voice-rec-status');
+            const playback = document.getElementById('voice-rec-playback');
+
+            if (!isRecordingVoice) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    
+                    mediaRecorder.ondataavailable = event => {
+                        audioChunks.push(event.data);
+                    };
+                    
+                    mediaRecorder.onstop = async () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        playback.src = audioUrl;
+                        playback.style.display = 'block';
+                        
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = () => {
+                            recordedVoiceBase64 = reader.result;
+                        };
+                        
+                        status.textContent = "Voice note recorded successfully.";
+                    };
+                    
+                    mediaRecorder.start();
+                    isRecordingVoice = true;
+                    btn.textContent = "Stop Recording";
+                    btn.style.background = "var(--accent-red)";
+                    status.textContent = "Recording voice note...";
+                    playback.style.display = 'none';
+                } catch(e) {
+                    status.textContent = `Mic Error: ${e.message}`;
+                }
+            } else {
+                mediaRecorder.stop();
+                isRecordingVoice = false;
+                btn.textContent = "Record Voice";
+                btn.style.background = "";
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+        }
+
         async function submitThreatReport(event) {
             const btn = event.target;
             btn.disabled = true;
@@ -1708,6 +1777,7 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             const category = document.getElementById('threat-category').value.trim();
             const desc = document.getElementById('threat-desc').value.trim();
             const confirmDiv = document.getElementById('report-confirm');
+            const imgInput = document.getElementById('threat-image-input');
 
             if(!title || !category || !desc) {
                 btn.disabled = false;
@@ -1715,12 +1785,24 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                 return alert("Complete all fields.");
             }
 
+            let base64Image = null;
+            if (imgInput.files && imgInput.files[0]) {
+                const file = imgInput.files[0];
+                base64Image = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+
             try {
                 const response = await fetch('/api/incident', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        title, category, description: desc, reporter: currentUsername
+                        title, category, description: desc, reporter: currentUsername,
+                        image_data: base64Image,
+                        voice_data: recordedVoiceBase64
                     })
                 });
                 checkResponseStatus(response);
@@ -1729,6 +1811,13 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                     document.getElementById('threat-title').value = '';
                     document.getElementById('threat-category').value = '';
                     document.getElementById('threat-desc').value = '';
+                    document.getElementById('threat-image-input').value = '';
+                    
+                    // Reset voice recordings variables
+                    recordedVoiceBase64 = null;
+                    document.getElementById('voice-rec-playback').style.display = 'none';
+                    document.getElementById('voice-rec-status').textContent = "Idle";
+
                     setTimeout(() => confirmDiv.style.display = 'none', 3000);
                     loadIncidents();
                 }
@@ -1754,12 +1843,21 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                         return;
                     }
                     data.incidents.forEach(inc => {
+                        let mediaHtml = '';
+                        if (inc.image_data) {
+                            mediaHtml += `<div style="margin-top:10px;"><a href="${inc.image_data}" target="_blank"><img src="${inc.image_data}" style="max-width:180px; max-height:120px; border-radius:6px; border:1px solid var(--border-panel); cursor:pointer;"></a></div>`;
+                        }
+                        if (inc.voice_data) {
+                            mediaHtml += `<div style="margin-top:10px;"><audio controls src="${inc.voice_data}" style="max-width:200px; height:32px;"></audio></div>`;
+                        }
+
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>${inc.id}</td>
                             <td>
                                 <b>${inc.title}</b><br>
                                 <span style="font-size:0.8rem;color:var(--text-muted);">${inc.description}</span>
+                                ${mediaHtml}
                             </td>
                             <td>${inc.reporter}</td>
                             <td style="color:${inc.status === 'Resolved' ? '#10b981' : 'var(--accent-amber)'}">${inc.status}</td>
@@ -2345,6 +2443,54 @@ SHA-1:    ${sha1Hex}
             .catch(err => document.getElementById('res-scam').textContent = err.message);
         }
 
+        // AI Voice Chat Speech-to-Text & Text-to-Speech
+        function startVoiceChat() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Speech recognition is not supported in this browser. Try Chrome, Edge, or Safari.");
+                return;
+            }
+            const micBtn = document.getElementById('btn-chat-mic');
+            micBtn.textContent = "🛑";
+            
+            const recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = window.navigator.language || 'en-US';
+            
+            recognition.onresult = function(event) {
+                const speechToText = event.results[0][0].transcript;
+                document.getElementById('chat-input').value = speechToText;
+                sendChatMessage();
+            };
+            
+            recognition.onerror = function(event) {
+                console.error("Speech recognition error", event.error);
+                micBtn.textContent = "🎤";
+            };
+            
+            recognition.onend = function() {
+                micBtn.textContent = "🎤";
+            };
+            
+            recognition.start();
+        }
+
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                // Cancel ongoing playback
+                window.speechSynthesis.cancel();
+                
+                // Strip markdown formatting for TTS readouts
+                const cleanText = text.replace(/###/g, '').replace(/\*\*/g, '').replace(/#/g, '');
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = window.navigator.language || 'en-US';
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Text-to-speech is not supported in this browser.");
+            }
+        }
+
         // AI Chat helper
         async function sendChatMessage() {
             const input = document.getElementById('chat-input');
@@ -2375,8 +2521,14 @@ SHA-1:    ${sha1Hex}
                     .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
                     .replace(/### (.*?)\n/g, '<h4>$1</h4>')
                     .replace(/\n/g, '<br>');
-                assistBubble.innerHTML = formatted;
+                
+                // Escape quotes for safe javascript calls inside onclick speakText
+                const safeSpeechContent = data.reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
+                assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}')" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.8rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                
+                // Auto-read response aloud in the browser language
+                speakText(data.reply);
             })
             .catch(err => {
                 assistBubble.textContent = err.message;
