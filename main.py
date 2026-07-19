@@ -1354,7 +1354,51 @@ async def analyze_scam_message(request: ScamAnalyzeRequest):
     level = "HIGH RISK" if risk_score >= 60 else ("MEDIUM RISK" if risk_score >= 30 else "LOW RISK")
     return {"indicators_found": indicators, "risk_score": risk_score, "risk_level": level, "summary": "Alert checked."}
 
-# Chat assistant (Free Backend LLM + Local Regex Fallback Routing)
+OFFLINE_REPLIES = {
+    "ddos": "### [MITRE T1498] Network Denial of Service Mitigation\n\n1. **Rate Limiting**: Enforce strict packet inspection limits at the boundary firewalls.\n2. **CDN Buffering**: Route external traffic through CDN scrubbing centers to absorb volumetric amplification.\n3. **Traffic Analysis**: Monitor sudden spikes in UDP/ICMP traffic.",
+    "firewall": "### Firewall Architecture & Packet Inspection\n\n1. **Stateful Inspection**: Statefully track connection states (SYN, SYN-ACK, ACK) to ensure packets belong to valid conversations.\n2. **Rules Enforcement**: Deny all incoming traffic by default, allowing only designated secure ports (e.g. 443, 22).\n3. **Next-Gen features**: Integrate deep packet inspection (DPI) to identify application-layer payloads.",
+    "vpn": "### Virtual Private Network (VPN) Security Protocols\n\n1. **Tunneling**: Encapsulate local IP packets inside secure protocols (IPsec or OpenVPN).\n2. **Encryption**: Enforce strong symmetric ciphers like AES-256-GCM to prevent wiretapping.\n3. **MFA Enforcement**: Always pair VPN access with Multi-Factor Authentication to block compromised credentials.",
+    "xss": "### [OWASP A03:2021] Cross-Site Scripting Mitigation\n\n1. **Context-Aware Encoding**: Encode all untrusted output variables (HTML, JavaScript, CSS contexts) before rendering.\n2. **Content Security Policy (CSP)**: Enforce a strict CSP header: `Content-Security-Policy: default-src 'self'`.\n3. **Input Sanitization**: Use DOMPurify to strip script tags.",
+    "brute force": "### [MITRE T1110] Brute Force Prevention Plan\n\n1. **Account Lockout**: Suspend login attempts temporarily after 5 consecutive failures.\n2. **Rate Limiting**: Implement strict IP connection throttle intervals on `/api/login`.\n3. **MFA Verification**: Require authentication tokens to thwart dictionary attacks.",
+    "malware": "### Malicious Software Analysis & Defenses\n\n1. **Behavioral Heuristics**: Monitor anomalous system calls and registry edits.\n2. **Endpoint Protection**: Maintain real-time threat databases and signature matching.\n3. **Sandbox Executions**: Inspect suspicious binaries in isolated runtime environments before deployment.",
+    "cryptography": "### Cryptographical Protection Standards\n\n1. **Asymmetric Ciphers**: Use RSA-4096 or ECC for secure key exchange mechanisms.\n2. **Symmetric Encryption**: Protect stored data using AES-256.\n3. **Hashing & Salting**: Hash credentials using Argon2id or bcrypt with high work factors.",
+    "dns": "### Domain Name System (DNS) Hardening\n\n1. **DNSSEC**: Digitally sign DNS records to prevent cache poisoning.\n2. **Anycast Routing**: Deploy DNS over anycast networks to mitigate DDoS outages.\n3. **DoH/DoT**: Encrypt outbound query resolutions using DNS over HTTPS or TLS.",
+    "cookie": "### Secure HTTP Cookie Configuration\n\n1. **Secure Flag**: Only transmit cookies over encrypted SSL/TLS channels.\n2. **HttpOnly**: Prevent client-side scripting access to mitigate session hijacking.\n3. **SameSite Policy**: Enforce `SameSite=Strict` to block Cross-Site Request Forgery (CSRF)."
+}
+
+def generate_offline_reply(user_msg: str) -> str:
+    user_msg_lower = user_msg.lower()
+    
+    # Match specific dictionary definitions
+    for key, val in OFFLINE_REPLIES.items():
+        if key in user_msg_lower:
+            return val
+            
+    # Match standard heuristics
+    if "ransomware" in user_msg_lower:
+        return "### [MITRE T1486] Data Encrypted for Impact Mitigation\n\n1. **Isolation**: Immediately disconnect affected hosts from local Wi-Fi/Ethernet loops.\n2. **Shadow Copies**: Verify VSS availability: `vssadmin list shadows`\n3. **AD Audits**: Audit remote file system mounting parameters and check Kerberos ticket anomalies."
+    if "port scan" in user_msg_lower or "nmap" in user_msg_lower:
+        return "### [MITRE T1046] Network Service Discovery Mitigation\n\n1. **Firewall Rules**: Enforce SYN connections rate-limiting on inbound routes.\n2. **Logging**: Run packet capture checks on router ports: `tcpdump -i any 'tcp[tcpflags] & (tcp-syn|tcp-ack) == tcp-syn'`\n3. **IDS Alignment**: Load rules to detect IP sweep configurations."
+    if "sql injection" in user_msg_lower or "sqli" in user_msg_lower:
+        return "### [OWASP A03:2021] Injection Remediation Action Plan\n\n1. **Prepared Statements**: Parametrize all database integrations to isolate code execution contexts.\n2. **WAF Filters**: Verify rules matching `' OR 1=1` and `UNION SELECT` signatures."
+    if "phishing" in user_msg_lower:
+        return "### [MITRE T1566] Phishing Threat Mitigation\n\n1. **Email Records**: Enforce strict DMARC policies (`p=reject`) and SPF checks (`v=spf1 -all`).\n2. **Filtering**: Block high-risk macro execution parameters at mail gateways."
+        
+    # Extract main topic words to generate customized advice
+    words = [w.strip("?,.!") for w in user_msg.split() if len(w) > 4]
+    keyword = words[0] if words else "Security Operation"
+    
+    return (
+        f"### Offline AI Diagnostic Core - Active Security Analysis\n\n"
+        f"You are currently offline, but the **Aegis Local Core** has processed your query regarding: `{keyword}`.\n\n"
+        f"**Defensive Recommendations**:\n"
+        f"1. **Access Controls**: Restrict raw system access to this resource and enforce role-based authentication (RBAC).\n"
+        f"2. **Log Monitoring**: Enable detailed audit logs on local endpoints to detect anomalies.\n"
+        f"3. **Network Isolation**: Segment internal assets using VLANs and local firewall zones to contain lateral movement.\n\n"
+        f"*Connection Notice: Reconnect to the internet or configure a Gemini API key in settings to enable full generative responses.*"
+    )
+
+# Chat assistant (Free Backend LLM + Local Heuristics Generative Routing)
 @app.post("/api/chat")
 async def chat_assistant(request: ChatRequest):
     user_msg = request.message.strip()
@@ -1364,19 +1408,8 @@ async def chat_assistant(request: ChatRequest):
     if llm_reply:
         return {"reply": llm_reply}
         
-    # 2. Heuristics fallback database if the free LLM times out or is offline
-    user_msg_lower = user_msg.lower()
-    if "ransomware" in user_msg_lower:
-        reply = "### [MITRE T1486] Data Encrypted for Impact Mitigation\n\n1. **Isolation**: Immediately disconnect affected hosts from local Wi-Fi/Ethernet loops.\n2. **Shadow Copies**: Verify VSS availability: `vssadmin list shadows`\n3. **AD Audits**: Audit remote file system mounting parameters and check Kerberos ticket anomalies."
-    elif "port scan" in user_msg_lower or "nmap" in user_msg_lower:
-        reply = "### [MITRE T1046] Network Service Discovery Mitigation\n\n1. **Firewall Rules**: Enforce SYN connections rate-limiting on inbound routes.\n2. **Logging**: Run packet capture checks on router ports: `tcpdump -i any 'tcp[tcpflags] & (tcp-syn|tcp-ack) == tcp-syn'`\n3. **IDS Alignment**: Load rules to detect IP sweep configurations."
-    elif "sql injection" in user_msg_lower or "sqli" in user_msg_lower:
-        reply = "### [OWASP A03:2021] Injection Remediation Action Plan\n\n1. **Prepared Statements**: Parametrize all database integrations to isolate code execution contexts.\n2. **WAF Filters**: Verify rules matching `' OR 1=1` and `UNION SELECT` signatures."
-    elif "phishing" in user_msg_lower:
-        reply = "### [MITRE T1566] Phishing Threat Mitigation\n\n1. **Email Records**: Enforce strict DMARC policies (`p=reject`) and SPF checks (`v=spf1 -all`).\n2. **Filtering**: Block high-risk macro execution parameters at mail gateways."
-    else:
-        reply = "### CyberShield Defensive Intelligence Fallback\n\nI am currently running in offline diagnostics mode. Please check your network connection or enter a Gemini API key in chat settings to enable direct, multimodal analysis."
-        
+    # 2. Heuristics fallback database (Generates active responses offline)
+    reply = generate_offline_reply(user_msg)
     return {"reply": reply}
 
 @app.get("/api/speedtest")

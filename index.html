@@ -47,25 +47,59 @@
             gap: 12px;
             padding: 8px 0;
         }
-        .thinking-pulse {
-            width: 14px;
-            height: 14px;
+        .volcanic-radar {
+            position: relative;
+            width: 28px;
+            height: 28px;
+            border: 2px solid rgba(239, 68, 68, 0.25);
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.05);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .radar-sweep {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: conic-gradient(from 0deg, rgba(239, 68, 68, 0.4) 0deg, transparent 90deg, transparent 360deg);
+            animation: radarRotate 1.5s linear infinite;
+        }
+        .radar-blip {
+            position: absolute;
+            width: 6px;
+            height: 6px;
             background: #ef4444;
             border-radius: 50%;
-            box-shadow: 0 0 10px #ef4444, 0 0 20px #ef4444;
-            animation: pulseGlow 1.2s infinite ease-in-out;
+            top: 30%;
+            left: 65%;
+            box-shadow: 0 0 8px #ef4444, 0 0 15px #ef4444;
+            animation: blipPulse 1.5s infinite;
         }
-        .thinking-text {
+        .thinking-text-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .thinking-text-main {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.8rem;
             color: #ef4444;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             font-weight: 700;
             animation: blinkText 1.5s infinite;
         }
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(0.8); opacity: 0.5; filter: hue-rotate(0deg); }
-            50% { transform: scale(1.2); opacity: 1; filter: hue-rotate(45deg); }
+        .thinking-text-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+        }
+        @keyframes radarRotate {
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes blipPulse {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
         }
         @keyframes blinkText {
             0%, 100% { opacity: 0.6; }
@@ -520,16 +554,17 @@
         }
 
         /* Volcano & Asteroid Theme Chat Container */
+        /* Volcano & Asteroid Theme Chat Container */
         .volcano-asteroid-chat {
-            background-color: #0b0f17 !important;
+            background-color: #05070a !important;
             background-image: 
-                radial-gradient(circle at 10% 15%, rgba(220, 38, 38, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 85%, rgba(249, 115, 22, 0.06) 0%, transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.9) 0%, #030712 100%);
+                radial-gradient(circle at 10% 15%, rgba(239, 68, 68, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 85%, rgba(249, 115, 22, 0.1) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(17, 24, 39, 0.85) 0%, #020408 100%) !important;
             position: relative;
             overflow-y: auto;
-            border: 1px solid #1f2937 !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3) !important;
+            border: 1px solid rgba(239, 68, 68, 0.25) !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5), inset 0 0 30px rgba(239, 68, 68, 0.05) !important;
         }
 
         /* Ash & Cosmic dust matrix overlay */
@@ -542,6 +577,13 @@
             opacity: 0.8;
             pointer-events: none;
             z-index: 1;
+            }
+
+        /* Monospace font styling for chat bubbles */
+        .chat-bubble {
+            font-family: 'JetBrains Mono', Consolas, monospace !important;
+            font-size: 0.9rem !important;
+            line-height: 1.65 !important;
         }
 
         /* Obsidian Glass assistant bubble */
@@ -3856,7 +3898,7 @@ SHA-1:    ${sha1Hex}
 
             const assistBubble = document.createElement('div');
             assistBubble.className = 'chat-bubble assistant obsidian';
-            assistBubble.innerHTML = '<div class="thinking-loader"><div class="thinking-pulse"></div><div class="thinking-text">NATASHA DECRYPTING RESPONSE...</div></div>';
+            assistBubble.innerHTML = '<div class="thinking-loader"><div class="volcanic-radar"><div class="radar-sweep"></div><div class="radar-blip"></div></div><div class="thinking-text-container"><div class="thinking-text-main">NATASHA DECRYPTING RESPONSE...</div><div class="thinking-text-sub">ESTABLISHING SECURE SYSTEM CORE [PORT 8080]</div></div></div>';
             messagesContainer.appendChild(assistBubble);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
