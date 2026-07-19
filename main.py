@@ -7,12 +7,13 @@ import urllib.parse
 import re
 import os
 import smtplib
+import concurrent.futures
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 from typing import List, Dict, Optional
-from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import FastAPI, HTTPException, Query, Request, BackgroundTasks
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -32,6 +33,9 @@ SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USER = os.getenv("SMTP_USER", "")
 SMTP_PASS = os.getenv("SMTP_PASS", "")
 SMTP_FROM = os.getenv("SMTP_FROM", "alerts@cybershield-portal.ncas")
+
+# Thread Pool for Asynchronous Email Delivery (prevents event loop lag)
+executor = concurrent.futures.ThreadPoolExecutor(max_workers=4)
 
 def send_alert_email(subject: str, body: str):
     recipient = "mohammedhisham35996@gmail.com"
@@ -62,6 +66,10 @@ def send_alert_email(subject: str, body: str):
     except Exception as e:
         print(f"[SMTP] Transmission error: {e}")
 
+# Safe non-blocking email dispatch helper
+def dispatch_email_async(subject: str, body: str):
+    executor.submit(send_alert_email, subject, body)
+
 # In-memory databases
 admin_credentials = {"username": "reiz", "password": "heavenofreiz"}
 faculty_db = {"professor_x": "faculty123"}
@@ -85,6 +93,16 @@ reported_incidents = [
 banned_ips = set()
 banned_users = set()
 security_alerts = []
+user_activities = []  # Live activity tracking database
+
+def log_activity(username: str, role: str, action: str, ip: str):
+    user_activities.append({
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "username": username,
+        "role": role,
+        "action": action,
+        "ip": ip
+    })
 
 # Middleware to intercept and reject banned IPs
 @app.middleware("http")
@@ -118,7 +136,7 @@ def log_and_ban_intruder(request: Request, username: Optional[str], action: str)
         "status": "IP Banned"
     })
 
-    # Send Security Alert Email
+    # Send Security Alert Email (non-blocking thread pool execution)
     subject = f"[CyberShield Security Alert] Intruder IP Blacklisted"
     body = (
         f"Security Event: IP Blocked & Session Terminated\n"
@@ -129,7 +147,7 @@ def log_and_ban_intruder(request: Request, username: Optional[str], action: str)
         f"User-Agent: {user_agent}\n"
         f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
     )
-    send_alert_email(subject, body)
+    dispatch_email_async(subject, body)
 
 # API models
 class ScamAnalyzeRequest(BaseModel):
@@ -167,38 +185,51 @@ class FacultyLimitRequest(BaseModel):
 class HeaderAnalyzeRequest(BaseModel):
     headers_text: str
 
+class BanIPRequest(BaseModel):
+    ip: str
+
 # Auth Endpoints
 @app.post("/api/signup")
 async def signup(req: SignUpRequest, request: Request):
     username_clean = req.username.strip().lower()
+    client_ip = request.client.host
     if username_clean in ["admin", "reiz"]:
         log_and_ban_intruder(request, req.username, "Privilege escalation attempt during signup")
         raise HTTPException(status_code=403, detail="Violation logged.")
     if username_clean in student_db or username_clean in faculty_db:
         raise HTTPException(status_code=400, detail="Username already registered.")
     student_db[username_clean] = req.password
+    log_activity(username_clean, "student", "Account registration completed", client_ip)
     return {"status": "success"}
 
 @app.post("/api/login")
-async def login(req: LoginRequest):
+async def login(req: LoginRequest, request: Request):
     username_clean = req.username.strip().lower()
     password = req.password
+    client_ip = request.client.host
     
     if username_clean == admin_credentials["username"]:
         if password == admin_credentials["password"]:
+            log_activity("reiz", "admin", "Admin portal login successful", client_ip)
             return {"status": "authenticated", "role": "admin", "username": "reiz"}
+        log_activity("reiz", "admin", "Admin login failed: Incorrect password", client_ip)
         raise HTTPException(status_code=401, detail="Invalid admin credentials.")
         
     if username_clean in faculty_db:
         if faculty_db[username_clean] == password:
+            log_activity(username_clean, "faculty", "Faculty portal login successful", client_ip)
             return {"status": "authenticated", "role": "faculty", "username": username_clean}
+        log_activity(username_clean, "faculty", "Faculty login failed: Incorrect password", client_ip)
         raise HTTPException(status_code=401, detail="Invalid faculty credentials.")
         
     if username_clean in student_db:
         if student_db[username_clean] == password:
+            log_activity(username_clean, "student", "Student portal login successful", client_ip)
             return {"status": "authenticated", "role": "student", "username": username_clean}
+        log_activity(username_clean, "student", "Student login failed: Incorrect password", client_ip)
         raise HTTPException(status_code=401, detail="Invalid credentials.")
         
+    log_activity(username_clean, "unknown", "Login failed: User not found", client_ip)
     raise HTTPException(status_code=401, detail="User not found.")
 
 # Strict Incidents Isolation
@@ -216,9 +247,11 @@ async def get_incidents(role: str = Query(...), username: str = Query(...), requ
     return {"incidents": user_incidents}
 
 @app.post("/api/incident")
-async def create_incident(req: IncidentRequest):
+async def create_incident(req: IncidentRequest, request: Request):
     new_id = len(reported_incidents) + 1
     reporter_clean = req.reporter.strip().lower()
+    client_ip = request.client.host
+    
     reported_incidents.append({
         "id": new_id,
         "title": req.title,
@@ -230,7 +263,9 @@ async def create_incident(req: IncidentRequest):
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     })
 
-    # Dispatch Alert Email to Admin
+    log_activity(reporter_clean, "user", f"Reported threat incident #{new_id}", client_ip)
+
+    # Dispatch Alert Email to Admin (non-blocking)
     subject = f"[CyberShield Alert] New Threat Incident Reported by {reporter_clean}"
     body = (
         f"Incident Alert Summary:\n"
@@ -241,13 +276,14 @@ async def create_incident(req: IncidentRequest):
         f"Description: {req.description}\n"
         f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
     )
-    send_alert_email(subject, body)
+    dispatch_email_async(subject, body)
 
     return {"status": "submitted"}
 
 @app.post("/api/incident/solve")
 async def resolve_incident(req: SolveRequest, role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
+    client_ip = request.client.host
     if role != "admin" or username_clean != "reiz":
         log_and_ban_intruder(request, username, "Incident solve bypass alert")
         raise HTTPException(status_code=403, detail="Violation logged.")
@@ -256,7 +292,9 @@ async def resolve_incident(req: SolveRequest, role: str = Query(...), username: 
             inc["solution"] = req.solution
             inc["status"] = "Resolved"
 
-            # Dispatch Resolution Email to Admin
+            log_activity("reiz", "admin", f"Resolved threat incident #{req.id}", client_ip)
+
+            # Dispatch Resolution Email to Admin (non-blocking)
             subject = f"[CyberShield Alert] Threat Incident #{req.id} Resolved"
             body = (
                 f"Incident Resolution Update:\n"
@@ -267,7 +305,7 @@ async def resolve_incident(req: SolveRequest, role: str = Query(...), username: 
                 f"Resolved By: Admin (reiz)\n"
                 f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
             )
-            send_alert_email(subject, body)
+            dispatch_email_async(subject, body)
 
             return {"status": "resolved"}
     raise HTTPException(status_code=404, detail="Incident not found.")
@@ -288,6 +326,7 @@ async def get_faculty_list(role: str = Query(...), username: str = Query(...), r
 @app.post("/api/admin/faculty")
 async def create_faculty(req: FacultyCreateRequest, role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
+    client_ip = request.client.host
     if role != "admin" or username_clean != "reiz":
         log_and_ban_intruder(request, username, "Faculty create bypass alert")
         raise HTTPException(status_code=403, detail="Access denied.")
@@ -297,6 +336,7 @@ async def create_faculty(req: FacultyCreateRequest, role: str = Query(...), user
     if new_user in faculty_db or new_user in student_db or new_user == "reiz":
         raise HTTPException(status_code=400, detail="Username occupied.")
     faculty_db[new_user] = req.password
+    log_activity("reiz", "admin", f"Allocated new faculty member: {new_user}", client_ip)
     return {"status": "created"}
 
 @app.post("/api/admin/faculty/limit")
@@ -312,16 +352,29 @@ async def update_faculty_limit(req: FacultyLimitRequest, role: str = Query(...),
 @app.delete("/api/admin/faculty")
 async def delete_faculty(target_username: str = Query(...), role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
+    client_ip = request.client.host
     if role != "admin" or username_clean != "reiz":
         log_and_ban_intruder(request, username, "Faculty deletion bypass alert")
         raise HTTPException(status_code=403, detail="Access denied.")
     target_clean = target_username.strip().lower()
     if target_clean in faculty_db:
         del faculty_db[target_clean]
+        log_activity("reiz", "admin", f"Removed faculty member: {target_clean}", client_ip)
         return {"status": "deleted"}
     raise HTTPException(status_code=404, detail="Faculty not found.")
 
-# Metrics
+# Administrative IP Termination & Blacklisting
+@app.post("/api/admin/ban")
+async def ban_ip(req: BanIPRequest, role: str = Query(...), username: str = Query(...), request: Request = None):
+    username_clean = username.strip().lower()
+    if role != "admin" or username_clean != "reiz":
+        log_and_ban_intruder(request, username, "IP termination bypass attempt")
+        raise HTTPException(status_code=403, detail="Access denied.")
+    banned_ips.add(req.ip)
+    log_activity("reiz", "admin", f"Administratively banned & terminated IP: {req.ip}", request.client.host)
+    return {"status": "banned"}
+
+# Metrics & User Live Activity Logs
 @app.get("/api/admin/metrics")
 async def get_system_metrics(role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
@@ -333,7 +386,8 @@ async def get_system_metrics(role: str = Query(...), username: str = Query(...),
     return {
         "users": all_users,
         "security_logs": security_alerts,
-        "banned_ips": list(banned_ips)
+        "banned_ips": list(banned_ips),
+        "activities": user_activities[-50:] # Return last 50 activity streams
     }
 
 # --- REAL-TIME INTEL SUITE ENDPOINTS ---
@@ -348,8 +402,15 @@ def query_json_api(url: str, headers: Optional[Dict[str, str]] = None) -> dict:
     except Exception as e:
         return {"error": str(e)}
 
+@app.get("/api/speedtest")
+async def speedtest_payload():
+    # Return 500 KB of garbage data for benchmarking download throughput
+    payload = b"0" * 500000
+    return StreamingResponse(iter([payload]), media_type="application/octet-stream")
+
 @app.get("/api/domain/dns")
-async def get_dns_records(domain: str = Query(...)):
+async def get_dns_records(domain: str = Query(...), username: str = Query("guest"), role: str = Query("guest"), request: Request = None):
+    log_activity(username, role, f"Executed DNS diagnostics for domain: {domain}", request.client.host)
     record_types = ["A", "AAAA", "MX", "TXT", "CNAME", "NS"]
     results = {}
     async def fetch_record(rectype: str):
@@ -368,7 +429,8 @@ async def get_dns_records(domain: str = Query(...)):
     return {"domain": domain, "records": results}
 
 @app.get("/api/domain/whois")
-async def get_whois(domain: str = Query(...)):
+async def get_whois(domain: str = Query(...), username: str = Query("guest"), role: str = Query("guest"), request: Request = None):
+    log_activity(username, role, f"Executed WHOIS lookup for domain: {domain}", request.client.host)
     url = f"https://rdap.org/domain/{urllib.parse.quote(domain)}"
     try:
         loop = asyncio.get_event_loop()
@@ -443,7 +505,8 @@ async def check_subdomains(domain: str = Query(...)):
     return {"domain": domain, "resolved_subdomains": discovered}
 
 @app.get("/api/ip/geo")
-async def get_ip_geolocation(ip: str = Query(...)):
+async def get_ip_geolocation(ip: str = Query(...), username: str = Query("guest"), role: str = Query("guest"), request: Request = None):
+    log_activity(username, role, f"Executed Geolocation IP analysis: {ip}", request.client.host)
     url = f"http://ip-api.com/json/{urllib.parse.quote(ip)}?fields=status,message,country,countryCode,regionName,city,zip,lat,lon,timezone,isp,org,as,query"
     try:
         loop = asyncio.get_event_loop()
@@ -611,7 +674,8 @@ async def query_cve_db(query: str = Query(...)):
 
 # AES Cryptography & password breach audit
 @app.get("/api/crypto/check-breach")
-async def check_password_breach(password: str = Query(...)):
+async def check_password_breach(password: str = Query(...), username: str = Query("guest"), role: str = Query("guest"), request: Request = None):
+    log_activity(username, role, "Executed Password breach check", request.client.host)
     common_passwords = ["123456", "password", "123456789", "qwerty", "12345678", "111111"]
     breached = False
     details = "Clean: Password not matching institutional weak listings."

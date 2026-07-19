@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Camera Scanner Library -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
     <style>
         :root {
             --bg-dark: #f8fafc;
@@ -115,10 +117,10 @@
             text-transform: uppercase;
         }
 
-        /* Sidebar navigation (White/Light Grey Theme) */
+        /* Sidebar navigation */
         .sidebar {
             width: 280px;
-            background: #ffffff; /* White background */
+            background: #ffffff;
             border-right: 1px solid var(--border-panel);
             display: flex;
             flex-direction: column;
@@ -739,6 +741,8 @@
         <ul class="nav-list">
             <li class="nav-item active" data-roles="admin,faculty,student" onclick="switchPanel('dashboard', this)">Dashboard</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('wifi-auditor', this)">Wi-Fi Security Auditor</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('speed-audit', this)">Network Speed Audit</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('camera-scanner', this)">Camera Threat Scanner</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('domain-intel', this)">Domain Intelligence</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('ip-intel', this)">IP Intelligence</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('email-intel', this)">Email Intelligence</li>
@@ -782,8 +786,26 @@
                 </div>
             </div>
 
-            <!-- Admin dashboard metrics -->
+            <!-- Admin dashboard details -->
             <div id="admin-dashboard-details" style="display: none; margin-bottom: 24px;">
+                <div class="result-block" style="margin-bottom: 24px;">
+                    <div class="result-header">Live User Operations & Activity Stream</div>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Username (Role)</th>
+                                <th>Logged IP</th>
+                                <th>Operation / Diagnostic Action</th>
+                                <th>Controls</th>
+                            </tr>
+                        </thead>
+                        <tbody id="metrics-activity-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
                 <div class="result-block" style="margin-bottom: 24px;">
                     <div class="result-header">Registered Portal Users & Security Levels</div>
                     <table class="history-table">
@@ -899,6 +921,60 @@
                     <div class="result-body" id="res-wifi-compliance" style="margin-top: 20px; display: none;">
                         <!-- Outputs dynamically -->
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2b. NETWORK SPEED AUDIT -->
+        <div id="panel-speed-audit" class="panel">
+            <h2 class="panel-title">Real-Time Network Speed & Latency Audit</h2>
+            <div class="results-container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-num" id="speed-latency">- ms</span>
+                        <span class="stat-label">Latency (RTT)</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="speed-download">- Mbps</span>
+                        <span class="stat-label">Download Speed</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="speed-status">Idle</span>
+                        <span class="stat-label">Test Status</span>
+                    </div>
+                </div>
+                <div class="result-block" style="text-align: center;">
+                    <div class="result-header">Animated Throughput Benchmark</div>
+                    <div style="margin: 40px auto; width: 140px; height: 140px; border-radius: 50%; border: 8px solid var(--border-panel); display: flex; align-items: center; justify-content: center; position: relative; background: var(--bg-dark);">
+                        <div id="speed-needle" style="width: 4px; height: 60px; background: var(--accent-red); position: absolute; bottom: 50%; transform-origin: bottom center; transform: rotate(-90deg); transition: transform 0.1s ease-out; border-radius: 2px;"></div>
+                        <span style="font-weight: 800; font-size: 1.4rem; z-index: 10; font-family: 'JetBrains Mono', monospace;" id="speed-gauge-val">0</span>
+                    </div>
+                    <button class="btn" onclick="runSpeedTest(event)">Run Speed Test</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2c. CAMERA THREAT SCANNER -->
+        <div id="panel-camera-scanner" class="panel">
+            <h2 class="panel-title">Real-Time Camera & QR Threat Scanner</h2>
+            <div class="results-container">
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                    Grant camera permissions to scan QR Code URLs or certificates. The system will automatically decode the target URL and verify its reputation index.
+                </p>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                    <video id="webcam-preview" style="width: 100%; max-width: 480px; height: auto; border: 2px solid var(--border-panel); border-radius: 8px; background: #000;" autoplay playsinline></video>
+                    <canvas id="qr-canvas" style="display: none;"></canvas>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn" onclick="startCameraScanner()">Start Camera</button>
+                        <button class="btn btn-secondary" onclick="stopCameraScanner()">Stop Camera</button>
+                    </div>
+                </div>
+                <div class="terminal-box" style="margin-top: 20px;">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                        <span>bash ncas@cybershield:~/qr_decoder</span>
+                    </div>
+                    <div class="terminal-body" id="res-qr-scanner">Camera scanner inactive.</div>
                 </div>
             </div>
         </div>
@@ -1174,19 +1250,19 @@
             
             <div class="result-block" style="margin-bottom: 24px;">
                 <div class="result-header">File Security Incident</div>
-                <div class="login-field">
+                <div class="auth-field">
                     <label>Incident / Complaint Title</label>
                     <input type="text" id="threat-title" class="input-text" placeholder="e.g. Urgent email request for bank transfer">
                 </div>
-                <div class="login-field" style="margin-top: 15px;">
+                <div class="auth-field" style="margin-top: 15px;">
                     <label>Category</label>
                     <input type="text" id="threat-category" class="input-text" placeholder="Phishing, Scam text, Policy violation">
                 </div>
-                <div class="login-field" style="margin-top: 15px;">
+                <div class="auth-field" style="margin-top: 15px;">
                     <label>Incident Description</label>
                     <textarea id="threat-desc" class="textarea-input" placeholder="Describe the threat vectors or suspect parameters."></textarea>
                 </div>
-                <button class="btn" onclick="submitThreatReport()">Submit Report</button>
+                <button class="btn" onclick="submitThreatReport(event)">Submit Report</button>
                 <div id="report-confirm" style="margin-top: 15px; color: var(--accent-red); display: none;">Report successfully submitted.</div>
             </div>
 
@@ -1342,7 +1418,14 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                     });
                     
                     checkResponseStatus(response);
-                    const data = await response.json();
+                    
+                    let data = {};
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        data = await response.json();
+                    } else {
+                        throw new Error("Connection failed: Server is offline or returned an invalid page. Make sure the backend server is running and you are not opening the file directly.");
+                    }
                     
                     if (response.ok) {
                         successDiv.textContent = "Account created. You can now sign in.";
@@ -1366,7 +1449,14 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                     });
                     
                     checkResponseStatus(response);
-                    const data = await response.json();
+                    
+                    let data = {};
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        data = await response.json();
+                    } else {
+                        throw new Error("Connection failed: Server is offline or returned an invalid page. Make sure the backend server is running and you are not opening the file directly.");
+                    }
                     
                     if (response.ok) {
                         currentRole = data.role;
@@ -1423,9 +1513,14 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             if(element) element.classList.add('active');
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.getElementById(`panel-${panelName}`).classList.add('active');
+            
+            // Stop camera if leaving scanner workspace
+            if (panelName !== 'camera-scanner') {
+                stopCameraScanner();
+            }
         }
 
-        // Load admin statistics
+        // Load admin statistics & user activity logs
         async function loadAdminMetrics() {
             if(currentRole !== 'admin') return;
             try {
@@ -1440,6 +1535,27 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                     tr.innerHTML = `<td>${u.username}</td><td><span class="role">${u.role}</span></td>`;
                     usersBody.appendChild(tr);
                 });
+
+                // Populate activities stream
+                const actBody = document.getElementById('metrics-activity-body');
+                actBody.innerHTML = '';
+                if(!data.activities || data.activities.length === 0) {
+                    actBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No recent user operations registered.</td></tr>';
+                } else {
+                    data.activities.forEach(act => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${act.timestamp}</td>
+                            <td><b>${act.username}</b> <span style="font-size:0.8rem;color:var(--text-muted);">(${act.role})</span></td>
+                            <td><code>${act.ip}</code></td>
+                            <td>${act.action}</td>
+                            <td>
+                                <button class="btn" style="padding:6px 12px;font-size:0.8rem;background:var(--accent-red);" onclick="terminateUserIP('${act.ip}')">Terminate</button>
+                            </td>
+                        `;
+                        actBody.appendChild(tr);
+                    });
+                }
 
                 const secBody = document.getElementById('metrics-security-body');
                 secBody.innerHTML = '';
@@ -1464,6 +1580,24 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
 
             } catch (err) {
                 console.error(err);
+            }
+        }
+
+        async function terminateUserIP(ip) {
+            if (!confirm(`Are you sure you want to terminate connection and blacklist IP: ${ip}?`)) return;
+            try {
+                const response = await fetch(`/api/admin/ban?role=${currentRole}&username=${currentUsername}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ip })
+                });
+                checkResponseStatus(response);
+                if (response.ok) {
+                    alert(`IP ${ip} blacklisted successfully.`);
+                    loadAdminMetrics();
+                }
+            } catch(e) {
+                console.error(e);
             }
         }
 
@@ -1565,13 +1699,19 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
         }
 
         // Incidents
-        async function submitThreatReport() {
+        async function submitThreatReport(event) {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = "Submitting...";
+            
             const title = document.getElementById('threat-title').value.trim();
             const category = document.getElementById('threat-category').value.trim();
             const desc = document.getElementById('threat-desc').value.trim();
             const confirmDiv = document.getElementById('report-confirm');
 
             if(!title || !category || !desc) {
+                btn.disabled = false;
+                btn.textContent = "Submit Report";
                 return alert("Complete all fields.");
             }
 
@@ -1595,6 +1735,8 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             } catch(e) {
                 console.error(e);
             }
+            btn.disabled = false;
+            btn.textContent = "Submit Report";
         }
 
         async function loadIncidents() {
@@ -1727,6 +1869,128 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             }
         }
 
+        // Animated Speed Test Calculator
+        async function runSpeedTest(event) {
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = "Testing...";
+            const speedStatus = document.getElementById('speed-status');
+            const speedLatency = document.getElementById('speed-latency');
+            const speedDownload = document.getElementById('speed-download');
+            const speedGaugeVal = document.getElementById('speed-gauge-val');
+            const speedNeedle = document.getElementById('speed-needle');
+            
+            speedStatus.textContent = "Pinging...";
+            
+            // Phase 1: Latency Ping
+            let start = performance.now();
+            await fetch('/api/health');
+            let latency = performance.now() - start;
+            speedLatency.textContent = `${latency.toFixed(1)} ms`;
+            
+            // Phase 2: Download Throughput
+            speedStatus.textContent = "Downloading...";
+            let startDl = performance.now();
+            
+            // Animating needle during download
+            let mockInterval = setInterval(() => {
+                let mockSpeed = Math.random() * 40 + 20; // 20 - 60 Mbps
+                speedGaugeVal.textContent = mockSpeed.toFixed(0);
+                let deg = (mockSpeed / 100) * 180 - 90;
+                speedNeedle.style.transform = `rotate(${deg}deg)`;
+            }, 100);
+
+            try {
+                const response = await fetch('/api/speedtest');
+                const blob = await response.blob();
+                clearInterval(mockInterval);
+                
+                let durationSec = (performance.now() - startDl) / 1000;
+                let sizeBits = blob.size * 8;
+                let speedMbps = (sizeBits / durationSec) / (1024 * 1024);
+                
+                speedDownload.textContent = `${speedMbps.toFixed(2)} Mbps`;
+                speedGaugeVal.textContent = speedMbps.toFixed(0);
+                let deg = (Math.min(speedMbps, 100) / 100) * 180 - 90;
+                speedNeedle.style.transform = `rotate(${deg}deg)`;
+                speedStatus.textContent = "Completed";
+            } catch(e) {
+                clearInterval(mockInterval);
+                speedStatus.textContent = "Failed";
+            }
+            btn.disabled = false;
+            btn.textContent = "Run Speed Test";
+        }
+
+        // Camera QR Threat Scanner JS
+        let videoStream = null;
+        let qrScanningActive = false;
+
+        async function startCameraScanner() {
+            const video = document.getElementById('webcam-preview');
+            const logEl = document.getElementById('res-qr-scanner');
+            logEl.textContent = "Initializing camera stream...";
+            
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = videoStream;
+                video.setAttribute("playsinline", true);
+                video.play();
+                qrScanningActive = true;
+                logEl.textContent = "Camera active. Scan QR code url/IP...";
+                requestAnimationFrame(tickQrScan);
+            } catch(e) {
+                logEl.textContent = `Error accessing camera: ${e.message}`;
+            }
+        }
+
+        function stopCameraScanner() {
+            qrScanningActive = false;
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+            const preview = document.getElementById('webcam-preview');
+            if (preview) preview.srcObject = null;
+            const logEl = document.getElementById('res-qr-scanner');
+            if (logEl) logEl.textContent = "Camera stopped.";
+        }
+
+        function tickQrScan() {
+            if (!qrScanningActive) return;
+            const video = document.getElementById('webcam-preview');
+            const logEl = document.getElementById('res-qr-scanner');
+            
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                const canvasElement = document.getElementById('qr-canvas');
+                const canvas = canvasElement.getContext('2d');
+                canvasElement.height = video.videoHeight;
+                canvasElement.width = video.videoWidth;
+                canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+                
+                const imageData = canvas.getImageData(0, 0, canvasElement.width, canvasElement.height);
+                const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "dontInvert",
+                });
+                
+                if (code) {
+                    logEl.textContent = `Found QR Code content: "${code.data}"\nAnalyzing threat reputation...`;
+                    stopCameraScanner();
+                    
+                    const urlMatch = code.data.match(/^(?:https?:\/\/)?(?:www\.)?([^\s\/]+)/i);
+                    if (urlMatch) {
+                        const targetDomain = urlMatch[1];
+                        document.getElementById('domain-input').value = targetDomain;
+                        switchPanel('domain-intel');
+                        runDomainIntel();
+                    } else {
+                        logEl.textContent += "\nDecoded payload is not a valid URL or domain.";
+                    }
+                    return;
+                }
+            }
+            requestAnimationFrame(tickQrScan);
+        }
+
         function calculateWifiScore() {
             const enc = document.getElementById('wifi-enc-select').value;
             const iso = document.getElementById('wifi-iso-select').value;
@@ -1802,12 +2066,12 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             document.getElementById('res-whois').textContent = "Connecting to rdap.org root registry...\n";
             document.getElementById('res-ssl').textContent = "Initiating secure socket wrap (port 443)...\n";
 
-            fetch(`/api/domain/dns?domain=${domain}`)
+            fetch(`/api/domain/dns?domain=${domain}&username=${currentUsername}&role=${currentRole}`)
                 .then(res => { checkResponseStatus(res); return res.json(); })
                 .then(d => document.getElementById('res-dns').textContent = JSON.stringify(d, null, 2))
                 .catch(err => document.getElementById('res-dns').textContent = err.message);
 
-            fetch(`/api/domain/whois?domain=${domain}`)
+            fetch(`/api/domain/whois?domain=${domain}&username=${currentUsername}&role=${currentRole}`)
                 .then(res => { checkResponseStatus(res); return res.json(); })
                 .then(d => document.getElementById('res-whois').textContent = JSON.stringify(d, null, 2))
                 .catch(err => document.getElementById('res-whois').textContent = err.message);
@@ -1851,7 +2115,7 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                 .then(d => document.getElementById('res-revdns').textContent = JSON.stringify(d, null, 2))
                 .catch(err => document.getElementById('res-revdns').textContent = err.message);
 
-            fetch(`/api/ip/geo?ip=${ip}`)
+            fetch(`/api/ip/geo?ip=${ip}&username=${currentUsername}&role=${currentRole}`)
                 .then(res => { checkResponseStatus(res); return res.json(); })
                 .then(d => document.getElementById('res-ip-geo').textContent = JSON.stringify(d, null, 2))
                 .catch(err => document.getElementById('res-ip-geo').textContent = err.message);
@@ -2030,7 +2294,7 @@ SHA-1:    ${sha1Hex}
             const password = document.getElementById('breach-pass-input').value;
             if(!password) return alert("Enter password first.");
             
-            fetch(`/api/crypto/check-breach?password=${encodeURIComponent(password)}`)
+            fetch(`/api/crypto/check-breach?password=${encodeURIComponent(password)}&username=${currentUsername}&role=${currentRole}`)
                 .then(res => { checkResponseStatus(res); return res.json(); })
                 .then(d => {
                     const el = document.getElementById('res-breach-check');
