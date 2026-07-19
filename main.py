@@ -70,13 +70,33 @@ def send_alert_email(subject: str, body: str):
 def dispatch_email_async(subject: str, body: str):
     executor.submit(send_alert_email, subject, body)
 
-# In-memory databases
-admin_credentials = {"username": "reiz", "password": "heavenofreiz"}
-faculty_db = {"professor_x": "faculty123"}
-student_db = {}
-faculty_limit = 5
+# Persistent JSON Databases Config
+STUDENTS_FILE = "students.json"
+FACULTIES_FILE = "faculties.json"
+INCIDENTS_FILE = "incidents.json"
 
-reported_incidents = [
+def load_db(file_path: str, default_data):
+    if os.path.exists(file_path):
+        try:
+            with open(file_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error reading DB file {file_path}: {e}")
+            return default_data
+    return default_data
+
+def save_db(file_path: str, data):
+    try:
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+    except Exception as e:
+        print(f"Error writing DB file {file_path}: {e}")
+
+# Load active databases on startup
+admin_credentials = {"username": "reiz", "password": "heavenofreiz"}
+student_db = load_db(STUDENTS_FILE, {})
+faculty_db = load_db(FACULTIES_FILE, {"professor_x": "faculty123"})
+reported_incidents = load_db(INCIDENTS_FILE, [
     {
         "id": 1,
         "title": "Phishing Campaign Verification",
@@ -89,7 +109,7 @@ reported_incidents = [
         "image_data": None,
         "voice_data": None
     }
-]
+])
 
 # Ban lists & Intruder logs database
 banned_ips = set()
@@ -203,6 +223,7 @@ async def signup(req: SignUpRequest, request: Request):
     if username_clean in student_db or username_clean in faculty_db:
         raise HTTPException(status_code=400, detail="Username already registered.")
     student_db[username_clean] = req.password
+    save_db(STUDENTS_FILE, student_db) # Persist on signup
     log_activity(username_clean, "student", "Account registration completed", client_ip)
     return {"status": "success"}
 
@@ -216,6 +237,7 @@ async def login(req: LoginRequest, request: Request):
         if password == admin_credentials["password"]:
             log_activity("reiz", "admin", "Admin portal login successful", client_ip)
             return {"status": "authenticated", "role": "admin", "username": "reiz"}
+            
         log_activity("reiz", "admin", "Admin login failed: Incorrect password", client_ip)
         raise HTTPException(status_code=401, detail="Invalid admin credentials.")
         
@@ -223,6 +245,7 @@ async def login(req: LoginRequest, request: Request):
         if faculty_db[username_clean] == password:
             log_activity(username_clean, "faculty", "Faculty portal login successful", client_ip)
             return {"status": "authenticated", "role": "faculty", "username": username_clean}
+            
         log_activity(username_clean, "faculty", "Faculty login failed: Incorrect password", client_ip)
         raise HTTPException(status_code=401, detail="Invalid faculty credentials.")
         
@@ -230,6 +253,7 @@ async def login(req: LoginRequest, request: Request):
         if student_db[username_clean] == password:
             log_activity(username_clean, "student", "Student portal login successful", client_ip)
             return {"status": "authenticated", "role": "student", "username": username_clean}
+            
         log_activity(username_clean, "student", "Student login failed: Incorrect password", client_ip)
         raise HTTPException(status_code=401, detail="Invalid credentials.")
         
@@ -268,6 +292,7 @@ async def create_incident(req: IncidentRequest, request: Request):
         "image_data": req.image_data,
         "voice_data": req.voice_data
     })
+    save_db(INCIDENTS_FILE, reported_incidents) # Persist on submission
 
     log_activity(reporter_clean, "user", f"Reported threat incident #{new_id}", client_ip)
 
@@ -299,6 +324,7 @@ async def resolve_incident(req: SolveRequest, role: str = Query(...), username: 
         if inc["id"] == req.id:
             inc["solution"] = req.solution
             inc["status"] = "Resolved"
+            save_db(INCIDENTS_FILE, reported_incidents) # Persist on resolution
 
             log_activity("reiz", "admin", f"Resolved threat incident #{req.id}", client_ip)
 
@@ -339,11 +365,13 @@ async def create_faculty(req: FacultyCreateRequest, role: str = Query(...), user
         log_and_ban_intruder(request, username, "Faculty create bypass alert")
         raise HTTPException(status_code=403, detail="Access denied.")
     new_user = req.username.strip().lower()
+    faculty_limit = load_db("faculty_limit.json", 5)
     if len(faculty_db) >= faculty_limit:
         raise HTTPException(status_code=400, detail="Faculty account limit reached.")
     if new_user in faculty_db or new_user in student_db or new_user == "reiz":
         raise HTTPException(status_code=400, detail="Username occupied.")
     faculty_db[new_user] = req.password
+    save_db(FACULTIES_FILE, faculty_db) # Persist on allocation
     log_activity("reiz", "admin", f"Allocated new faculty member: {new_user}", client_ip)
     return {"status": "created"}
 
@@ -353,8 +381,7 @@ async def update_faculty_limit(req: FacultyLimitRequest, role: str = Query(...),
     if role != "admin" or username_clean != "reiz":
         log_and_ban_intruder(request, username, "Faculty limit configuration bypass")
         raise HTTPException(status_code=403, detail="Access denied.")
-    global faculty_limit
-    faculty_limit = req.limit
+    save_db("faculty_limit.json", req.limit)
     return {"status": "updated"}
 
 @app.delete("/api/admin/faculty")
@@ -367,6 +394,7 @@ async def delete_faculty(target_username: str = Query(...), role: str = Query(..
     target_clean = target_username.strip().lower()
     if target_clean in faculty_db:
         del faculty_db[target_clean]
+        save_db(FACULTIES_FILE, faculty_db) # Persist deletions
         log_activity("reiz", "admin", f"Removed faculty member: {target_clean}", client_ip)
         return {"status": "deleted"}
     raise HTTPException(status_code=404, detail="Faculty not found.")
@@ -391,11 +419,14 @@ async def get_system_metrics(role: str = Query(...), username: str = Query(...),
         raise HTTPException(status_code=403, detail="Access denied.")
     all_users = [{"username": k, "role": "student"} for k in student_db.keys()] + \
                 [{"username": k, "role": "faculty"} for k in faculty_db.keys()]
+    
+    faculty_limit = load_db("faculty_limit.json", 5)
     return {
         "users": all_users,
         "security_logs": security_alerts,
         "banned_ips": list(banned_ips),
-        "activities": user_activities[-50:] # Return last 50 activity streams
+        "activities": user_activities[-50:], # Return last 50 activity streams
+        "limit": faculty_limit
     }
 
 # --- REAL-TIME INTEL SUITE ENDPOINTS ---
