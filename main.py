@@ -495,43 +495,36 @@ def query_json_api(url: str, headers: Optional[Dict[str, str]] = None) -> dict:
 # Cache resolved geolocations & AI answers
 AI_CACHE = {}
 
-# Free Backend AI Inference Endpoint via Qwen-2.5-7B (No API Key Required fallback)
-def query_free_llm(prompt: str) -> Optional[str]:
+# Free Backend AI Inference Endpoint via Pollinations keyless text gateway
+async def query_free_llm(prompt: str) -> Optional[str]:
     prompt_clean = prompt.strip().lower()
     if prompt_clean in AI_CACHE:
         return AI_CACHE[prompt_clean]
         
-    api_url = "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-7B-Instruct"
-    
     system_prompt = (
-        "You are CyberShield, an advanced security AI assistant. "
-        "Answer the user's question about cybersecurity, computer networks, internet operations, or diagnostic features. "
-        "Your reply must be extremely helpful, professional, and formatted in clean Markdown. "
-        "Answer in the user's input language (support Hindi, Malayalam, Spanish, Arabic, etc.)."
+        "You are Natasha (AI SECURITY CORE), a professional, highly advanced security assistant. "
+        "Answer the user's question about cybersecurity, computer networks, or diagnostic features. "
+        "Your reply must be extremely helpful and formatted in clean Markdown. "
+        "Keep your response concise and direct."
     )
     
-    payload = {
-        "inputs": f"<|im_start|>system\n{system_prompt}<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\n",
-        "parameters": {
-            "max_new_tokens": 512,
-            "temperature": 0.7,
-            "return_full_text": False
-        }
-    }
+    # URL encode system persona and user prompt
+    encoded_text = urllib.parse.quote(f"System: {system_prompt}\nUser: {prompt}")
+    api_url = f"https://text.pollinations.ai/{encoded_text}"
     
-    headers = {"Content-Type": "application/json"}
-    req = urllib.request.Request(api_url, data=json.dumps(payload).encode("utf-8"), headers=headers)
     try:
-        # Reduced timeout to 4 seconds to make AI fail-over much faster
-        with urllib.request.urlopen(req, timeout=4) as response:
-            res_data = json.loads(response.read().decode("utf-8"))
-            if isinstance(res_data, list) and len(res_data) > 0:
-                text = res_data[0].get("generated_text", "")
-                text = text.replace("<|im_end|>", "").strip()
-                AI_CACHE[prompt_clean] = text
-                return text
+        loop = asyncio.get_event_loop()
+        def fetch():
+            req = urllib.request.Request(api_url, headers={"User-Agent": "Mozilla/5.0"})
+            # 5 seconds timeout to load keyless AI replies fast
+            with urllib.request.urlopen(req, timeout=5) as response:
+                return response.read().decode("utf-8").strip()
+        text = await loop.run_in_executor(None, fetch)
+        if text:
+            AI_CACHE[prompt_clean] = text
+            return text
     except Exception as e:
-        print(f"[FREE LLM] Query error: {e}")
+        print(f"[POLLINATIONS LLM] Query error: {e}")
     return None
 
 @app.get("/api/speedtest")
@@ -1366,9 +1359,8 @@ async def analyze_scam_message(request: ScamAnalyzeRequest):
 async def chat_assistant(request: ChatRequest):
     user_msg = request.message.strip()
     
-    # 1. Query the Free Backend LLM (Qwen-2.5-7B-Instruct)
-    loop = asyncio.get_event_loop()
-    llm_reply = await loop.run_in_executor(None, query_free_llm, user_msg)
+    # 1. Query the Free Backend LLM (Pollinations AI)
+    llm_reply = await query_free_llm(user_msg)
     if llm_reply:
         return {"reply": llm_reply}
         
