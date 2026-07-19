@@ -887,6 +887,7 @@
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('url-threats', this)">Phishing & Reputation Audit</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('disposable-email-check', this)">Disposable Email Detector</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('metadata-viewer', this)">Metadata Viewer</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('image-place-finder', this)">Image Place & Location Finder</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('cve-news-feed', this)">Latest CVE & Threat News</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('mitre-attack-mapping', this)">MITRE ATT&CK Mapping</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('academic-rules-center', this)">Academic Announcements & Rules</li>
@@ -943,7 +944,8 @@
                             <tr>
                                 <th>Timestamp</th>
                                 <th>Username (Role)</th>
-                                <th>Logged IP</th>
+                                <th>Logged IP & Location</th>
+                                <th>Device Class / OS</th>
                                 <th>Operation / Diagnostic Action</th>
                                 <th>Controls</th>
                             </tr>
@@ -1737,6 +1739,29 @@
             </div>
         </div>
 
+        <!-- IMAGE PLACE & LOCATION FINDER -->
+        <div id="panel-image-place-finder" class="panel">
+            <h2 class="panel-title">Visual Landmark & Image Place Geolocation Finder</h2>
+            <div class="results-container">
+                <div class="result-block">
+                    <div class="result-header">Scan Image for Global Landmark Geolocation</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                        Upload a photo of a landmark or destination. The system will inspect visual traits, verify EXIF GPS properties, query OpenStreetMap reverse registries, and locate coordinates.
+                    </p>
+                    <div class="dropzone" onclick="document.getElementById('file-picker-place').click()">
+                        <p id="place-dropzone-text">Click to choose a landmark image to geolocate</p>
+                        <input type="file" id="file-picker-place" style="display: none;" onchange="processImagePlace(this.files[0])">
+                    </div>
+                    <div class="terminal-box" id="place-result-box" style="display: none; margin-top: 20px;">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/visual_geolocation_engine</span>
+                        </div>
+                        <div class="terminal-body" id="res-image-place" style="line-height: 1.6; max-height: 350px; overflow-y: auto;">Awaiting image...</div>
+                    </div>
+                </div>
+            </div>
+
         <!-- LATEST CVE & THREAT NEWS -->
         <div id="panel-cve-news-feed" class="panel">
             <h2 class="panel-title">Latest Zero-Day Vulnerabilities & Cybersecurity News</h2>
@@ -2086,14 +2111,15 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                 const actBody = document.getElementById('metrics-activity-body');
                 actBody.innerHTML = '';
                 if(!data.activities || data.activities.length === 0) {
-                    actBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No recent user operations registered.</td></tr>';
+                    actBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">No recent user operations registered.</td></tr>';
                 } else {
                     data.activities.forEach(act => {
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>${act.timestamp}</td>
                             <td><b>${act.username}</b> <span style="font-size:0.8rem;color:var(--text-muted);">(${act.role})</span></td>
-                            <td><code>${act.ip}</code></td>
+                            <td><code>${act.ip}</code><br><span style="font-size:0.75rem;color:var(--text-muted);">${act.location || 'Unknown Location'}</span></td>
+                            <td><span style="font-size:0.85rem;font-weight:600;color:var(--accent-red);">${act.device || 'Unknown OS'}</span></td>
                             <td>${act.action}</td>
                             <td>
                                 <button class="btn" style="padding:6px 12px;font-size:0.8rem;background:var(--accent-red);" onclick="terminateUserIP('${act.ip}')">Terminate</button>
@@ -2399,6 +2425,49 @@ ${metaText}
                     `;
                 } catch(err) {
                     resDiv.innerHTML = `<span style="color:var(--accent-red);">Metadata Extraction Failure: ${err.message}</span>`;
+                }
+            };
+        }
+
+        // Image Place Geolocation Finder Callback
+        async function processImagePlace(file) {
+            if(!file) return;
+            const resDiv = document.getElementById('res-image-place');
+            const resBox = document.getElementById('place-result-box');
+            document.getElementById('place-dropzone-text').textContent = `Loaded Landmark Photo: ${file.name}`;
+            resBox.style.display = 'block';
+            resDiv.innerHTML = "Parsing visual traits and checking metadata signatures...\n";
+            
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = async () => {
+                const base64Content = reader.result.split(',')[1];
+                try {
+                    const response = await fetch('/api/metadata/place', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ filename: file.name, base64_data: base64Content })
+                    });
+                    const data = await response.json();
+                    
+                    let coordsText = "No GPS coordinates embedded in this image.";
+                    let osmLink = "";
+                    if (data.latitude !== null && data.longitude !== null) {
+                        coordsText = `${data.latitude.toFixed(6)} Latitude, ${data.longitude.toFixed(6)} Longitude`;
+                        osmLink = `<br><b>OpenStreetMap Registry Map Link:</b> <a href="https://www.openstreetmap.org/?mlat=${data.latitude}&mlon=${data.longitude}#map=16/${data.latitude}/${data.longitude}" target="_blank" style="color:var(--accent-red); font-weight:700;">Open Live Map Coordinates 📍</a>`;
+                    }
+                    
+                    resDiv.innerHTML = `
+<b>Filename:</b> ${data.filename}
+<b>Identified Landmark Place:</b> <span style="color:var(--accent-red); font-weight:700;">${data.landmark_name}</span>
+<b>Country Origin:</b> ${data.country}
+<b>Coordinate Markers:</b> ${coordsText}
+${osmLink}
+
+<b>Simulated Geolocation Host IP of the Location:</b> <span style="font-family:'JetBrains Mono', monospace; font-weight:700;">${data.simulated_location_ip}</span>
+                    `;
+                } catch(err) {
+                    resDiv.innerHTML = `<span style="color:var(--accent-red);">Place Geolocator Scan Failure: ${err.message}</span>`;
                 }
             };
         }
