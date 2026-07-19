@@ -1,0 +1,673 @@
+import asyncio
+import json
+import socket
+import ssl
+import urllib.request
+import urllib.parse
+import re
+import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from datetime import datetime
+from typing import List, Dict, Optional
+from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+
+app = FastAPI(title="NCAS Cyber Portal - CyberShield Suite")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# SMTP Email Alert Configurations
+SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_USER = os.getenv("SMTP_USER", "")
+SMTP_PASS = os.getenv("SMTP_PASS", "")
+SMTP_FROM = os.getenv("SMTP_FROM", "alerts@cybershield-portal.ncas")
+
+def send_alert_email(subject: str, body: str):
+    recipient = "mohammedhisham35996@gmail.com"
+    msg = MIMEMultipart()
+    msg['From'] = SMTP_FROM
+    msg['To'] = recipient
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))
+
+    # Always log the alert to console for immediate diagnostics
+    print(f"\n--- [CYBERSHIELD EMAIL ALERT DISPATCH] ---")
+    print(f"To: {recipient}")
+    print(f"Subject: {subject}")
+    print(body)
+    print("-------------------------------------------\n")
+
+    if not SMTP_USER or not SMTP_PASS:
+        print("[SMTP] Dispatch skipped: Credentials SMTP_USER/SMTP_PASS are not configured.")
+        return
+
+    try:
+        server = smtplib.SMTP(SMTP_HOST, SMTP_PORT)
+        server.starttls()
+        server.login(SMTP_USER, SMTP_PASS)
+        server.send_message(msg)
+        server.quit()
+        print("[SMTP] Email alert successfully transmitted.")
+    except Exception as e:
+        print(f"[SMTP] Transmission error: {e}")
+
+# In-memory databases
+admin_credentials = {"username": "reiz", "password": "heavenofreiz"}
+faculty_db = {"professor_x": "faculty123"}
+student_db = {}
+faculty_limit = 5
+
+reported_incidents = [
+    {
+        "id": 1,
+        "title": "Phishing Campaign Verification",
+        "category": "Phishing",
+        "description": "Urgent emails attempting to harvest portal credentials.",
+        "reporter": "professor_x",
+        "status": "Resolved",
+        "solution": "Configured DMARC rejection rules for the spoofed domain name.",
+        "timestamp": "2026-07-19 07:30:15"
+    }
+]
+
+# Ban lists & Intruder logs database
+banned_ips = set()
+banned_users = set()
+security_alerts = []
+
+# Middleware to intercept and reject banned IPs
+@app.middleware("http")
+async def check_ban_status(request: Request, call_next):
+    client_ip = request.client.host
+    if client_ip in banned_ips:
+        return JSONResponse(
+            status_code=403,
+            content={"detail": "ACCESS TERMINATED: Your IP address has been banned due to security violations."}
+        )
+    return await call_next(request)
+
+# Helper to log and ban intruders
+def log_and_ban_intruder(request: Request, username: Optional[str], action: str):
+    client_ip = request.client.host
+    user_agent = request.headers.get("User-Agent", "Unknown")
+    path = request.url.path
+    method = request.method
+    
+    banned_ips.add(client_ip)
+    if username:
+        banned_users.add(username.lower())
+        
+    security_alerts.append({
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "username": username or "Guest/Anonymous",
+        "ip": client_ip,
+        "user_agent": user_agent,
+        "path": f"{method} {path}",
+        "action": action,
+        "status": "IP Banned"
+    })
+
+    # Send Security Alert Email
+    subject = f"[CyberShield Security Alert] Intruder IP Blacklisted"
+    body = (
+        f"Security Event: IP Blocked & Session Terminated\n"
+        f"Intruder IP: {client_ip}\n"
+        f"Target Username: {username or 'Guest/Anonymous'}\n"
+        f"Violation Action: {action}\n"
+        f"Request: {method} {path}\n"
+        f"User-Agent: {user_agent}\n"
+        f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+    )
+    send_alert_email(subject, body)
+
+# API models
+class ScamAnalyzeRequest(BaseModel):
+    text: str
+
+class ChatRequest(BaseModel):
+    message: str
+    history: List[Dict[str, str]] = []
+
+class SignUpRequest(BaseModel):
+    username: str
+    password: str
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class IncidentRequest(BaseModel):
+    title: str
+    category: str
+    description: str
+    reporter: str
+
+class SolveRequest(BaseModel):
+    id: int
+    solution: str
+
+class FacultyCreateRequest(BaseModel):
+    username: str
+    password: str
+
+class FacultyLimitRequest(BaseModel):
+    limit: int
+
+class HeaderAnalyzeRequest(BaseModel):
+    headers_text: str
+
+# Auth Endpoints
+@app.post("/api/signup")
+async def signup(req: SignUpRequest, request: Request):
+    username_clean = req.username.strip().lower()
+    if username_clean in ["admin", "reiz"]:
+        log_and_ban_intruder(request, req.username, "Privilege escalation attempt during signup")
+        raise HTTPException(status_code=403, detail="Violation logged.")
+    if username_clean in student_db or username_clean in faculty_db:
+        raise HTTPException(status_code=400, detail="Username already registered.")
+    student_db[username_clean] = req.password
+    return {"status": "success"}
+
+@app.post("/api/login")
+async def login(req: LoginRequest):
+    username_clean = req.username.strip().lower()
+    password = req.password
+    
+    if username_clean == admin_credentials["username"]:
+        if password == admin_credentials["password"]:
+            return {"status": "authenticated", "role": "admin", "username": "reiz"}
+        raise HTTPException(status_code=401, detail="Invalid admin credentials.")
+        
+    if username_clean in faculty_db:
+        if faculty_db[username_clean] == password:
+            return {"status": "authenticated", "role": "faculty", "username": username_clean}
+        raise HTTPException(status_code=401, detail="Invalid faculty credentials.")
+        
+    if username_clean in student_db:
+        if student_db[username_clean] == password:
+            return {"status": "authenticated", "role": "student", "username": username_clean}
+        raise HTTPException(status_code=401, detail="Invalid credentials.")
+        
+    raise HTTPException(status_code=401, detail="User not found.")
+
+# Strict Incidents Isolation
+@app.get("/api/incidents")
+async def get_incidents(role: str = Query(...), username: str = Query(...), request: Request = None):
+    username_clean = username.strip().lower()
+    if role == "admin":
+        if username_clean != "reiz":
+            log_and_ban_intruder(request, username, "Threat console bypass alert")
+            raise HTTPException(status_code=403, detail="Violation logged.")
+        return {"incidents": reported_incidents}
+        
+    # Unique ID isolation: student can only query incidents matching their lowercase username
+    user_incidents = [inc for inc in reported_incidents if inc["reporter"] == username_clean]
+    return {"incidents": user_incidents}
+
+@app.post("/api/incident")
+async def create_incident(req: IncidentRequest):
+    new_id = len(reported_incidents) + 1
+    reporter_clean = req.reporter.strip().lower()
+    reported_incidents.append({
+        "id": new_id,
+        "title": req.title,
+        "category": req.category,
+        "description": req.description,
+        "reporter": reporter_clean,
+        "status": "Pending",
+        "solution": "",
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    })
+
+    # Dispatch Alert Email to Admin
+    subject = f"[CyberShield Alert] New Threat Incident Reported by {reporter_clean}"
+    body = (
+        f"Incident Alert Summary:\n"
+        f"Incident ID: {new_id}\n"
+        f"Reporter: {reporter_clean}\n"
+        f"Category: {req.category}\n"
+        f"Title: {req.title}\n"
+        f"Description: {req.description}\n"
+        f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+    )
+    send_alert_email(subject, body)
+
+    return {"status": "submitted"}
+
+@app.post("/api/incident/solve")
+async def resolve_incident(req: SolveRequest, role: str = Query(...), username: str = Query(...), request: Request = None):
+    username_clean = username.strip().lower()
+    if role != "admin" or username_clean != "reiz":
+        log_and_ban_intruder(request, username, "Incident solve bypass alert")
+        raise HTTPException(status_code=403, detail="Violation logged.")
+    for inc in reported_incidents:
+        if inc["id"] == req.id:
+            inc["solution"] = req.solution
+            inc["status"] = "Resolved"
+
+            # Dispatch Resolution Email to Admin
+            subject = f"[CyberShield Alert] Threat Incident #{req.id} Resolved"
+            body = (
+                f"Incident Resolution Update:\n"
+                f"Incident ID: {req.id}\n"
+                f"Reporter: {inc['reporter']}\n"
+                f"Title: {inc['title']}\n"
+                f"Resolution Action: {req.solution}\n"
+                f"Resolved By: Admin (reiz)\n"
+                f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+            )
+            send_alert_email(subject, body)
+
+            return {"status": "resolved"}
+    raise HTTPException(status_code=404, detail="Incident not found.")
+
+# Faculty Management
+@app.get("/api/admin/faculty")
+async def get_faculty_list(role: str = Query(...), username: str = Query(...), request: Request = None):
+    username_clean = username.strip().lower()
+    if role != "admin" or username_clean != "reiz":
+        log_and_ban_intruder(request, username, "Faculty list bypass alert")
+        raise HTTPException(status_code=403, detail="Access denied.")
+    return {
+        "faculties": [{"username": k, "password": v} for k, v in faculty_db.items()],
+        "limit": faculty_limit,
+        "count": len(faculty_db)
+    }
+
+@app.post("/api/admin/faculty")
+async def create_faculty(req: FacultyCreateRequest, role: str = Query(...), username: str = Query(...), request: Request = None):
+    username_clean = username.strip().lower()
+    if role != "admin" or username_clean != "reiz":
+        log_and_ban_intruder(request, username, "Faculty create bypass alert")
+        raise HTTPException(status_code=403, detail="Access denied.")
+    new_user = req.username.strip().lower()
+    if len(faculty_db) >= faculty_limit:
+        raise HTTPException(status_code=400, detail="Faculty account limit reached.")
+    if new_user in faculty_db or new_user in student_db or new_user == "reiz":
+        raise HTTPException(status_code=400, detail="Username occupied.")
+    faculty_db[new_user] = req.password
+    return {"status": "created"}
+
+@app.post("/api/admin/faculty/limit")
+async def update_faculty_limit(req: FacultyLimitRequest, role: str = Query(...), username: str = Query(...), request: Request = None):
+    username_clean = username.strip().lower()
+    if role != "admin" or username_clean != "reiz":
+        log_and_ban_intruder(request, username, "Faculty limit configuration bypass")
+        raise HTTPException(status_code=403, detail="Access denied.")
+    global faculty_limit
+    faculty_limit = req.limit
+    return {"status": "updated"}
+
+@app.delete("/api/admin/faculty")
+async def delete_faculty(target_username: str = Query(...), role: str = Query(...), username: str = Query(...), request: Request = None):
+    username_clean = username.strip().lower()
+    if role != "admin" or username_clean != "reiz":
+        log_and_ban_intruder(request, username, "Faculty deletion bypass alert")
+        raise HTTPException(status_code=403, detail="Access denied.")
+    target_clean = target_username.strip().lower()
+    if target_clean in faculty_db:
+        del faculty_db[target_clean]
+        return {"status": "deleted"}
+    raise HTTPException(status_code=404, detail="Faculty not found.")
+
+# Metrics
+@app.get("/api/admin/metrics")
+async def get_system_metrics(role: str = Query(...), username: str = Query(...), request: Request = None):
+    username_clean = username.strip().lower()
+    if role != "admin" or username_clean != "reiz":
+        log_and_ban_intruder(request, username, "Admin metrics bypass alert")
+        raise HTTPException(status_code=403, detail="Access denied.")
+    all_users = [{"username": k, "role": "student"} for k in student_db.keys()] + \
+                [{"username": k, "role": "faculty"} for k in faculty_db.keys()]
+    return {
+        "users": all_users,
+        "security_logs": security_alerts,
+        "banned_ips": list(banned_ips)
+    }
+
+# --- REAL-TIME INTEL SUITE ENDPOINTS ---
+def query_json_api(url: str, headers: Optional[Dict[str, str]] = None) -> dict:
+    req = urllib.request.Request(url)
+    if headers:
+        for key, val in headers.items():
+            req.add_header(key, val)
+    try:
+        with urllib.request.urlopen(req, timeout=6) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/api/domain/dns")
+async def get_dns_records(domain: str = Query(...)):
+    record_types = ["A", "AAAA", "MX", "TXT", "CNAME", "NS"]
+    results = {}
+    async def fetch_record(rectype: str):
+        url = f"https://cloudflare-dns.com/dns-query?name={urllib.parse.quote(domain)}&type={rectype}"
+        headers = {"Accept": "application/dns-json"}
+        try:
+            loop = asyncio.get_event_loop()
+            data = await loop.run_in_executor(None, query_json_api, url, headers)
+            answers = data.get("Answer", [])
+            results[rectype] = [
+                {"data": ans.get("data"), "ttl": ans.get("TTL")} for ans in answers
+            ]
+        except Exception:
+            results[rectype] = []
+    await asyncio.gather(*(fetch_record(rt) for rt in record_types))
+    return {"domain": domain, "records": results}
+
+@app.get("/api/domain/whois")
+async def get_whois(domain: str = Query(...)):
+    url = f"https://rdap.org/domain/{urllib.parse.quote(domain)}"
+    try:
+        loop = asyncio.get_event_loop()
+        data = await loop.run_in_executor(None, query_json_api, url)
+        entities = data.get("entities", [])
+        registrar = "Unknown"
+        for entity in entities:
+            if "registrar" in entity.get("roles", []):
+                vcard = entity.get("vcardArray", [])
+                if len(vcard) > 1:
+                    for field in vcard[1]:
+                        if field[0] == "fn": registrar = field[3]
+        events = data.get("events", [])
+        dates = {}
+        for event in events:
+            action = event.get("eventAction")
+            date_str = event.get("eventDate")
+            if action and date_str: dates[action] = date_str
+        return {
+            "domain": domain,
+            "registrar": registrar,
+            "status": data.get("status", []),
+            "created": dates.get("registration"),
+            "changed": dates.get("last changed"),
+            "expires": dates.get("expiration"),
+            "nameservers": [ns.get("ldhName") for ns in data.get("nameservers", []) if ns.get("ldhName")]
+        }
+    except Exception:
+        raise HTTPException(status_code=404, detail="RDAP data not found.")
+
+@app.get("/api/domain/ssl")
+async def get_ssl_info(domain: str = Query(...)):
+    loop = asyncio.get_event_loop()
+    def fetch_ssl():
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+        with socket.create_connection((domain, 443), timeout=4) as sock:
+            with context.wrap_socket(sock, server_hostname=domain) as ssock:
+                cert_info = ssock.getpeercert()
+                pem = ssl.DER_cert_to_PEM_cert(ssock.getpeercert(binary_form=True))
+                return cert_info, pem
+    try:
+        cert_info, pem = await loop.run_in_executor(None, fetch_ssl)
+        subject = dict(x[0] for x in cert_info.get("subject", []))
+        issuer = dict(x[0] for x in cert_info.get("issuer", []))
+        return {
+            "domain": domain,
+            "subject": subject,
+            "issuer": issuer,
+            "valid_from": cert_info.get("notBefore"),
+            "valid_until": cert_info.get("notAfter"),
+            "version": cert_info.get("version"),
+            "serialNumber": cert_info.get("serialNumber"),
+            "pem": pem
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/domain/subdomains")
+async def check_subdomains(domain: str = Query(...)):
+    subdomains_to_test = ["www", "mail", "api", "dev", "blog", "secure", "vpn", "admin", "portal", "test", "ftp", "shop"]
+    discovered = []
+    async def resolve_subdomain(sub: str):
+        full_host = f"{sub}.{domain}"
+        try:
+            loop = asyncio.get_event_loop()
+            ip = await loop.run_in_executor(None, socket.gethostbyname, full_host)
+            discovered.append({"subdomain": full_host, "ip": ip})
+        except Exception: pass
+    await asyncio.gather(*(resolve_subdomain(s) for s in subdomains_to_test))
+    return {"domain": domain, "resolved_subdomains": discovered}
+
+@app.get("/api/ip/geo")
+async def get_ip_geolocation(ip: str = Query(...)):
+    url = f"http://ip-api.com/json/{urllib.parse.quote(ip)}?fields=status,message,country,countryCode,regionName,city,zip,lat,lon,timezone,isp,org,as,query"
+    try:
+        loop = asyncio.get_event_loop()
+        data = await loop.run_in_executor(None, query_json_api, url)
+        reputation = "Clean"
+        if data.get("status") == "success":
+            isp_lower = data.get("isp", "").lower()
+            if "hosting" in isp_lower or "cloud" in isp_lower or "vpn" in isp_lower or "datacenter" in isp_lower:
+                reputation = "Medium Risk (VPN/Hosting Provider)"
+        data["reputation"] = reputation
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/ip/revdns")
+async def reverse_dns(ip: str = Query(...)):
+    loop = asyncio.get_event_loop()
+    try:
+        hostname, _, _ = await loop.run_in_executor(None, socket.gethostbyaddr, ip)
+        return {"ip": ip, "hostname": hostname}
+    except Exception:
+        return {"ip": ip, "hostname": "No reverse DNS record found"}
+
+# Email Intelligence Core
+@app.get("/api/email/auth")
+async def get_email_auth_records(domain: str = Query(...)):
+    dns_url = "https://cloudflare-dns.com/dns-query"
+    headers = {"Accept": "application/dns-json"}
+    async def fetch_dns(name: str, rtype: str):
+        url = f"{dns_url}?name={urllib.parse.quote(name)}&type={rtype}"
+        try:
+            loop = asyncio.get_event_loop()
+            data = await loop.run_in_executor(None, query_json_api, url, headers)
+            return [ans.get("data") for ans in data.get("Answer", [])]
+        except Exception: return []
+    mx_records, txt_records = await asyncio.gather(
+        fetch_dns(domain, "MX"), fetch_dns(domain, "TXT")
+    )
+    spf_record = "Missing"
+    for txt in txt_records:
+        if "v=spf1" in txt:
+            spf_record = txt.strip('"')
+            break
+    dmarc_txt = await fetch_dns(f"_dmarc.{domain}", "TXT")
+    dmarc_record = "Missing"
+    for txt in dmarc_txt:
+        if "v=DMARC1" in txt:
+            dmarc_record = txt.strip('"')
+            break
+    return {
+        "domain": domain,
+        "mx_servers": mx_records,
+        "spf": spf_record,
+        "dmarc": dmarc_record,
+        "status": "Configured" if spf_record != "Missing" and dmarc_record != "Missing" else "Incomplete"
+    }
+
+@app.post("/api/email/analyze-headers")
+async def analyze_email_headers(req: HeaderAnalyzeRequest):
+    text = req.headers_text
+    extracted = {
+        "From": re.search(r"(?i)^From:\s*(.*)", text, re.MULTILINE),
+        "To": re.search(r"(?i)^To:\s*(.*)", text, re.MULTILINE),
+        "Subject": re.search(r"(?i)^Subject:\s*(.*)", text, re.MULTILINE),
+        "Return-Path": re.search(r"(?i)^Return-Path:\s*<(.*)>", text, re.MULTILINE),
+        "Authentication-Results": re.search(r"(?i)^Authentication-Results:\s*(.*)", text, re.MULTILINE)
+    }
+    for k, v in extracted.items():
+        extracted[k] = v.group(1).strip() if v else "Not Found"
+        
+    phishing_risk = "Low"
+    warnings = []
+    if extracted["Return-Path"] != "Not Found" and extracted["From"] != "Not Found":
+        rp_match = re.search(r"[\w\.-]+@([\w\.-]+)", extracted["Return-Path"])
+        from_match = re.search(r"[\w\.-]+@([\w\.-]+)", extracted["From"])
+        if rp_match and from_match:
+            if rp_match.group(1).lower() != from_match.group(1).lower():
+                phishing_risk = "High"
+                warnings.append("Header Spoofing Detected: Return-Path domain does not align with the display From header domain.")
+                
+    return {
+        "headers": extracted,
+        "phishing_risk": phishing_risk,
+        "warnings": warnings
+    }
+
+@app.get("/api/username/search")
+async def search_username(username: str = Query(...)):
+    platforms = {
+        "GitHub": f"https://github.com/{username}",
+        "Reddit": f"https://www.reddit.com/user/{username}",
+        "Dev.to": f"https://dev.to/{username}",
+        "Medium": f"https://medium.com/@{username}",
+        "GitLab": f"https://gitlab.com/{username}"
+    }
+    results = []
+    async def check_profile(name: str, url: str):
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        try:
+            loop = asyncio.get_event_loop()
+            def fetch_status():
+                with urllib.request.urlopen(req, timeout=3) as resp: return resp.getcode()
+            code = await loop.run_in_executor(None, fetch_status)
+            if code == 200: results.append({"platform": name, "url": url, "status": "Available"})
+        except Exception: pass
+    await asyncio.gather(*(check_profile(plat, url) for plat, url in platforms.items()))
+    return {"username": username, "profiles": results}
+
+@app.get("/api/domain/tech")
+async def audit_web_headers(domain: str = Query(...)):
+    url = f"http://{domain}"
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    try:
+        loop = asyncio.get_event_loop()
+        def fetch_headers():
+            with urllib.request.urlopen(req, timeout=4) as resp:
+                return dict(resp.headers), resp.version
+        headers, version = await loop.run_in_executor(None, fetch_headers)
+        security_headers = {
+            "Strict-Transport-Security": headers.get("Strict-Transport-Security", "Missing"),
+            "Content-Security-Policy": headers.get("Content-Security-Policy", "Missing"),
+            "X-Frame-Options": headers.get("X-Frame-Options", "Missing"),
+            "X-Content-Type-Options": headers.get("X-Content-Type-Options", "Missing"),
+            "Referrer-Policy": headers.get("Referrer-Policy", "Missing")
+        }
+        tech = {
+            "Server": headers.get("Server", "Undetected"),
+            "Powered-By": headers.get("X-Powered-By", "Undetected"),
+            "HTTP Version": "HTTP/1.1" if version == 11 else "HTTP/1.0"
+        }
+        return {"domain": domain, "security_headers": security_headers, "technology": tech}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/domain/redirect")
+async def trace_redirects(url: str = Query(...)):
+    trace = []
+    class TraceRedirectHandler(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, hdrs, newurl):
+            trace.append({"code": code, "url": req.full_url})
+            return super().redirect_request(req, fp, code, msg, hdrs, newurl)
+    opener = urllib.request.build_opener(TraceRedirectHandler)
+    opener.addheaders = [("User-Agent", "Mozilla/5.0")]
+    try:
+        loop = asyncio.get_event_loop()
+        def execute_trace():
+            with opener.open(url, timeout=5) as resp:
+                trace.append({"code": 200, "url": resp.url})
+                return trace
+        chain = await loop.run_in_executor(None, execute_trace)
+        return {"start_url": url, "redirect_chain": chain}
+    except Exception as e:
+        return {"start_url": url, "redirect_chain": trace, "error": str(e)}
+
+# Threat CVE
+@app.get("/api/threat/cve")
+async def query_cve_db(query: str = Query(...)):
+    cve_database = [
+        {"id": "CVE-2021-44228", "title": "Log4Shell", "severity": "Critical (10.0)", "description": "Apache Log4j2 remote code execution vulnerability."},
+        {"id": "CVE-2023-38831", "title": "WinRAR RCE", "severity": "High (7.8)", "description": "WinRAR ZIP file processing remote execution vulnerability."},
+        {"id": "CVE-2024-3094", "title": "XZ Utils Backdoor", "severity": "Critical (10.0)", "description": "Malicious code injection in XZ Utils payload delivery stream."}
+    ]
+    matches = [cve for cve in cve_database if query.lower() in cve["id"].lower() or query.lower() in cve["title"].lower()]
+    return {"query": query, "matches": matches}
+
+# AES Cryptography & password breach audit
+@app.get("/api/crypto/check-breach")
+async def check_password_breach(password: str = Query(...)):
+    common_passwords = ["123456", "password", "123456789", "qwerty", "12345678", "111111"]
+    breached = False
+    details = "Clean: Password not matching institutional weak listings."
+    if password in common_passwords:
+        breached = True
+        details = "BREACH WARNING: Password found in common public leak database."
+    return {"password": password, "breached": breached, "details": details}
+
+# Scam heuristics
+@app.post("/api/scam/analyze")
+async def analyze_scam_message(request: ScamAnalyzeRequest):
+    content = request.text.lower()
+    indicators = []
+    risk_score = 0
+    rules = [
+        {"pattern": "urgent", "flag": "Urgency Trigger", "weight": 25},
+        {"pattern": "suspend", "flag": "Account Suspension Threat", "weight": 30},
+        {"pattern": "win", "flag": "Monetary Claim", "weight": 25},
+        {"pattern": "upi", "flag": "Payment Request", "weight": 20}
+    ]
+    for rule in rules:
+        if rule["pattern"] in content:
+            indicators.append(rule["flag"])
+            risk_score += rule["weight"]
+    risk_score = min(risk_score, 100)
+    level = "HIGH RISK" if risk_score >= 60 else ("MEDIUM RISK" if risk_score >= 30 else "LOW RISK")
+    return {"indicators_found": indicators, "risk_score": risk_score, "risk_level": level, "summary": "Alert checked."}
+
+# Chat assistant (Enriched Technical Responses)
+@app.post("/api/chat")
+async def chat_assistant(request: ChatRequest):
+    user_msg = request.message.lower().strip()
+    
+    if "ransomware" in user_msg:
+        reply = "### [MITRE T1486] Data Encrypted for Impact Mitigation\n\n1. **Isolation**: Immediately disconnect affected hosts from local Wi-Fi/Ethernet loops.\n2. **Shadow Copies**: Verify VSS availability: `vssadmin list shadows`\n3. **AD Audits**: Audit remote file system mounting parameters and check Kerberos ticket anomalies."
+    elif "port scan" in user_msg or "nmap" in user_msg:
+        reply = "### [MITRE T1046] Network Service Discovery Mitigation\n\n1. **Firewall Rules**: Enforce SYN connections rate-limiting on inbound routes.\n2. **Logging**: Run packet capture checks on router ports: `tcpdump -i any 'tcp[tcpflags] & (tcp-syn|tcp-ack) == tcp-syn'`\n3. **IDS Alignment**: Load rules to detect IP sweep configurations."
+    elif "sql injection" in user_msg or "sqli" in user_msg:
+        reply = "### [OWASP A03:2021] Injection Remediation Action Plan\n\n1. **Prepared Statements**: Parametrize all database integrations to isolate code execution contexts.\n2. **WAF Filters**: Verify rules matching `' OR 1=1` and `UNION SELECT` signatures.\n3. **Type-Checking**: Implement rigorous server-side input format verification."
+    elif "phishing" in user_msg:
+        reply = "### [MITRE T1566] Phishing Threat Mitigation\n\n1. **Email Records**: Enforce strict DMARC policies (`p=reject`) and SPF checks (`v=spf1 -all`).\n2. **SSL Cert Audits**: Match lookalike domains against registry registration timestamps.\n3. **Filtering**: Block high-risk macro execution parameters at mail gateways."
+    elif "mfa" in user_msg or "authentication" in user_msg:
+        reply = "### [MITRE T1556] Authenticator Protections\n\n1. **Hardware Keys**: Enforce FIDO2 / WebAuthn standard security keys over SMS validation.\n2. **Conditional Access**: Block credential validation from unverified browser agents.\n3. **Session Expiring**: Reduce token lifetime to minimize hijack exposures."
+    else:
+        reply = "### NCAS Security Intelligence System\n\nEnter query terms (e.g. `ransomware`, `phishing`, `SQLi`, `MFA`, `port scan`) to retrieve MITRE ATT&CK mitigation guidelines."
+        
+    return {"reply": reply}
+
+@app.get("/api/health")
+async def get_health():
+    return {"status": "ok"}
+
+@app.get("/", response_class=HTMLResponse)
+async def get_index():
+    try:
+        with open("index.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    except FileNotFoundError:
+        return HTMLResponse(content="<h1>Frontend files not found</h1>", status_code=404)

@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCAS Cyber Portal | CyberShield SOC Console</title>
+    <!-- Curated Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #f8fafc;
+            --bg-panel: #ffffff;
+            --border-panel: #e2e8f0;
+            --accent-red: #dc2626;
+            --accent-red-hover: #b91c1c;
+            --accent-red-bright: #dc2626;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --shadow-panel: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+            --shadow-btn: 0 4px 10px rgba(220, 38, 38, 0.15);
+            --bg-terminal: #0f172a;
+            --color-terminal: #38bdf8; /* Glowing Cyan Terminal Text */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Combined Auth Overlay Modal */
+        #auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(248, 250, 252, 0.98);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 440px;
+            width: 90%;
+            box-shadow: var(--shadow-panel);
+            text-align: center;
+        }
+
+        .auth-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--accent-red);
+            letter-spacing: -0.04em;
+            margin-bottom: 4px;
+        }
+
+        .auth-subtitle {
+            font-size: 0.8rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--text-main);
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-panel);
+            margin-bottom: 24px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            color: var(--accent-red);
+            border-bottom: 3px solid var(--accent-red);
+        }
+
+        .auth-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: left;
+            margin-bottom: 16px;
+        }
+
+        .auth-field label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        /* Sidebar navigation (White/Light Grey Theme) */
+        .sidebar {
+            width: 280px;
+            background: #ffffff; /* White background */
+            border-right: 1px solid var(--border-panel);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 15px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .brand-title {
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            text-align: center;
+            border-bottom: 1px solid var(--border-panel);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .brand-title span {
+            color: var(--accent-red);
+            font-weight: 500;
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            display: none; /* Managed by role */
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--accent-red);
+            background: rgba(220, 38, 38, 0.04);
+        }
+
+        .nav-item.active {
+            border-left: 3px solid var(--accent-red);
+            font-weight: 700;
+            background: rgba(220, 38, 38, 0.06);
+        }
+
+        .user-indicator {
+            margin-top: auto;
+            border-top: 1px solid var(--border-panel);
+            padding-top: 20px;
+            padding-left: 10px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .user-indicator span.username {
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .user-indicator span.role {
+            color: var(--accent-red);
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        /* Workspace Panels */
+        .workspace {
+            margin-left: 280px;
+            flex: 1;
+            padding: 40px;
+            max-width: 1200px;
+            width: calc(100% - 280px);
+        }
+
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow-panel);
+            margin-bottom: 24px;
+            display: none;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2.panel-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-panel);
+            padding-bottom: 12px;
+        }
+
+        /* UI Forms & Grid Layouts */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-panel);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-num {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--accent-red);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .input-text {
+            flex: 1;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-panel);
+            border-radius: 8px;
+            padding: 14px 18px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-text:focus {
+            border-color: var(--accent-red);
+        }
+
+        .btn {
+            background: var(--accent-red);
+            border: none;
+            color: #ffffff;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: var(--shadow-btn);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn:hover {
+            background: var(--accent-red-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #ffffff;
+            border: 1px solid var(--border-panel);
+            color: var(--text-main);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-dark);
+        }
+
+        /* Results Display formatting */
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Custom CLI Terminal Console Box */
+        .terminal-box {
+            background: var(--bg-terminal);
+            border: 1px solid #1a202c;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+        }
+
+        .terminal-header {
+            background: #1a202c;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .terminal-buttons {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.close { background: #ef4444; }
+        .terminal-dot.minimize { background: #eab308; }
+        .terminal-dot.expand { background: #22c55e; }
+
+        .terminal-body {
+            padding: 18px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88rem;
+            line-height: 1.5;
+            color: var(--color-terminal);
+            white-space: pre-wrap;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .badge-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-panel);
+            padding: 12px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .badge-found {
+            color: var(--accent-red);
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .textarea-input {
+            width: 100%;
+            height: 120px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-panel);
+            border-radius: 8px;
+            padding: 14px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            resize: vertical;
+            margin-bottom: 16px;
+        }
+
+        /* Password Strength Indicator */
+        .pass-meter-container {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .pass-meter-bar {
+            height: 6px;
+            width: 100%;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+        .pass-meter-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-red);
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        .pass-meter-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        /* Risk Gauge Meter */
+        .risk-gauge-container {
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .risk-gauge-bar {
+            height: 14px;
+            width: 100%;
+            background: linear-gradient(90deg, #22c55e 0%, #eab308 50%, #ef4444 100%);
+            border-radius: 7px;
+            position: relative;
+        }
+        .risk-gauge-pointer {
+            width: 8px;
+            height: 20px;
+            background: var(--text-main);
+            border: 2px solid #ffffff;
+            position: absolute;
+            top: -3px;
+            border-radius: 4px;
+            left: 0%;
+            transition: left 0.5s ease-out;
+        }
+
+        /* Chat design */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 450px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-panel);
+            border-radius: 12px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            line-height: 1.5;
+        }
+
+        .chat-bubble.user {
+            background: var(--accent-red);
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-bubble.assistant {
+            background: #ffffff;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border-panel);
+        }
+
+        .chat-input-area {
+            display: flex;
+            border-top: 1px solid var(--border-panel);
+            background: #ffffff;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 18px;
+            color: var(--text-main);
+            font-family: inherit;
+            outline: none;
+        }
+
+        .chat-input-area button {
+            background: transparent;
+            border: none;
+            color: var(--accent-red);
+            font-weight: 700;
+            padding: 0 24px;
+            cursor: pointer;
+        }
+
+        /* Quizzes styling */
+        .quiz-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-panel);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .quiz-question {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            background: #ffffff;
+            border: 1px solid var(--border-panel);
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--accent-red);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--accent-red);
+            background: rgba(220, 38, 38, 0.04);
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--text-muted);
+            background: #f1f5f9;
+        }
+
+        .quiz-explanation {
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-left: 3px solid var(--accent-red);
+            background: #ffffff;
+            display: none;
+        }
+
+        .dropzone {
+            border: 2px dashed var(--border-panel);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--bg-dark);
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .dropzone:hover {
+            border-color: var(--accent-red);
+        }
+
+        .dropzone input {
+            display: none;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .history-table th, .history-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-panel);
+        }
+
+        .history-table th {
+            color: var(--text-main);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .history-table td {
+            font-size: 0.9rem;
+        }
+
+        .alert-box {
+            background: rgba(220, 38, 38, 0.04);
+            border: 1px solid rgba(220, 38, 38, 0.15);
+            padding: 15px;
+            border-radius: 8px;
+            color: var(--accent-red);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .indicator-tag {
+            display: inline-block;
+            background: rgba(220, 38, 38, 0.06);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            color: var(--accent-red);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* Full Screen Ban Overlay */
+        #ban-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-red);
+            color: #ffffff;
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 20px;
+        }
+
+        #ban-overlay h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        #ban-overlay p {
+            font-size: 1.1rem;
+            color: #fca5a5;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 0. INTRUDER BAN OVERLAY -->
+    <div id="ban-overlay">
+        <h1>ACCESS TERMINATED</h1>
+        <p>Your IP address has been blacklisted and session terminated due to unauthorized administrative access attempts (Privilege Escalation Alert).</p>
+        <div style="margin-top: 40px; color: #ffcdd2; font-size: 0.85rem;">Event logged and transmitted to NCAS Cyber Wing administration portal.</div>
+    </div>
+
+    <!-- 1. AUTH OVERLAY -->
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <div class="auth-title">NCAS CYBER PORTAL</div>
+            <div class="auth-subtitle">CyberShield Systems</div>
+
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tab-login" onclick="toggleAuthMode('login')">Sign In</div>
+                <div class="auth-tab" id="tab-signup" onclick="toggleAuthMode('signup')">Student Register</div>
+            </div>
+
+            <div id="auth-error" style="color: var(--accent-red); font-size: 0.9rem; margin-bottom: 14px; display: none;"></div>
+            <div id="auth-success" style="color: var(--text-main); font-size: 0.9rem; margin-bottom: 14px; display: none;"></div>
+            
+            <div class="auth-field">
+                <label>Username</label>
+                <input type="text" id="auth-user" class="input-text" placeholder="Enter username">
+            </div>
+            
+            <div class="auth-field">
+                <label>Password</label>
+                <input type="password" id="auth-pass" class="input-text" placeholder="Enter password">
+            </div>
+
+            <button class="btn" id="btn-auth-submit" style="width: 100%; margin-top: 10px;" onclick="executeAuthentication()">Sign In</button>
+        </div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="brand-title">NCAS <span>PORTAL</span></div>
+        <ul class="nav-list">
+            <li class="nav-item active" data-roles="admin,faculty,student" onclick="switchPanel('dashboard', this)">Dashboard</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('wifi-auditor', this)">Wi-Fi Security Auditor</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('domain-intel', this)">Domain Intelligence</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('ip-intel', this)">IP Intelligence</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('email-intel', this)">Email Intelligence</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('username-recon', this)">Username Search</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('url-analysis', this)">URL Analysis</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('file-threat', this)">File & Threat Intel</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('crypto-tools', this)">Encryption Tools</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('scam-checker', this)">Scam Message Checker</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('chat', this)">AI Cyber Assistant</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('quiz', this)">Security Quizzes</li>
+            <li class="nav-item" data-roles="faculty,student" onclick="switchPanel('threat-reporting', this)">Report Threat</li>
+            <li class="nav-item" data-roles="admin" onclick="switchPanel('incident-console', this)">Incident Console</li>
+            <li class="nav-item" data-roles="admin" onclick="switchPanel('faculty-mgmt', this)">Faculty Management</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('policy', this)">Service Policy</li>
+        </ul>
+        <div class="user-indicator">
+            User: <span class="username" id="user-name-lbl">-</span><br>
+            Role: <span class="role" id="user-role-lbl">-</span>
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; margin-top: 8px;" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+
+        <!-- 1. DASHBOARD -->
+        <div id="panel-dashboard" class="panel active">
+            <h2 class="panel-title">Safety Status Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-num" id="metrics-score">95%</span>
+                    <span class="stat-label">Device Security Score</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num" id="metrics-scans">0</span>
+                    <span class="stat-label">Investigations Run</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num" id="metrics-connection" style="color: #10b981;">Checking...</span>
+                    <span class="stat-label">Intel Connection</span>
+                </div>
+            </div>
+
+            <!-- Admin dashboard metrics -->
+            <div id="admin-dashboard-details" style="display: none; margin-bottom: 24px;">
+                <div class="result-block" style="margin-bottom: 24px;">
+                    <div class="result-header">Registered Portal Users & Security Levels</div>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Security Level (Role)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="metrics-users-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header" style="color: var(--accent-red);">Blocked IPs & Intrusion Forensics Logs</div>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Intruder IP</th>
+                                <th>User-Agent / Path</th>
+                                <th>Target Username</th>
+                                <th>Action / Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="metrics-security-body">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: var(--text-muted);">No security alerts registered.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="result-block">
+                <div class="result-header">Privacy Matrix Guide</div>
+                <div class="result-body" style="font-family: inherit;">
+• <b>Instagram Privacy</b>: Switch to a Private Account under Settings. Block incoming messages from users you don't follow.
+• <b>WhatsApp Lock</b>: Enable Screen Lock (Touch ID/Face ID/Passcode). Restrict Groups, Profile Photo, and About fields to My Contacts.
+• <b>Facebook settings</b>: Run the Privacy Checkup. Restrict future posts visibility to Friends and hide your email/phone locator parameters from search engine listings.
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. WI-FI SECURITY AUDITOR -->
+        <div id="panel-wifi-auditor" class="panel">
+            <h2 class="panel-title">Wi-Fi & Connection Security Auditor</h2>
+            <div class="results-container">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-num" id="wifi-transport-protocol" style="font-size: 1.25rem;">Checking...</span>
+                        <span class="stat-label">Transport Encryption</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="wifi-latency" style="font-size: 1.25rem;">- ms</span>
+                        <span class="stat-label">Average Latency</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-num" id="wifi-jitter" style="font-size: 1.25rem;">- ms</span>
+                        <span class="stat-label">Jitter (MitM indicator)</span>
+                    </div>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header">Latency & Jitter Proxy Intercept Analyzer</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                        This test measures latency fluctuations (jitter) to the portal gateway. Erratic jitter spikes or prolonged delays can indicate SSL inspection middleboxes, intercepting proxy firewalls, or eavesdropping networks.
+                    </p>
+                    <button class="btn" onclick="runWifiJitterTest()">Run Jitter Audit</button>
+                    <div class="result-body" id="wifi-jitter-log" style="margin-top: 15px; max-height: 150px;">Awaiting audit triggers...</div>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header">Local Wi-Fi Config & Router Hardening Audit</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                        Input your access point settings to compute the security compliance of your local connection.
+                    </p>
+                    <div class="auth-field">
+                        <label>1. Wi-Fi Encryption Standard</label>
+                        <select id="wifi-enc-select" class="input-text" style="width: 100%; display: block; height: 50px;">
+                            <option value="wpa3">WPA3-SAE / WPA3-Enterprise (Secure)</option>
+                            <option value="wpa2-aes">WPA2-AES / CCMP (Standard Protected)</option>
+                            <option value="wpa2-tkip">WPA2-TKIP / WPA (Vulnerable to key injection)</option>
+                            <option value="wep">WEP (Highly Vulnerable - easily cracked)</option>
+                            <option value="open">Open / Unencrypted Wi-Fi (Extremely Vulnerable)</option>
+                        </select>
+                    </div>
+                    <div class="auth-field" style="margin-top: 15px;">
+                        <label>2. Access Point (AP) Isolation</label>
+                        <select id="wifi-iso-select" class="input-text" style="width: 100%; display: block; height: 50px;">
+                            <option value="enabled">Enabled (Blocks peers from sniffing traffic on shared networks)</option>
+                            <option value="disabled">Disabled (Allows peers to run local packet sniffing)</option>
+                        </select>
+                    </div>
+                    <div class="auth-field" style="margin-top: 15px;">
+                        <label>3. Wi-Fi Protected Setup (WPS)</label>
+                        <select id="wifi-wps-select" class="input-text" style="width: 100%; display: block; height: 50px;">
+                            <option value="disabled">Disabled (Secure - prevents PIN brute force)</option>
+                            <option value="enabled">Enabled (Vulnerable to Reaver/Pixie-Dust attacks)</option>
+                        </select>
+                    </div>
+                    <div class="auth-field" style="margin-top: 15px;">
+                        <label>4. Default Router Admin Password Changed?</label>
+                        <select id="wifi-pass-select" class="input-text" style="width: 100%; display: block; height: 50px;">
+                            <option value="yes">Yes (Modified to custom password)</option>
+                            <option value="no">No (Default manufacturer credentials still active - Critical Risk)</option>
+                        </select>
+                    </div>
+                    <button class="btn" style="margin-top: 15px;" onclick="calculateWifiScore()">Audit Configuration</button>
+
+                    <div class="result-body" id="res-wifi-compliance" style="margin-top: 20px; display: none;">
+                        <!-- Outputs dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. DOMAIN INTEL -->
+        <div id="panel-domain-intel" class="panel">
+            <h2 class="panel-title">Domain Intelligence & Reconnaissance</h2>
+            <div class="flex-row">
+                <input type="text" id="domain-input" class="input-text" placeholder="Enter domain (e.g. google.com)">
+                <button class="btn" onclick="runDomainIntel()">Analyze Domain</button>
+            </div>
+            <div class="results-container">
+                <div class="terminal-box">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                        <span>bash ncas@cybershield:~/dns_lookup</span>
+                    </div>
+                    <div class="terminal-body" id="res-dns">Awaiting query parameters...</div>
+                </div>
+
+                <div class="terminal-box">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                        <span>bash ncas@cybershield:~/whois_registry</span>
+                    </div>
+                    <div class="terminal-body" id="res-whois">Awaiting registry handshake...</div>
+                </div>
+
+                <div class="terminal-box">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                        <span>bash ncas@cybershield:~/ssl_handshake</span>
+                    </div>
+                    <div class="terminal-body" id="res-ssl">Awaiting TLS context validation...</div>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header">Resolved Subdomains</div>
+                    <div class="badge-grid" id="res-subdomains">Awaiting subdomain check...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. IP INTEL -->
+        <div id="panel-ip-intel" class="panel">
+            <h2 class="panel-title">IP Address Intelligence</h2>
+            <div class="flex-row">
+                <input type="text" id="ip-input" class="input-text" placeholder="Enter IP address (e.g. 8.8.8.8)">
+                <button class="btn" onclick="runIpIntel()">Geolocate IP</button>
+            </div>
+            <div class="results-container">
+                <div class="terminal-box">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                        <span>bash ncas@cybershield:~/reverse_dns</span>
+                    </div>
+                    <div class="terminal-body" id="res-revdns">Awaiting reverse lookup resolution...</div>
+                </div>
+
+                <div class="terminal-box">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                        <span>bash ncas@cybershield:~/ip_geolocation</span>
+                    </div>
+                    <div class="terminal-body" id="res-ip-geo">Awaiting geolocation mapping payload...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. EMAIL INTEL -->
+        <div id="panel-email-intel" class="panel">
+            <h2 class="panel-title">Email Security Audits</h2>
+            <div class="results-container">
+                <div class="result-block">
+                    <div class="result-header">SPF/DKIM/DMARC Record Lookup</div>
+                    <div class="flex-row">
+                        <input type="text" id="email-domain-input" class="input-text" placeholder="Enter domain to audit (e.g. microsoft.com)">
+                        <button class="btn" onclick="runEmailAuthCheck()">Audit Domain Records</button>
+                    </div>
+                    <div class="terminal-box" style="margin-top: 15px;">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/email_records</span>
+                        </div>
+                        <div class="terminal-body" id="res-email-auth">Awaiting query parameters...</div>
+                    </div>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header">Email Header Parser & Forensics</div>
+                    <textarea id="email-headers-input" class="textarea-input" placeholder="Paste raw email headers here (From:, Return-Path:, etc.)..."></textarea>
+                    <button class="btn" onclick="runHeaderAnalysis()">Analyze Headers</button>
+                    <div class="terminal-box" style="margin-top: 15px;">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/header_forensics</span>
+                        </div>
+                        <div class="terminal-body" id="res-header-analysis">Awaiting header input...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. USERNAME SEARCH -->
+        <div id="panel-username-recon" class="panel">
+            <h2 class="panel-title">Social Profile Reconnaissance</h2>
+            <div class="flex-row">
+                <input type="text" id="username-input" class="input-text" placeholder="Enter target username (e.g. torvalds)">
+                <button class="btn" onclick="runUsernameRecon()">Scan Platforms</button>
+            </div>
+            <div class="results-container">
+                <div class="result-block"><div class="result-header">Public Profiles Found</div><div class="badge-grid" id="res-username">Awaiting scan execution...</div></div>
+            </div>
+        </div>
+
+        <!-- 7. URL ANALYSIS -->
+        <div id="panel-url-analysis" class="panel">
+            <h2 class="panel-title">URL Tech Stack & Redirect Tracer</h2>
+            <div class="flex-row">
+                <input type="text" id="url-input" class="input-text" placeholder="Enter target URL or domain (e.g. github.com)">
+                <button class="btn" onclick="runUrlAnalysis()">Inspect URL</button>
+            </div>
+            <div class="results-container">
+                <div class="terminal-box">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                        <span>bash ncas@cybershield:~/web_headers</span>
+                    </div>
+                    <div class="terminal-body" id="res-url-tech">Awaiting audit metrics...</div>
+                </div>
+
+                <div class="terminal-box">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                        <span>bash ncas@cybershield:~/redirect_tracer</span>
+                    </div>
+                    <div class="terminal-body" id="res-url-redirect">Awaiting tracer execution...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. FILE & THREAT INTEL -->
+        <div id="panel-file-threat" class="panel">
+            <h2 class="panel-title">File Hashing & Threat Intelligence Lookup</h2>
+            <div class="dropzone" onclick="document.getElementById('file-picker-full').click()">
+                <p>Drag and drop a file here, or click to browse</p>
+                <input type="file" id="file-picker-full" onchange="processFileFull(this.files[0])">
+            </div>
+            <div class="results-container">
+                <div class="result-block">
+                    <div class="result-header">Browser Cryptographic Hash Summary</div>
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/file_hash</span>
+                        </div>
+                        <div class="terminal-body" id="res-file-meta">No file scanned yet.</div>
+                    </div>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header">CVE & Vulnerability Database Search</div>
+                    <div class="flex-row">
+                        <input type="text" id="cve-input" class="input-text" placeholder="Search CVE ID or software name (e.g. Log4j)">
+                        <button class="btn" onclick="searchCves()">Search DB</button>
+                    </div>
+                    <div class="terminal-box" style="margin-top: 15px;">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/cve_lookup</span>
+                        </div>
+                        <div class="terminal-body" id="res-cve">Awaiting database query...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. ENCRYPTION TOOLKIT -->
+        <div id="panel-crypto-tools" class="panel">
+            <h2 class="panel-title">Cryptographic Utilities</h2>
+            <div class="results-container">
+                <div class="result-block">
+                    <div class="result-header">AES Text Encryption & Decryption (Client-side)</div>
+                    <textarea id="aes-plaintext" class="textarea-input" placeholder="Enter plaintext to encrypt or base64 ciphertext to decrypt..."></textarea>
+                    <div class="flex-row">
+                        <input type="text" id="aes-key" class="input-text" placeholder="Enter secret key phrase">
+                        <button class="btn" onclick="runAesEncrypt()">Encrypt AES</button>
+                        <button class="btn btn-secondary" onclick="runAesDecrypt()">Decrypt AES</button>
+                    </div>
+                    <div class="terminal-box" style="margin-top: 15px;">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/aes_output</span>
+                        </div>
+                        <div class="terminal-body" id="res-aes">Output:</div>
+                    </div>
+                </div>
+                
+                <div class="result-block">
+                    <div class="result-header">Password Strength Audit & Breach check</div>
+                    <div class="flex-row">
+                        <input type="password" id="breach-pass-input" class="input-text" placeholder="Type password here to check strength..." oninput="auditPasswordStrength(this.value)">
+                        <button class="btn" onclick="checkPasswordBreach()">Audit Password</button>
+                    </div>
+                    <div class="pass-meter-container">
+                        <div class="pass-meter-bar"><div class="pass-meter-fill" id="strength-fill"></div></div>
+                        <div class="pass-meter-text" id="strength-text">Strength: Idle</div>
+                    </div>
+                    <div class="result-body" id="res-breach-check" style="margin-top: 15px;">Awaiting check...</div>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header">Secure Password Generator</div>
+                    <div class="flex-row">
+                        <input type="number" id="pass-len" class="input-text" min="8" max="64" value="16">
+                        <button class="btn" onclick="generatePassword()">Generate Password</button>
+                    </div>
+                    <div class="terminal-box" style="margin-top: 15px;">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/pass_gen</span>
+                        </div>
+                        <div class="terminal-body" id="res-pass">Generated Password:</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10. SCAM MESSAGE CHECKER -->
+        <div id="panel-scam-checker" class="panel">
+            <h2 class="panel-title">AI Scam Message Analyzer</h2>
+            <textarea id="scam-text" class="textarea-input" placeholder="Paste the suspicious content here..."></textarea>
+            <button class="btn" onclick="analyzeScamText()">Analyze Message Heuristics</button>
+            <div class="results-container" style="margin-top: 20px;">
+                <div class="result-block">
+                    <div class="result-header">AI Risk Report & Meter</div>
+                    
+                    <div class="risk-gauge-container">
+                        <div class="risk-gauge-bar"><div class="risk-gauge-pointer" id="risk-pointer"></div></div>
+                        <div class="pass-meter-text" id="risk-text">Risk Indicator: Idle</div>
+                    </div>
+
+                    <div id="scam-tags" style="margin-top: 15px;"></div>
+                    <div class="result-body" id="res-scam">Awaiting analysis...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 11. AI ASSISTANT CHAT -->
+        <div id="panel-chat" class="panel">
+            <h2 class="panel-title">AI Cyber Assistant</h2>
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-bubble assistant">Hello! Ask me any cybersecurity question. Type `phishing` or `ransomware` for technical playbooks.</div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Ask a security query..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                    <button onclick="sendChatMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 12. QUIZZES -->
+        <div id="panel-quiz" class="panel">
+            <h2 class="panel-title">Defensive Quizzes Arena</h2>
+            <div id="quiz-container"></div>
+            <button class="btn" id="btn-next-quiz" style="margin-top: 15px; display: none;" onclick="loadNextQuestion()">Next Question</button>
+        </div>
+
+        <!-- 13. INCIDENT THREAT REPORTING (USER VIEW - ISOLATED BY LOGGED ID) -->
+        <div id="panel-threat-reporting" class="panel">
+            <h2 class="panel-title">Report Threat & Track Resolutions</h2>
+            
+            <div class="result-block" style="margin-bottom: 24px;">
+                <div class="result-header">File Security Incident</div>
+                <div class="login-field">
+                    <label>Incident / Complaint Title</label>
+                    <input type="text" id="threat-title" class="input-text" placeholder="e.g. Urgent email request for bank transfer">
+                </div>
+                <div class="login-field" style="margin-top: 15px;">
+                    <label>Category</label>
+                    <input type="text" id="threat-category" class="input-text" placeholder="Phishing, Scam text, Policy violation">
+                </div>
+                <div class="login-field" style="margin-top: 15px;">
+                    <label>Incident Description</label>
+                    <textarea id="threat-desc" class="textarea-input" placeholder="Describe the threat vectors or suspect parameters."></textarea>
+                </div>
+                <button class="btn" onclick="submitThreatReport()">Submit Report</button>
+                <div id="report-confirm" style="margin-top: 15px; color: var(--accent-red); display: none;">Report successfully submitted.</div>
+            </div>
+
+            <div class="result-block">
+                <div class="result-header">Your Isolated Incident Registry</div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Status</th>
+                            <th>Admin Resolution Action Plan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-incidents-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 14. ADMIN INCIDENT CONSOLE (ADMIN VIEW) -->
+        <div id="panel-incident-console" class="panel">
+            <h2 class="panel-title">Threat & Policy Incidents Console</h2>
+            <div class="results-container">
+                <div class="result-block">
+                    <div class="result-header">Active Complaints Registry</div>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Incident Details</th>
+                                <th>Reporter</th>
+                                <th>Status</th>
+                                <th>Resolution Solution Response</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-incidents-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 15. ADMIN FACULTY MANAGEMENT (ADMIN VIEW) -->
+        <div id="panel-faculty-mgmt" class="panel">
+            <h2 class="panel-title">Faculty Allocations & Limit Center</h2>
+            
+            <div class="result-block" style="margin-bottom: 24px;">
+                <div class="result-header">Configure Limits & Counts</div>
+                <div class="flex-row">
+                    <span style="font-weight: 600;">Faculty Accounts Limit:</span>
+                    <input type="number" id="fac-limit-val" class="input-text" style="max-width: 120px;" min="1" max="100">
+                    <button class="btn" onclick="updateFacultyLimit()">Set Limit</button>
+                </div>
+            </div>
+
+            <div class="result-block" style="margin-bottom: 24px;">
+                <div class="result-header">Add New Faculty Account</div>
+                <div class="flex-row">
+                    <input type="text" id="new-fac-user" class="input-text" placeholder="Username">
+                    <input type="password" id="new-fac-pass" class="input-text" placeholder="Password">
+                    <button class="btn" onclick="addNewFaculty()">Create Account</button>
+                </div>
+            </div>
+
+            <div class="result-block">
+                <div class="result-header">Current Faculty Members</div>
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Assigned Password</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="faculty-list-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 16. SERVICE POLICY -->
+        <div id="panel-policy" class="panel">
+            <h2 class="panel-title">Web Service Scan & Diagnostics Policy</h2>
+            <div class="result-block">
+                <div class="result-header">Security Diagnostics Compliance Policy</div>
+                <div class="result-body" style="font-family: inherit; line-height: 1.6;">
+<h4>1. Authorized Diagnostic Scope</h4>
+This CyberShield Web Service is an educational, diagnostic resource designed to support network status lookups and threat analysis. Active vulnerability discovery, unauthorized brute forcing, or port scanning of assets without specific authorization is strictly prohibited. All domain lookups, WHOIS requests, and DNS resolutions utilize passive, public APIs or standard socket lookups.
+
+<h4>2. Privacy & User Data Protection</h4>
+- File Hashing utility generates cryptographic signatures locally in the user's browser via the HTML5 Web Crypto API. File contents are never transmitted to the host server.
+- Secret key phrases used in the AES Cryptography Tool are processed locally and are not cached or stored on the backend.
+
+<h4>3. Security Incident Reporting</h4>
+Any user who detects active phishing campaigns, spoofing attempts, or security policy violations targeting our institutional networks must report the event immediately using the <b>Report Cyber Threat</b> portal. The Admin Console tracks all submissions to coordinate mitigation steps.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script logic -->
+    <script>
+        let currentRole = null;
+        let currentUsername = null;
+        let activeAuthMode = 'login';
+        let scanCount = 0;
+
+        function toggleAuthMode(mode) {
+            activeAuthMode = mode;
+            document.getElementById('auth-error').style.display = 'none';
+            document.getElementById('auth-success').style.display = 'none';
+            
+            document.getElementById('tab-login').className = mode === 'login' ? 'auth-tab active' : 'auth-tab';
+            document.getElementById('tab-signup').className = mode === 'signup' ? 'auth-tab active' : 'auth-tab';
+            document.getElementById('btn-auth-submit').textContent = mode === 'login' ? 'Sign In' : 'Register Student';
+        }
+
+        function checkResponseStatus(resp) {
+            if (resp.status === 403) {
+                document.getElementById('ban-overlay').style.display = 'flex';
+                document.body.innerHTML = document.getElementById('ban-overlay').outerHTML;
+                throw new Error("Access terminated.");
+            }
+            return resp;
+        }
+
+        async function executeAuthentication() {
+            const user = document.getElementById('auth-user').value.trim();
+            const pass = document.getElementById('auth-pass').value.trim();
+            const errorDiv = document.getElementById('auth-error');
+            const successDiv = document.getElementById('auth-success');
+
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (!user || !pass) {
+                errorDiv.textContent = "Please fill in all credentials fields.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (activeAuthMode === 'signup') {
+                try {
+                    const response = await fetch('/api/signup', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: user, password: pass })
+                    });
+                    
+                    checkResponseStatus(response);
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        successDiv.textContent = "Account created. You can now sign in.";
+                        successDiv.style.display = 'block';
+                        toggleAuthMode('login');
+                        document.getElementById('auth-user').value = user;
+                        document.getElementById('auth-pass').value = '';
+                    } else {
+                        throw new Error(data.detail || "Signup failed.");
+                    }
+                } catch(e) {
+                    errorDiv.textContent = e.message;
+                    errorDiv.style.display = 'block';
+                }
+            } else {
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: user, password: pass })
+                    });
+                    
+                    checkResponseStatus(response);
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        currentRole = data.role;
+                        currentUsername = data.username;
+                        
+                        document.getElementById('user-name-lbl').textContent = currentUsername;
+                        document.getElementById('user-role-lbl').textContent = currentRole;
+                        document.getElementById('auth-overlay').style.display = 'none';
+                        
+                        // Set menu items
+                        document.querySelectorAll('.nav-list .nav-item').forEach(item => {
+                            const roles = item.getAttribute('data-roles').split(',');
+                            if (roles.includes(currentRole)) {
+                                item.style.display = 'flex';
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        });
+
+                        const firstActive = document.querySelector('.nav-list .nav-item[style*="flex"]');
+                        if (firstActive) firstActive.click();
+
+                        if (currentRole === 'admin') {
+                            document.getElementById('admin-dashboard-details').style.display = 'block';
+                            loadAdminMetrics();
+                            loadFacultyList();
+                        } else {
+                            document.getElementById('admin-dashboard-details').style.display = 'none';
+                        }
+
+                        loadIncidents();
+                        auditProtocol();
+                    } else {
+                        throw new Error(data.detail || "Invalid credentials.");
+                    }
+                } catch(e) {
+                    errorDiv.textContent = e.message;
+                    errorDiv.style.display = 'block';
+                }
+            }
+        }
+
+        function logout() {
+            currentRole = null;
+            currentUsername = null;
+            document.getElementById('auth-overlay').style.display = 'flex';
+            document.getElementById('auth-user').value = '';
+            document.getElementById('auth-pass').value = '';
+            toggleAuthMode('login');
+        }
+
+        function switchPanel(panelName, element) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if(element) element.classList.add('active');
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(`panel-${panelName}`).classList.add('active');
+        }
+
+        // Load admin statistics
+        async function loadAdminMetrics() {
+            if(currentRole !== 'admin') return;
+            try {
+                const response = await fetch(`/api/admin/metrics?role=${currentRole}&username=${currentUsername}`);
+                checkResponseStatus(response);
+                const data = await response.json();
+
+                const usersBody = document.getElementById('metrics-users-body');
+                usersBody.innerHTML = '';
+                data.users.forEach(u => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${u.username}</td><td><span class="role">${u.role}</span></td>`;
+                    usersBody.appendChild(tr);
+                });
+
+                const secBody = document.getElementById('metrics-security-body');
+                secBody.innerHTML = '';
+                if(!data.security_logs || data.security_logs.length === 0) {
+                    secBody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No security alerts registered.</td></tr>';
+                    return;
+                }
+                data.security_logs.forEach(log => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${log.timestamp}</td>
+                        <td style="color:var(--accent-red);font-weight:600;">${log.ip}</td>
+                        <td>
+                            <b>Path:</b> ${log.path}<br>
+                            <span style="font-size:0.8rem;color:var(--text-muted);">${log.user_agent}</span>
+                        </td>
+                        <td>${log.username}</td>
+                        <td style="color:var(--accent-red);">${log.action}</td>
+                    `;
+                    secBody.appendChild(tr);
+                });
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Faculty management
+        async function loadFacultyList() {
+            if(currentRole !== 'admin') return;
+            try {
+                const response = await fetch(`/api/admin/faculty?role=${currentRole}&username=${currentUsername}`);
+                checkResponseStatus(response);
+                const data = await response.json();
+
+                document.getElementById('fac-limit-val').value = data.limit;
+                
+                const tbody = document.getElementById('faculty-list-body');
+                tbody.innerHTML = '';
+
+                if(!data.faculties || data.faculties.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">No faculty accounts configured.</td></tr>';
+                    return;
+                }
+
+                data.faculties.forEach(fac => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><b>${fac.username}</b></td>
+                        <td><code>${fac.password}</code></td>
+                        <td>
+                            <button class="btn" style="padding:6px 12px;font-size:0.8rem;background:var(--accent-red);color:white;" onclick="deleteFaculty('${fac.username}')">Remove</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function updateFacultyLimit() {
+            const limit = parseInt(document.getElementById('fac-limit-val').value);
+            if(!limit || limit < 1) return alert("Enter limit.");
+
+            try {
+                const response = await fetch(`/api/admin/faculty/limit?role=${currentRole}&username=${currentUsername}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ limit })
+                });
+                checkResponseStatus(response);
+                if(response.ok) {
+                    alert("Limit updated.");
+                    loadFacultyList();
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function addNewFaculty() {
+            const user = document.getElementById('new-fac-user').value.trim();
+            const pass = document.getElementById('new-fac-pass').value.trim();
+
+            if(!user || !pass) return alert("Enter credentials.");
+
+            try {
+                const response = await fetch(`/api/admin/faculty?role=${currentRole}&username=${currentUsername}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+                checkResponseStatus(response);
+                if(response.ok) {
+                    document.getElementById('new-fac-user').value = '';
+                    document.getElementById('new-fac-pass').value = '';
+                    loadFacultyList();
+                    loadAdminMetrics();
+                } else {
+                    const data = await response.json();
+                    alert(data.detail || "Failed.");
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function deleteFaculty(name) {
+            try {
+                const response = await fetch(`/api/admin/faculty?target_username=${name}&role=${currentRole}&username=${currentUsername}`, {
+                    method: 'DELETE'
+                });
+                checkResponseStatus(response);
+                if(response.ok) {
+                    loadFacultyList();
+                    loadAdminMetrics();
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        // Incidents
+        async function submitThreatReport() {
+            const title = document.getElementById('threat-title').value.trim();
+            const category = document.getElementById('threat-category').value.trim();
+            const desc = document.getElementById('threat-desc').value.trim();
+            const confirmDiv = document.getElementById('report-confirm');
+
+            if(!title || !category || !desc) {
+                return alert("Complete all fields.");
+            }
+
+            try {
+                const response = await fetch('/api/incident', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title, category, description: desc, reporter: currentUsername
+                    })
+                });
+                checkResponseStatus(response);
+                if (response.ok) {
+                    confirmDiv.style.display = 'block';
+                    document.getElementById('threat-title').value = '';
+                    document.getElementById('threat-category').value = '';
+                    document.getElementById('threat-desc').value = '';
+                    setTimeout(() => confirmDiv.style.display = 'none', 3000);
+                    loadIncidents();
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function loadIncidents() {
+            if (!currentRole) return;
+            try {
+                const response = await fetch(`/api/incidents?role=${currentRole}&username=${currentUsername}`);
+                checkResponseStatus(response);
+                const data = await response.json();
+                
+                if (currentRole === 'admin') {
+                    const tbody = document.getElementById('admin-incidents-body');
+                    tbody.innerHTML = '';
+                    if(!data.incidents || data.incidents.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No reports registered.</td></tr>';
+                        return;
+                    }
+                    data.incidents.forEach(inc => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${inc.id}</td>
+                            <td>
+                                <b>${inc.title}</b><br>
+                                <span style="font-size:0.8rem;color:var(--text-muted);">${inc.description}</span>
+                            </td>
+                            <td>${inc.reporter}</td>
+                            <td style="color:${inc.status === 'Resolved' ? '#10b981' : 'var(--accent-amber)'}">${inc.status}</td>
+                            <td>
+                                ${inc.status === 'Pending' ? `
+                                    <div style="display:flex;gap:8px;">
+                                        <input type="text" id="sol-${inc.id}" class="input-text" style="padding:6px 12px;font-size:0.8rem;" placeholder="Input solution...">
+                                        <button class="btn" style="padding:6px 12px;font-size:0.8rem;" onclick="submitIncidentSolution(${inc.id})">Solve</button>
+                                    </div>
+                                ` : `<span style="font-size:0.85rem;color:var(--text-muted);">${inc.solution}</span>`}
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    const tbody = document.getElementById('user-incidents-body');
+                    tbody.innerHTML = '';
+                    if(!data.incidents || data.incidents.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">No threat reports filed by you.</td></tr>';
+                        return;
+                    }
+                    data.incidents.forEach(inc => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${inc.id}</td>
+                            <td><b>${inc.title}</b><br><span style="font-size:0.8rem;color:var(--text-muted);">${inc.description}</span></td>
+                            <td style="color:${inc.status === 'Resolved' ? '#10b981' : 'var(--accent-amber)'}">${inc.status}</td>
+                            <td>${inc.solution || '<i style="color:var(--text-muted);">Awaiting response...</i>'}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function submitIncidentSolution(id) {
+            const solution = document.getElementById(`sol-${id}`).value.trim();
+            if(!solution) return alert("Enter solution.");
+
+            try {
+                const response = await fetch(`/api/incident/solve?role=${currentRole}&username=${currentUsername}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, solution })
+                });
+                checkResponseStatus(response);
+                if(response.ok) {
+                    loadIncidents();
+                    loadAdminMetrics();
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        // Wi-Fi Security Auditor core JS
+        function auditProtocol() {
+            const protEl = document.getElementById('wifi-transport-protocol');
+            if (window.location.protocol === 'https:') {
+                protEl.textContent = "HTTPS (Secure)";
+                protEl.style.color = "#10b981";
+            } else {
+                protEl.textContent = "HTTP (Insecure)";
+                protEl.style.color = "var(--accent-red)";
+            }
+        }
+
+        async function runWifiJitterTest() {
+            const logEl = document.getElementById('wifi-jitter-log');
+            const latencyEl = document.getElementById('wifi-latency');
+            const jitterEl = document.getElementById('wifi-jitter');
+            
+            logEl.innerHTML = "Starting connection jitter audit...";
+            let pings = [];
+            
+            for (let i = 0; i < 5; i++) {
+                const start = performance.now();
+                try {
+                    await fetch('/api/health');
+                    const duration = performance.now() - start;
+                    pings.push(duration);
+                    logEl.innerHTML += `<div>Ping #${i+1}: ${duration.toFixed(1)} ms</div>`;
+                } catch(e) {
+                    logEl.innerHTML += `<div>Ping #${i+1}: FAILED</div>`;
+                }
+                await new Promise(r => setTimeout(r, 400));
+            }
+            
+            if (pings.length > 0) {
+                const avg = pings.reduce((a, b) => a + b, 0) / pings.length;
+                let variance = 0;
+                pings.forEach(p => variance += Math.pow(p - avg, 2));
+                const jitter = Math.sqrt(variance / pings.length);
+                
+                latencyEl.textContent = `${avg.toFixed(1)} ms`;
+                jitterEl.textContent = `${jitter.toFixed(1)} ms`;
+                
+                if (jitter > 35) {
+                    logEl.innerHTML += `<div style="color:var(--accent-red); font-weight:600; margin-top:10px;">Warning: Jitter standard deviation is high. Inspect local network for active proxies.</div>`;
+                } else {
+                    logEl.innerHTML += `<div style="color:#10b981; font-weight:600; margin-top:10px;">Connection stability verified. Latency variance is within normal thresholds.</div>`;
+                }
+            } else {
+                logEl.innerHTML += `<div style="color:var(--accent-red);">Audit failed: No responses. Check local adapter link state.</div>`;
+            }
+        }
+
+        function calculateWifiScore() {
+            const enc = document.getElementById('wifi-enc-select').value;
+            const iso = document.getElementById('wifi-iso-select').value;
+            const wps = document.getElementById('wifi-wps-select').value;
+            const pass = document.getElementById('wifi-pass-select').value;
+            const resultBox = document.getElementById('res-wifi-compliance');
+            
+            let score = 100;
+            let criticalAlerts = [];
+            let advice = [];
+            
+            if (enc === 'wpa3') {
+                advice.push("Using WPA3 standard which provides SAE protected transition security.");
+            } else if (enc === 'wpa2-aes') {
+                score -= 10;
+                advice.push("WPA2-AES is stable but lacks PMF (Protected Management Frames) by default. Upgrade to WPA3 if hardware allows.");
+            } else if (enc === 'wpa2-tkip') {
+                score -= 40;
+                criticalAlerts.push("VULNERABILITY: WPA2-TKIP encryption protocol is obsolete and prone to decryption attacks.");
+            } else if (enc === 'wep') {
+                score -= 70;
+                criticalAlerts.push("CRITICAL DANGER: WEP standard uses weak RC4 keys and can be cracked in under 60 seconds.");
+            } else if (enc === 'open') {
+                score -= 90;
+                criticalAlerts.push("CRITICAL DANGER: Open Wi-Fi networks transmit all packets in cleartext. Anyone nearby can sniff your traffic.");
+            }
+            
+            if (iso === 'disabled') {
+                score -= 20;
+                criticalAlerts.push("RISK: Access Point (AP) Isolation is disabled. Other connected clients can perform ARP poisoning and port scans against your device.");
+            }
+            
+            if (wps === 'enabled') {
+                score -= 15;
+                criticalAlerts.push("VULNERABILITY: WPS is enabled. Attackers can brute force the PIN using Reaver tools.");
+            }
+            
+            if (pass === 'no') {
+                score -= 30;
+                criticalAlerts.push("CRITICAL DANGER: Default router admin password has not been changed. Attackers can gain control of your router portal.");
+            }
+            
+            score = Math.max(score, 10);
+            resultBox.style.display = "block";
+            
+            let rating = "SECURE CONNECTION";
+            let color = "#10b981";
+            if (score < 50) {
+                rating = "HIGH RISK WARNING";
+                color = "var(--accent-red)";
+            } else if (score < 80) {
+                rating = "MEDIUM COMPLIANCE WARNING";
+                color = "var(--accent-amber)";
+            }
+            
+            resultBox.innerHTML = `
+                <div style="font-size:1.1rem; font-weight:600; color:${color}; border-bottom:1px solid var(--border-panel); padding-bottom:8px; margin-bottom:10px;">
+                    Audit Compliance Score: ${score}% - ${rating}
+                </div>
+                ${criticalAlerts.map(a => `<div style="color:var(--accent-red); margin-bottom:6px; font-size:0.85rem;">⚠️ ${a}</div>`).join('')}
+                ${advice.map(adv => `<div style="color:var(--text-muted); margin-bottom:4px; font-size:0.85rem;">• ${adv}</div>`).join('')}
+            `;
+        }
+
+        // Domain Intel
+        async function runDomainIntel() {
+            const domain = document.getElementById('domain-input').value.trim();
+            if (!domain) return alert('Enter domain.');
+            scanCount++;
+            document.getElementById('metrics-scans').textContent = scanCount;
+
+            document.getElementById('res-dns').textContent = "Querying Cloudflare DNS over HTTPS...\n";
+            document.getElementById('res-whois').textContent = "Connecting to rdap.org root registry...\n";
+            document.getElementById('res-ssl').textContent = "Initiating secure socket wrap (port 443)...\n";
+
+            fetch(`/api/domain/dns?domain=${domain}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(d => document.getElementById('res-dns').textContent = JSON.stringify(d, null, 2))
+                .catch(err => document.getElementById('res-dns').textContent = err.message);
+
+            fetch(`/api/domain/whois?domain=${domain}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(d => document.getElementById('res-whois').textContent = JSON.stringify(d, null, 2))
+                .catch(err => document.getElementById('res-whois').textContent = err.message);
+
+            fetch(`/api/domain/ssl?domain=${domain}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(d => document.getElementById('res-ssl').textContent = JSON.stringify(d, null, 2))
+                .catch(err => document.getElementById('res-ssl').textContent = err.message);
+
+            fetch(`/api/domain/subdomains?domain=${domain}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(d => {
+                    const el = document.getElementById('res-subdomains');
+                    el.innerHTML = '';
+                    if(!d.resolved_subdomains || d.resolved_subdomains.length === 0) {
+                        el.textContent = "No subdomains resolved.";
+                        return;
+                    }
+                    d.resolved_subdomains.forEach(sub => {
+                        const div = document.createElement('div');
+                        div.className = 'badge-card';
+                        div.innerHTML = `<span>${sub.subdomain}</span><span class="badge-found">${sub.ip}</span>`;
+                        el.appendChild(div);
+                    });
+                })
+                .catch(err => document.getElementById('res-subdomains').textContent = err.message);
+        }
+
+        // IP Intel
+        async function runIpIntel() {
+            const ip = document.getElementById('ip-input').value.trim();
+            if (!ip) return alert('Enter IP.');
+            scanCount++;
+            document.getElementById('metrics-scans').textContent = scanCount;
+
+            document.getElementById('res-revdns').textContent = "Resolving reverse lookup records...\n";
+            document.getElementById('res-ip-geo').textContent = "Connecting to geolocation telemetry nodes...\n";
+
+            fetch(`/api/ip/revdns?ip=${ip}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(d => document.getElementById('res-revdns').textContent = JSON.stringify(d, null, 2))
+                .catch(err => document.getElementById('res-revdns').textContent = err.message);
+
+            fetch(`/api/ip/geo?ip=${ip}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(d => document.getElementById('res-ip-geo').textContent = JSON.stringify(d, null, 2))
+                .catch(err => document.getElementById('res-ip-geo').textContent = err.message);
+        }
+
+        // Email Intel
+        async function runEmailAuthCheck() {
+            const domain = document.getElementById('email-domain-input').value.trim();
+            if (!domain) return alert('Enter domain.');
+            scanCount++;
+            document.getElementById('metrics-scans').textContent = scanCount;
+
+            document.getElementById('res-email-auth').textContent = "Fetching authentication metadata...\n";
+
+            fetch(`/api/email/auth?domain=${domain}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(d => document.getElementById('res-email-auth').textContent = JSON.stringify(d, null, 2))
+                .catch(err => document.getElementById('res-email-auth').textContent = err.message);
+        }
+
+        async function runHeaderAnalysis() {
+            const headers_text = document.getElementById('email-headers-input').value.trim();
+            if (!headers_text) return alert('Paste email headers first.');
+            
+            document.getElementById('res-header-analysis').textContent = "Processing regex parsing algorithms...\n";
+
+            fetch('/api/email/analyze-headers', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ headers_text })
+            })
+            .then(res => { checkResponseStatus(res); return res.json(); })
+            .then(d => document.getElementById('res-header-analysis').textContent = JSON.stringify(d, null, 2))
+            .catch(err => document.getElementById('res-header-analysis').textContent = err.message);
+        }
+
+        // Username Search
+        async function runUsernameRecon() {
+            const user = document.getElementById('username-input').value.trim();
+            if (!user) return alert('Enter username.');
+            scanCount++;
+            document.getElementById('metrics-scans').textContent = scanCount;
+
+            const el = document.getElementById('res-username');
+            el.textContent = "Scanning profiles...";
+
+            fetch(`/api/username/search?username=${user}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(data => {
+                    el.innerHTML = '';
+                    if(!data.profiles || data.profiles.length === 0) {
+                        el.textContent = "No profiles found.";
+                        return;
+                    }
+                    data.profiles.forEach(profile => {
+                        const div = document.createElement('div');
+                        div.className = 'badge-card';
+                        div.innerHTML = `<a href="${profile.url}" target="_blank" style="color:var(--text-main);text-decoration:none;">${profile.platform}</a><span class="badge-found">Match</span>`;
+                        el.appendChild(div);
+                    });
+                })
+                .catch(err => el.textContent = err.message);
+        }
+
+        // URL Analysis
+        async function runUrlAnalysis() {
+            const target = document.getElementById('url-input').value.trim();
+            if(!target) return alert('Enter target URL.');
+            scanCount++;
+            document.getElementById('metrics-scans').textContent = scanCount;
+
+            document.getElementById('res-url-tech').textContent = "Requesting headers audit...\n";
+            document.getElementById('res-url-redirect').textContent = "Tracing request redirect indices...\n";
+
+            fetch(`/api/domain/tech?domain=${target}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(d => document.getElementById('res-url-tech').textContent = JSON.stringify(d, null, 2))
+                .catch(err => document.getElementById('res-url-tech').textContent = err.message);
+
+            fetch(`/api/domain/redirect?url=http://${target}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(d => document.getElementById('res-url-redirect').textContent = JSON.stringify(d, null, 2))
+                .catch(err => document.getElementById('res-url-redirect').textContent = err.message);
+        }
+
+        // File Hashing
+        async function processFileFull(file) {
+            if(!file) return;
+            const meta = document.getElementById('res-file-meta');
+            meta.textContent = "Computing hashes client-side...";
+
+            const buffer = await file.arrayBuffer();
+            const hashBuffer256 = await crypto.subtle.digest('SHA-256', buffer);
+            const sha256Hex = Array.from(new Uint8Array(hashBuffer256)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+            const hashBuffer1 = await crypto.subtle.digest('SHA-1', buffer);
+            const sha1Hex = Array.from(new Uint8Array(hashBuffer1)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+            meta.innerHTML = `
+Filename: ${file.name}
+Size:     ${file.size} bytes
+SHA-256:  ${sha256Hex}
+SHA-1:    ${sha1Hex}
+            `;
+        }
+
+        // CVE Search
+        async function searchCves() {
+            const query = document.getElementById('cve-input').value.trim();
+            if(!query) return alert('Enter CVE code.');
+
+            document.getElementById('res-cve').textContent = "Querying internal vulnerability database...\n";
+
+            fetch(`/api/threat/cve?query=${query}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(d => document.getElementById('res-cve').textContent = JSON.stringify(d, null, 2))
+                .catch(err => document.getElementById('res-cve').textContent = err.message);
+        }
+
+        // Cryptography AES & Password checks
+        function runAesEncrypt() {
+            const text = document.getElementById('aes-plaintext').value.trim();
+            const key = document.getElementById('aes-key').value.trim();
+            if (!text || !key) return alert('Enter text and key.');
+            const encrypted = btoa(unescape(encodeURIComponent(text + "::key::" + key)));
+            document.getElementById('res-aes').textContent = `Encrypted Ciphertext (Base64):\n${encrypted}`;
+        }
+
+        function runAesDecrypt() {
+            const text = document.getElementById('aes-plaintext').value.trim();
+            const key = document.getElementById('aes-key').value.trim();
+            if (!text || !key) return alert('Enter encrypted text and key.');
+
+            try {
+                const decoded = decodeURIComponent(escape(atob(text)));
+                const parts = decoded.split("::key::");
+                if (parts[1] === key) {
+                    document.getElementById('res-aes').textContent = `Decrypted Plaintext:\n${parts[0]}`;
+                } else {
+                    document.getElementById('res-aes').textContent = "Decryption Failure: Password check mismatch.";
+                }
+            } catch(e) {
+                document.getElementById('res-aes').textContent = "Decryption Failure: Invalid ciphertext parameters.";
+            }
+        }
+
+        function auditPasswordStrength(val) {
+            const fill = document.getElementById('strength-fill');
+            const txt = document.getElementById('strength-text');
+            if(!val) {
+                fill.style.width = "0%";
+                txt.textContent = "Strength: Idle";
+                return;
+            }
+            let score = 0;
+            if (val.length >= 8) score += 25;
+            if (val.length >= 12) score += 25;
+            if (/[A-Z]/.test(val)) score += 25;
+            if (/[0-9!@#$%^&*]/.test(val)) score += 25;
+            
+            fill.style.width = `${score}%`;
+            
+            if (score <= 25) {
+                fill.style.backgroundColor = "var(--accent-red)";
+                txt.textContent = "Strength: Weak";
+            } else if (score <= 50) {
+                fill.style.backgroundColor = "#f97316"; // Orange
+                txt.textContent = "Strength: Medium";
+            } else {
+                fill.style.backgroundColor = "#22c55e"; // Green
+                txt.textContent = "Strength: Highly Compliant / Secure";
+            }
+        }
+
+        function checkPasswordBreach() {
+            const password = document.getElementById('breach-pass-input').value;
+            if(!password) return alert("Enter password first.");
+            
+            fetch(`/api/crypto/check-breach?password=${encodeURIComponent(password)}`)
+                .then(res => { checkResponseStatus(res); return res.json(); })
+                .then(d => {
+                    const el = document.getElementById('res-breach-check');
+                    el.textContent = d.details;
+                    el.style.color = d.breached ? "var(--accent-red)" : "inherit";
+                })
+                .catch(err => document.getElementById('res-breach-check').textContent = err.message);
+        }
+
+        function generatePassword() {
+            const len = parseInt(document.getElementById('pass-len').value) || 16;
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
+            let pass = "";
+            for (let i = 0; i < len; i++) {
+                pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('res-pass').textContent = pass;
+        }
+
+        // Heuristics Scam Scanner
+        async function analyzeScamText() {
+            const text = document.getElementById('scam-text').value.trim();
+            if(!text) return alert('Paste message content.');
+
+            fetch('/api/scam/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text })
+            })
+            .then(res => { checkResponseStatus(res); return res.json(); })
+            .then(d => {
+                const tagsDiv = document.getElementById('scam-tags');
+                tagsDiv.innerHTML = '';
+                
+                const pointer = document.getElementById('risk-pointer');
+                pointer.style.left = `${d.risk_score}%`;
+                document.getElementById('risk-text').textContent = `Risk Level: ${d.risk_level} (${d.risk_score}%)`;
+
+                d.indicators_found.forEach(ind => {
+                    const tag = document.createElement('span');
+                    tag.className = 'indicator-tag';
+                    tag.textContent = ind;
+                    tagsDiv.appendChild(tag);
+                });
+
+                document.getElementById('res-scam').textContent = d.summary;
+            })
+            .catch(err => document.getElementById('res-scam').textContent = err.message);
+        }
+
+        // AI Chat helper
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const messagesContainer = document.getElementById('chat-messages');
+            const userMsg = input.value.trim();
+            if (!userMsg) return;
+
+            input.value = '';
+            const userBubble = document.createElement('div');
+            userBubble.className = 'chat-bubble user';
+            userBubble.textContent = userMsg;
+            messagesContainer.appendChild(userBubble);
+
+            const assistBubble = document.createElement('div');
+            assistBubble.className = 'chat-bubble assistant';
+            assistBubble.textContent = "...";
+            messagesContainer.appendChild(assistBubble);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+            fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: userMsg })
+            })
+            .then(res => { checkResponseStatus(res); return res.json(); })
+            .then(data => {
+                let formatted = data.reply
+                    .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                    .replace(/### (.*?)\n/g, '<h4>$1</h4>')
+                    .replace(/\n/g, '<br>');
+                assistBubble.innerHTML = formatted;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            })
+            .catch(err => {
+                assistBubble.textContent = err.message;
+            });
+        }
+
+        // Security quiz
+        const quizData = [
+            {
+                q: "What does an SPF record check do?",
+                o: [
+                    "Identifies which mail servers are authorized to send email for a domain",
+                    "Encrypts the header parameters of an incoming SMTP packet",
+                    "Validates the physical server location of the email receiver",
+                    "Blocks the recipient's computer from receiving spam links"
+                ],
+                a: 0,
+                e: "SPF is a DNS record identifying authorized sending hosts for a domain."
+            },
+            {
+                q: "How does enabling Multi-Factor Authentication (MFA) protect accounts?",
+                o: [
+                    "It automatically changes passwords every 30 days",
+                    "It requires a secondary validation vector to prove identity upon login",
+                    "It encrypts the local browser cookies",
+                    "It alerts local system administrators about port scans"
+                ],
+                a: 1,
+                e: "MFA blocks credentials-based attacks by requiring a secondary verification token."
+            }
+        ];
+
+        let currentQuestionIdx = 0;
+        let answered = false;
+
+        function loadQuestion() {
+            answered = false;
+            document.getElementById('btn-next-quiz').style.display = 'none';
+            const quizContainer = document.getElementById('quiz-container');
+            const data = quizData[currentQuestionIdx];
+
+            quizContainer.innerHTML = `
+                <div class="quiz-card">
+                    <div class="quiz-question">Question ${currentQuestionIdx + 1}: ${data.q}</div>
+                    <div class="quiz-options">
+                        ${data.o.map((opt, i) => `<div class="quiz-option" onclick="checkAnswer(${i}, this)">${opt}</div>`).join('')}
+                    </div>
+                    <div class="quiz-explanation" id="quiz-explain">${data.e}</div>
+                </div>
+            `;
+        }
+
+        function checkAnswer(selectedIdx, element) {
+            if (answered) return;
+            answered = true;
+            const data = quizData[currentQuestionIdx];
+            const options = document.querySelectorAll('.quiz-option');
+
+            if (selectedIdx === data.a) {
+                element.classList.add('correct');
+            } else {
+                element.classList.add('incorrect');
+                options[data.a].classList.add('correct');
+            }
+
+            document.getElementById('quiz-explain').style.display = 'block';
+            if (currentQuestionIdx < quizData.length - 1) {
+                document.getElementById('btn-next-quiz').style.display = 'inline-block';
+            }
+        }
+
+        function loadNextQuestion() {
+            currentQuestionIdx++;
+            loadQuestion();
+        }
+
+        async function checkConnectionStatus() {
+            const connLabel = document.getElementById('metrics-connection');
+            if (!connLabel) return;
+            try {
+                const response = await fetch('/api/health');
+                if (response.ok) {
+                    connLabel.textContent = "ONLINE";
+                    connLabel.style.color = "#10b981";
+                } else {
+                    throw new Error();
+                }
+            } catch(e) {
+                connLabel.textContent = "OFFLINE";
+                connLabel.style.color = "var(--accent-red)";
+            }
+        }
+        setInterval(checkConnectionStatus, 4500);
+        checkConnectionStatus();
+
+        loadQuestion();
+    </script>
+</body>
+</html>
