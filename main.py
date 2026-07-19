@@ -673,21 +673,44 @@ async def analyze_email_headers(req: HeaderAnalyzeRequest):
 async def search_username(username: str = Query(...)):
     platforms = {
         "GitHub": f"https://github.com/{username}",
+        "GitLab": f"https://gitlab.com/{username}",
         "Reddit": f"https://www.reddit.com/user/{username}",
-        "Dev.to": f"https://dev.to/{username}",
         "Medium": f"https://medium.com/@{username}",
-        "GitLab": f"https://gitlab.com/{username}"
+        "Dev.to": f"https://dev.to/{username}",
+        "PyPI": f"https://pypi.org/user/{username}",
+        "npm": f"https://www.npmjs.com/~{username}",
+        "DockerHub": f"https://hub.docker.com/u/{username}",
+        "Keybase": f"https://keybase.io/{username}",
+        "Pinterest": f"https://www.pinterest.com/{username}/"
     }
     results = []
+    
     async def check_profile(name: str, url: str):
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
         try:
             loop = asyncio.get_event_loop()
             def fetch_status():
-                with urllib.request.urlopen(req, timeout=3) as resp: return resp.getcode()
+                class NoRedirectHandler(urllib.request.HTTPRedirectHandler):
+                    def redirect_request(self, req, fp, code, msg, hdrs, newurl):
+                        return None
+                opener = urllib.request.build_opener(NoRedirectHandler)
+                opener.addheaders = [("User-Agent", headers["User-Agent"])]
+                try:
+                    req = urllib.request.Request(url, headers=headers)
+                    with opener.open(req, timeout=3) as resp:
+                        return resp.getcode()
+                except urllib.error.HTTPError as e:
+                    return e.code
+                except Exception:
+                    return 0
             code = await loop.run_in_executor(None, fetch_status)
-            if code == 200: results.append({"platform": name, "url": url, "status": "Available"})
-        except Exception: pass
+            if code == 200:
+                results.append({"platform": name, "url": url, "status": "Available"})
+        except Exception:
+            pass
+            
     await asyncio.gather(*(check_profile(plat, url) for plat, url in platforms.items()))
     return {"username": username, "profiles": results}
 
@@ -801,12 +824,37 @@ async def get_phone_osint(number: str = Query(...), username: str = Query("guest
             elif sub[0] in ["6"]:
                 carrier = "Vodafone Idea Network"
     
-    # Probable usage locations (WhatsApp status, social indicators)
+    # Real-Time DDG Scraper OSINT query to find exactly where the number is mentioned on the web!
+    search_query = f'"{number}"'
+    ddg_url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(search_query)}"
+    found_urls = []
+    
+    try:
+        loop = asyncio.get_event_loop()
+        def fetch_ddg():
+            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+            req = urllib.request.Request(ddg_url, headers=headers)
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                html = resp.read().decode('utf-8', errors='ignore')
+                snippets = re.findall(r'<a class="result__snippet"[^>]*>(.*?)</a>', html, re.DOTALL)
+                cleaned_snippets = []
+                for s in snippets[:3]:
+                    cleaned_snippets.append(re.sub(r'<[^>]*>', '', s).strip())
+                return cleaned_snippets
+        found_urls = await loop.run_in_executor(None, fetch_ddg)
+    except Exception:
+        pass
+        
     usage = [
         "IM Messenger Services (WhatsApp/Telegram/Signal Active Indicator)",
         "Standard Public Switched Telephone Network (PSTN)",
         "Dynamic SMS Validation Services (Two-Factor Handshakes)"
     ]
+    if found_urls:
+        usage.insert(0, f"Web Mention Matches: {', '.join(found_urls)}")
+    else:
+        usage.insert(0, "No public indexed web crawler listings found.")
+        
     if len(clean_num) < 8:
         return {"error": "Invalid phone number length. Please include country code."}
         
@@ -873,13 +921,35 @@ async def detect_phishing_url(url: str = Query(...), username: str = Query("gues
 async def check_website_reputation(domain: str = Query(...)):
     clean_domain = domain.replace("http://", "").replace("https://", "").split("/")[0].strip()
     
-    # Simulated reputation database with top hosting providers
+    # Real-time DNS lookup
+    loop = asyncio.get_event_loop()
+    def resolve():
+        try:
+            return socket.gethostbyname(clean_domain)
+        except Exception:
+            return ""
+    ip = await loop.run_in_executor(None, resolve)
+    
     reputation_score = 98
     hosting_provider = "Cloudflare CDN Edge Network"
     category = "Educational/Technology"
     risk_level = "Low"
     blocklisted = False
     
+    if not ip:
+        reputation_score = 0
+        hosting_provider = "No active DNS resolution found"
+        risk_level = "Critical (Unresolved Domain)"
+    else:
+        # Query real hosting ISP
+        url = f"http://ip-api.com/json/{ip}"
+        try:
+            data = await loop.run_in_executor(None, query_json_api, url)
+            if data and data.get("status") == "success":
+                hosting_provider = f"{data.get('isp')} ({data.get('org', '')}) - located in {data.get('country', '')}"
+        except Exception:
+            pass
+            
     # Custom blocklist check
     bad_domains = ["phish-portal.xyz", "paypal-secure-login.buzz", "suspicious-bank-update.info", "malicious-payload.xyz"]
     if clean_domain.lower() in bad_domains:
@@ -1164,6 +1234,14 @@ async def chat_assistant(request: ChatRequest):
         reply = "### CyberShield Defensive Intelligence Fallback\n\nI am currently running in offline diagnostics mode. Please check your network connection or enter a Gemini API key in chat settings to enable direct, multimodal analysis."
         
     return {"reply": reply}
+
+@app.get("/api/speedtest")
+async def get_speedtest_payload():
+    import io
+    from fastapi.responses import StreamingResponse
+    # Return 5MB of zeros to measure download throughput
+    payload = b"\x00" * (1024 * 1024 * 5)
+    return StreamingResponse(io.BytesIO(payload), media_type="application/octet-stream")
 
 @app.get("/api/health")
 async def get_health():
