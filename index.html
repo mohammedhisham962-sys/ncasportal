@@ -474,6 +474,147 @@
             transition: left 0.5s ease-out;
         }
 
+        /* Chat Grid & Panel layout */
+        .chat-workspace-grid {
+            display: grid;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .chat-workspace-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Volcano & Asteroid Theme Chat Container */
+        .volcano-asteroid-chat {
+            background-color: #0b0f17 !important;
+            background-image: 
+                radial-gradient(circle at 10% 15%, rgba(220, 38, 38, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 85%, rgba(249, 115, 22, 0.06) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.9) 0%, #030712 100%);
+            position: relative;
+            overflow-y: auto;
+            border: 1px solid #1f2937 !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3) !important;
+        }
+
+        /* Ash & Cosmic dust matrix overlay */
+        .volcano-asteroid-chat::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(rgba(244, 63, 94, 0.04) 1px, transparent 1px);
+            background-size: 28px 28px;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Obsidian Glass assistant bubble */
+        .chat-bubble.assistant.obsidian {
+            background: rgba(17, 24, 39, 0.85) !important;
+            border: 1px solid rgba(239, 68, 68, 0.3) !important;
+            color: #f3f4f6 !important;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.04) !important;
+            backdrop-filter: blur(8px);
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Magma flows user bubble */
+        .chat-bubble.user.magma {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.18) !important;
+            z-index: 2;
+            position: relative;
+        }
+
+        /* Sleek AI Settings & Voice Panel */
+        .cyber-ai-settings-panel {
+            background: #ffffff;
+            border: 1px solid var(--border-panel);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: var(--shadow-panel);
+        }
+
+        /* Premium Voice Selector Cards */
+        .voice-model-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-panel);
+            border-radius: 8px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            color: var(--text-main);
+            font-family: inherit;
+        }
+        .voice-model-card:hover {
+            border-color: var(--accent-red);
+            background: rgba(220, 38, 38, 0.03);
+        }
+        .voice-model-card.active {
+            border-color: var(--accent-red);
+            background: rgba(220, 38, 38, 0.05);
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.1);
+            font-weight: 600;
+        }
+        .voice-model-badge {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: rgba(220, 38, 38, 0.08);
+            color: var(--accent-red);
+        }
+
+        /* Switch Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 24px;
+        }
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .switch-slider {
+            background-color: var(--accent-red);
+        }
+        input:checked + .switch-slider:before {
+            transform: translateX(20px);
+        }
+
         /* Chat design */
         .chat-container {
             display: flex;
@@ -742,6 +883,14 @@
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('wifi-auditor', this)">Wi-Fi Security Auditor</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('speed-audit', this)">Network Speed Audit</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('camera-scanner', this)">Camera Threat Scanner</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('phone-osint', this)">Phone OSINT Lookup</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('url-threats', this)">Phishing & Reputation Audit</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('disposable-email-check', this)">Disposable Email Detector</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('metadata-viewer', this)">Metadata Viewer</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('cve-news-feed', this)">Latest CVE & Threat News</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('mitre-attack-mapping', this)">MITRE ATT&CK Mapping</li>
+            <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('academic-rules-center', this)">Academic Announcements & Rules</li>
+            <li class="nav-item" data-roles="admin" onclick="switchPanel('student-user-management', this)">Student User Management</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('domain-intel', this)">Domain Intelligence</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('ip-intel', this)">IP Intelligence</li>
             <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('email-intel', this)">Email Intelligence</li>
@@ -1246,34 +1395,105 @@
                     <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 6px; line-height: 1.4;">
                         Get your FREE API Key in 30 seconds from the <a href="https://aistudio.google.com/" target="_blank" style="color: var(--accent-red); font-weight: 700; text-decoration: underline;">Google AI Studio Console</a>.
                     </p>
-                    <div style="display: flex; gap: 10px; margin-top: 12px;">
-                        <button class="btn" style="padding: 8px 16px; font-size: 0.85rem;" onclick="saveGeminiKey()">Save Key</button>
-                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" onclick="clearGeminiKey()">Clear Key</button>
-                    </div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn" style="padding: 8px 16px; font-size: 0.85rem;" onclick="saveGeminiKey()">Save API Key</button>
+                    <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" onclick="clearGeminiKey()">Clear Key</button>
                 </div>
             </div>
 
-            <div class="chat-container">
-                <div class="chat-messages" id="chat-messages">
-                    <div class="chat-bubble assistant">
-                        Hello! I am your advanced AI assistant. You can:
-                        <br>• Type queries in **any regional language** (Hindi, Malayalam, Tamil, Arabic, etc.).
-                        <br>• Click 🎤 to speak your question using voice recognition.
-                        <br>• Click 📷 to **upload an image or screenshot** for multimodal AI analysis!
+            <div class="chat-workspace-grid">
+                <!-- Left: Chat Container (Volcano & Asteroid Styled) -->
+                <div class="chat-container volcano-asteroid-chat" style="height: 520px;">
+                    <div class="chat-messages" id="chat-messages" style="height: calc(100% - 70px);">
+                        <div style="font-size: 0.7rem; font-weight: bold; color: #ef4444; text-align: left; margin-bottom: 2px; margin-top: 10px;">NATASHA (AI SECURITY CORE)</div>
+                        <div class="chat-bubble assistant obsidian">
+                            Hello! I am Natasha, your advanced cybersecurity AI assistant. You can:
+                            <br>• Type queries in <b style="color:#f97316;">any regional language</b> (Hindi, Malayalam, Tamil, Arabic, etc.).
+                            <br>• Click 🎤 to speak your question.
+                            <br>• Click 📷 to <b style="color:#f97316;">upload an image or screenshot</b> for multimodal AI analysis!
+                            <br><br><i>To hear responses read aloud automatically, toggle the 'Voice Output' switch in the AI control panel on the right.</i>
+                        </div>
+                    </div>
+                    <div id="chat-image-preview-container" style="display: none; background: #020617; border-top: 1px solid #1f2937; padding: 8px 18px; align-items: center; justify-content: space-between; position: absolute; bottom: 65px; left: 0; right: 0; z-index: 10;">
+                        <span id="chat-image-preview-name" style="font-size: 0.85rem; font-weight: 700; color: var(--accent-red);">No image selected</span>
+                        <button onclick="removeChatImage()" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 0.8rem; font-weight: 700;">Remove</button>
+                    </div>
+                    <div class="chat-input-area" style="position: absolute; bottom: 0; left: 0; right: 0; border-top: 1px solid #1f2937; background: #070b13; height: 65px; z-index: 5;">
+                        <button onclick="startVoiceChat()" id="btn-chat-mic" style="background:none; border:none; padding:0 12px; color:var(--accent-red); font-size:1.35rem; cursor:pointer;">🎤</button>
+                        <button onclick="document.getElementById('chat-image-input').click()" id="btn-chat-image" style="background:none; border:none; padding:0 12px; color:#64748b; font-size:1.35rem; cursor:pointer;">📷</button>
+                        <input type="file" id="chat-image-input" style="display: none;" accept="image/*" onchange="previewChatImage(this.files[0])">
+                        
+                        <input type="text" id="chat-input" placeholder="Ask Natasha AI or upload a screenshot..." style="color: #f3f4f6;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                        <button onclick="sendChatMessage()">Send</button>
                     </div>
                 </div>
-                <div id="chat-image-preview-container" style="display: none; background: var(--bg-dark); border-top: 1px solid var(--border-panel); padding: 8px 18px; align-items: center; justify-content: space-between;">
-                    <span id="chat-image-preview-name" style="font-size: 0.85rem; font-weight: 700; color: var(--accent-red);">No image selected</span>
-                    <button onclick="removeChatImage()" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.8rem; font-weight: 700;">Remove</button>
+
+                <!-- Right: Sleek Voice & Agent Controller Panel -->
+                <div class="cyber-ai-settings-panel">
+                    <div style="border-bottom: 1px solid var(--border-panel); padding-bottom: 10px; margin-bottom: 10px;">
+                        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">AI Agent Configuration</h3>
+                        <p style="font-size: 0.75rem; color: var(--text-muted);">Configure voice synthesis and parameters.</p>
+                    </div>
+
+                    <!-- Voice Toggle Switch -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: var(--bg-dark); padding: 12px; border-radius: 8px; border: 1px solid var(--border-panel);">
+                        <div>
+                            <div style="font-size: 0.85rem; font-weight: 700;">Voice Output (TTS)</div>
+                            <div style="font-size: 0.7rem; color: var(--text-muted);">Read responses out loud</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="tts-voice-toggle" onchange="toggleSpeechOutput()">
+                            <span class="switch-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Voice Sliders -->
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="auth-field" style="margin-bottom: 0;">
+                            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700;">
+                                <label>Speech Rate / Speed</label>
+                                <span id="lbl-voice-rate">1.0x</span>
+                            </div>
+                            <input type="range" id="slider-voice-rate" min="0.5" max="1.5" step="0.1" value="1.0" class="input-text" style="padding: 4px; height: auto;" oninput="updateSpeechParameters()">
+                        </div>
+
+                        <div class="auth-field" style="margin-bottom: 0;">
+                            <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700;">
+                                <label>Speech Pitch</label>
+                                <span id="lbl-voice-pitch">1.0x</span>
+                            </div>
+                            <input type="range" id="slider-voice-pitch" min="0.5" max="1.5" step="0.1" value="1.0" class="input-text" style="padding: 4px; height: auto;" oninput="updateSpeechParameters()">
+                        </div>
+                    </div>
+
+                    <!-- Sound Models list -->
+                    <div>
+                        <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 8px;">Neural Sound Models</label>
+                        <div id="neural-voice-models-container" style="display: flex; flex-direction: column; gap: 6px; max-height: 140px; overflow-y: auto; padding-right: 2px;">
+                            <!-- Populated Dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Advanced parameters selector -->
+                    <div style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid var(--border-panel); padding-top: 15px;">
+                        <div class="auth-field" style="margin-bottom: 0;">
+                            <label>Agent System Persona</label>
+                            <select id="chat-persona-select" class="input-text" style="width:100%; display:block; height:40px; padding: 6px 12px;" onchange="updateAgentPersona()">
+                                <option value="defensive">Cyber Defensive Shield (Protective)</option>
+                                <option value="auditor">Offensive Security Auditor (Technical)</option>
+                                <option value="educator">NCAS Academic Educator (Plain English)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Reset / Export Actions -->
+                    <div style="display: flex; gap: 8px; margin-top: 5px;">
+                        <button class="btn btn-secondary" style="flex: 1; padding: 10px; font-size: 0.8rem;" onclick="resetChatSession()">Reset Chat 🔄</button>
+                        <button class="btn" style="flex: 1; padding: 10px; font-size: 0.8rem;" onclick="exportChatTranscript()">Export 💾</button>
+                    </div>
                 </div>
-                <div class="chat-input-area">
-                    <button onclick="startVoiceChat()" id="btn-chat-mic" style="background:none; border:none; padding:0 12px; color:var(--accent-red); font-size:1.35rem; cursor:pointer;">🎤</button>
-                    <button onclick="document.getElementById('chat-image-input').click()" id="btn-chat-image" style="background:none; border:none; padding:0 12px; color:var(--text-muted); font-size:1.35rem; cursor:pointer;">📷</button>
-                    <input type="file" id="chat-image-input" style="display: none;" accept="image/*" onchange="previewChatImage(this.files[0])">
-                    
-                    <input type="text" id="chat-input" placeholder="Ask Gemini AI or share an image..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
-                    <button onclick="sendChatMessage()">Send</button>
-                </div>
+            </div>
             </div>
         </div>
 
@@ -1402,6 +1622,225 @@
             </div>
         </div>
 
+        <!-- PHONE OSINT LOOKUP -->
+        <div id="panel-phone-osint" class="panel">
+            <h2 class="panel-title">Phone Number Intelligence (OSINT)</h2>
+            <div class="results-container">
+                <div class="result-block">
+                    <div class="result-header">Execute OSINT Scan</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                        Enter a phone number with country code to identify the registrar country, network carrier, and IM messenger presence.
+                    </p>
+                    <div class="flex-row">
+                        <input type="text" id="phone-osint-input" class="input-text" placeholder="e.g. +919876543210 or +14155552671">
+                        <button class="btn" onclick="runPhoneOsint()">Scan Number</button>
+                    </div>
+                </div>
+
+                <div class="terminal-box" id="phone-osint-result-box" style="display: none; margin-top: 20px;">
+                    <div class="terminal-header">
+                        <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                        <span>bash ncas@cybershield:~/phone_osint</span>
+                    </div>
+                    <div class="terminal-body" id="res-phone-osint" style="line-height: 1.6;">Awaiting execution...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHISHING & REPUTATION AUDIT -->
+        <div id="panel-url-threats" class="panel">
+            <h2 class="panel-title">Phishing Detector & Website Reputation Audit</h2>
+            <div class="results-container">
+                <div class="result-block">
+                    <div class="result-header">Phishing URL Suspicion Scan</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                        Analyze links for suspicious TLDs, raw IP usage, lookalike character sequences, and known phishing indicators.
+                    </p>
+                    <div class="flex-row">
+                        <input type="text" id="url-threat-input" class="input-text" placeholder="e.g. http://paypal-secure-login.xyz/update">
+                        <button class="btn" onclick="runPhishingScan()">Analyze Link</button>
+                    </div>
+                    <div class="terminal-box" id="phish-result-box" style="display: none; margin-top: 15px;">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/phishing_detector</span>
+                        </div>
+                        <div class="terminal-body" id="res-phishing-scan" style="line-height: 1.6;">Awaiting URL...</div>
+                    </div>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header">Domain Reputation Checker</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                        Query domain classification, blocklist records, and security standing scores.
+                    </p>
+                    <div class="flex-row">
+                        <input type="text" id="reputation-domain-input" class="input-text" placeholder="e.g. secure-banking.xyz">
+                        <button class="btn" onclick="runReputationCheck()">Check Reputation</button>
+                    </div>
+                    <div class="terminal-box" id="reputation-result-box" style="display: none; margin-top: 15px;">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/reputation_checker</span>
+                        </div>
+                        <div class="terminal-body" id="res-reputation-check" style="line-height: 1.6;">Awaiting domain...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DISPOSABLE EMAIL DETECTOR -->
+        <div id="panel-disposable-email-check" class="panel">
+            <h2 class="panel-title">Disposable Email Address Detector</h2>
+            <div class="results-container">
+                <div class="result-block">
+                    <div class="result-header">Disposable Mail Scan</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                        Identify temporary or throwaway email domains used to register accounts anonymously.
+                    </p>
+                    <div class="flex-row">
+                        <input type="text" id="email-disposable-input" class="input-text" placeholder="e.g. user@tempmail.com">
+                        <button class="btn" onclick="runDisposableEmailCheck()">Audit Address</button>
+                    </div>
+                    <div class="terminal-box" id="disposable-result-box" style="display: none; margin-top: 15px;">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/email_detector</span>
+                        </div>
+                        <div class="terminal-body" id="res-disposable-check" style="line-height: 1.6;">Awaiting check...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- METADATA VIEWER -->
+        <div id="panel-metadata-viewer" class="panel">
+            <h2 class="panel-title">Document & Image File Metadata Viewer</h2>
+            <div class="results-container">
+                <div class="result-block">
+                    <div class="result-header">Upload File for Metadata Inspection</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                        Select a JPEG, PNG, or PDF file to inspect its header signature, metadata properties, and potential GPS location records.
+                    </p>
+                    <div class="dropzone" onclick="document.getElementById('file-picker-metadata').click()">
+                        <p id="metadata-dropzone-text">Click to choose a file for metadata extraction</p>
+                        <input type="file" id="file-picker-metadata" style="display: none;" onchange="processFileMetadata(this.files[0])">
+                    </div>
+                    <div class="terminal-box" id="metadata-result-box" style="display: none; margin-top: 20px;">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/metadata_extractor</span>
+                        </div>
+                        <div class="terminal-body" id="res-metadata-viewer" style="line-height: 1.6; max-height: 350px; overflow-y: auto;">Awaiting file upload...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LATEST CVE & THREAT NEWS -->
+        <div id="panel-cve-news-feed" class="panel">
+            <h2 class="panel-title">Latest Zero-Day Vulnerabilities & Cybersecurity News</h2>
+            <div class="results-container">
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+                    <button class="btn" onclick="fetchLatestNewsAndCves()">Refresh Intel Feeds 🔄</button>
+                </div>
+                
+                <div class="stats-grid" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="result-block">
+                        <div class="result-header" style="color: var(--accent-red);">Latest CVE Disclosures (NVD Live Feed)</div>
+                        <div id="nvd-cve-feed-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
+                            <div style="text-align: center; color: var(--text-muted);">Fetching live CVE catalog...</div>
+                        </div>
+                    </div>
+
+                    <div class="result-block">
+                        <div class="result-header">Security Threat Advisories & Zero-Days</div>
+                        <div id="threat-news-feed-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px; max-height: 400px; overflow-y: auto; padding-right: 5px;">
+                            <div style="text-align: center; color: var(--text-muted);">Fetching news updates...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MITRE ATT&CK MAPPING -->
+        <div id="panel-mitre-attack-mapping" class="panel">
+            <h2 class="panel-title">MITRE ATT&CK Mitigation Mapping Database</h2>
+            <div class="results-container">
+                <div class="result-block">
+                    <div class="result-header">Search MITRE ATT&CK Matrix</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                        Query specific hacking techniques or execution tactics to see their associated IDs, details, and mitigation countermeasures.
+                    </p>
+                    <div class="flex-row">
+                        <input type="text" id="mitre-search-input" class="input-text" placeholder="e.g. Phishing, Brute Force, or T1566">
+                        <button class="btn" onclick="runMitreMapping()">Search Matrix</button>
+                    </div>
+                    
+                    <div class="terminal-box" id="mitre-result-box" style="display: none; margin-top: 20px;">
+                        <div class="terminal-header">
+                            <div class="terminal-buttons"><div class="terminal-dot close"></div><div class="terminal-dot minimize"></div><div class="terminal-dot expand"></div></div>
+                            <span>bash ncas@cybershield:~/mitre_attack_query</span>
+                        </div>
+                        <div class="terminal-body" id="res-mitre-mapping" style="line-height: 1.6; max-height: 350px; overflow-y: auto;">Awaiting query...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACADEMIC ANNOUNCEMENTS & RULES -->
+        <div id="panel-academic-rules-center" class="panel">
+            <h2 class="panel-title">NCAS Cyber Wing Announcements & Lab Guidelines</h2>
+            <div class="results-container">
+                <!-- Publisher Form (Faculties & Admins Only) -->
+                <div class="result-block" id="academic-publisher-card" style="display: none; margin-bottom: 24px;">
+                    <div class="result-header">Publish New Institutional Rule / Announcement</div>
+                    <div class="auth-field">
+                        <label>Announcement Title</label>
+                        <input type="text" id="academic-post-title" class="input-text" placeholder="Title of the advisory">
+                    </div>
+                    <div class="auth-field" style="margin-top: 15px;">
+                        <label>Rule Details & Guidelines</label>
+                        <textarea id="academic-post-content" class="textarea-input" placeholder="Type instructions or guidelines for students..."></textarea>
+                    </div>
+                    <button class="btn" style="margin-top: 10px;" onclick="publishAcademicRule()">Publish Announcement</button>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header">Institutional Announcements Registry</div>
+                    <div id="academic-posts-feed-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STUDENT USER MANAGEMENT (ADMIN VIEW) -->
+        <div id="panel-student-user-management" class="panel">
+            <h2 class="panel-title">Institutional Student Accounts & Security Controls</h2>
+            <div class="results-container">
+                <div class="result-block">
+                    <div class="result-header">Student Register Manager</div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px;">
+                        Banning a student account revokes credentials immediately. Purging an account deletes the record permanently.
+                    </p>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>Active Status</th>
+                                <th>Administrative Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-management-list-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- 16. SERVICE POLICY -->
         <div id="panel-policy" class="panel">
             <h2 class="panel-title">Web Service Scan & Diagnostics Policy</h2>
@@ -1425,10 +1864,26 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
 
     <!-- Script logic -->
     <script>
+        // Automatic API Base Redirect to enable double-clicking index.html directly from Windows Explorer
+        const originalFetch = window.fetch;
+        window.fetch = function(input, init) {
+            const API_BASE = window.location.protocol === 'file:' ? 'http://127.0.0.1:8080' : '';
+            if (typeof input === 'string' && input.startsWith('/api/')) {
+                input = API_BASE + input;
+            }
+            return originalFetch(input, init);
+        };
+
         let currentRole = null;
         let currentUsername = null;
         let activeAuthMode = 'login';
         let scanCount = 0;
+
+        // Advanced AI panel configuration parameters
+        let ttsEnabled = false; // Voice output is OFF by default
+        let voiceRate = 1.0;
+        let voicePitch = 1.0;
+        let activePersona = 'defensive';
 
         // Load saved Gemini settings from local storage
         let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
@@ -1564,10 +2019,20 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                             document.getElementById('admin-dashboard-details').style.display = 'block';
                             loadAdminMetrics();
                             loadFacultyList();
+                            loadStudentListForManagement();
                         } else {
                             document.getElementById('admin-dashboard-details').style.display = 'none';
                         }
 
+                        // Academic announcements board controls
+                        if (currentRole === 'admin' || currentRole === 'faculty') {
+                            document.getElementById('academic-publisher-card').style.display = 'block';
+                        } else {
+                            document.getElementById('academic-publisher-card').style.display = 'none';
+                        }
+
+                        loadAcademicAnnouncements();
+                        fetchLatestNewsAndCves();
                         loadIncidents();
                         auditProtocol();
                     } else {
@@ -1772,6 +2237,418 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                 checkResponseStatus(response);
                 if(response.ok) {
                     loadFacultyList();
+                    loadAdminMetrics();
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        // 1. Phone OSINT Lookup
+        async function runPhoneOsint() {
+            const num = document.getElementById('phone-osint-input').value.trim();
+            if(!num) return alert("Please enter a phone number.");
+            
+            const resDiv = document.getElementById('res-phone-osint');
+            const resBox = document.getElementById('phone-osint-result-box');
+            resBox.style.display = 'block';
+            resDiv.innerHTML = "Initializing OSINT resolver lookup...\n";
+            
+            try {
+                const response = await fetch(`/api/osint/phone?number=${encodeURIComponent(num)}&username=${currentUsername}&role=${currentRole}`);
+                const data = await response.json();
+                if (data.error) {
+                    resDiv.innerHTML = `<span style="color:var(--accent-red);">${data.error}</span>`;
+                    return;
+                }
+                
+                resDiv.innerHTML = `
+<b>Phone:</b> ${data.clean_number}
+<b>Registered Country:</b> ${data.country}
+<b>Inferred Carrier:</b> ${data.carrier}
+<b>Social Presence Indicators:</b>
+  - WhatsApp: ${data.social_presence.whatsapp}
+  - Telegram: ${data.social_presence.telegram}
+  - Signal Messenger: ${data.social_presence.signal}
+
+<b>Potential Usage Profile:</b>
+${data.potential_usages.map(u => `  * ${u}`).join('\n')}
+                `;
+            } catch(e) {
+                resDiv.innerHTML = `<span style="color:var(--accent-red);">OSINT Lookup Failure: ${e.message}</span>`;
+            }
+        }
+
+        // 2. Phishing Scan
+        async function runPhishingScan() {
+            const url = document.getElementById('url-threat-input').value.trim();
+            if(!url) return alert("Please enter a link URL.");
+            
+            const resDiv = document.getElementById('res-phishing-scan');
+            const resBox = document.getElementById('phish-result-box');
+            resBox.style.display = 'block';
+            resDiv.innerHTML = "Parsing URL parameters...\n";
+            
+            try {
+                const response = await fetch(`/api/url/detect?url=${encodeURIComponent(url)}&username=${currentUsername}&role=${currentRole}`);
+                const data = await response.json();
+                
+                let flagText = data.threat_flags.length > 0 ? 
+                    data.threat_flags.map(f => `  <span style="color:var(--accent-red);">● Warning:</span> ${f}`).join('\n') : 
+                    "  No active threat signatures matched.";
+                    
+                resDiv.innerHTML = `
+<b>Scanned URL:</b> ${data.url}
+<b>Host Domain:</b> ${data.domain}
+<b>Vulnerability Score:</b> ${data.risk_score} %
+<b>AI Verdict:</b> <span style="font-weight:bold; color:${data.verdict === 'SAFE' ? '#10b981' : (data.verdict === 'SUSPICIOUS' ? '#f59e0b' : 'var(--accent-red)')};">${data.verdict}</span>
+
+<b>Threat Signatures Detected:</b>
+${flagText}
+                `;
+            } catch(e) {
+                resDiv.innerHTML = `<span style="color:var(--accent-red);">Scan Failure: ${e.message}</span>`;
+            }
+        }
+
+        // 3. Reputation Check
+        async function runReputationCheck() {
+            const domain = document.getElementById('reputation-domain-input').value.trim();
+            if(!domain) return alert("Please enter a domain.");
+            
+            const resDiv = document.getElementById('res-reputation-check');
+            const resBox = document.getElementById('reputation-result-box');
+            resBox.style.display = 'block';
+            resDiv.innerHTML = "Querying reputation index...\n";
+            
+            try {
+                const response = await fetch(`/api/url/reputation?domain=${encodeURIComponent(domain)}`);
+                const data = await response.json();
+                
+                resDiv.innerHTML = `
+<b>Target Domain:</b> ${data.domain}
+<b>Reputation Trust Score:</b> ${data.reputation_score} / 100
+<b>Inferred Hosting ASN:</b> ${data.hosting_provider}
+<b>Threat Classification:</b> ${data.domain_category}
+<b>Global Standing:</b> <span style="font-weight:bold; color:${data.risk_level === 'Low' ? '#10b981' : 'var(--accent-red)'};">${data.risk_level} Risk</span>
+<b>Domain Blocklisted:</b> ${data.blocklisted ? '<span style="color:var(--accent-red);">Yes</span>' : 'No'}
+                `;
+            } catch(e) {
+                resDiv.innerHTML = `<span style="color:var(--accent-red);">Reputation Check Failure: ${e.message}</span>`;
+            }
+        }
+
+        // 4. Disposable Email Check
+        async function runDisposableEmailCheck() {
+            const email = document.getElementById('email-disposable-input').value.trim();
+            if(!email) return alert("Please enter an email address.");
+            
+            const resDiv = document.getElementById('res-disposable-check');
+            const resBox = document.getElementById('disposable-result-box');
+            resBox.style.display = 'block';
+            resDiv.innerHTML = "Scanning email provider MX attributes...\n";
+            
+            try {
+                const response = await fetch(`/api/email/disposable?email=${encodeURIComponent(email)}`);
+                const data = await response.json();
+                
+                resDiv.innerHTML = `
+<b>Email Input:</b> ${data.email}
+<b>Domain:</b> ${data.domain}
+<b>Verdict:</b> <span style="font-weight:bold; color:${data.is_disposable ? 'var(--accent-red)' : '#10b981'};">${data.verdict}</span>
+                `;
+            } catch(e) {
+                resDiv.innerHTML = `<span style="color:var(--accent-red);">Disposable Check Failure: ${e.message}</span>`;
+            }
+        }
+
+        // 5. File Metadata Viewer
+        async function processFileMetadata(file) {
+            if(!file) return;
+            const resDiv = document.getElementById('res-metadata-viewer');
+            const resBox = document.getElementById('metadata-result-box');
+            document.getElementById('metadata-dropzone-text').textContent = `Loaded: ${file.name}`;
+            resBox.style.display = 'block';
+            resDiv.innerHTML = "Reading file binaries...\n";
+            
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = async () => {
+                const base64Content = reader.result.split(',')[1];
+                try {
+                    const response = await fetch('/api/metadata/view', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ filename: file.name, base64_data: base64Content })
+                    });
+                    const data = await response.json();
+                    
+                    let metaText = "";
+                    for (const [key, val] of Object.entries(data.metadata_fields)) {
+                        metaText += `  - <b>${key}:</b> ${val}\n`;
+                    }
+                    
+                    resDiv.innerHTML = `
+<b>Filename:</b> ${data.filename}
+<b>Inferred Format:</b> ${data.mime_type}
+<b>File Size:</b> ${data.file_size}
+<b>Header Signature (Hex):</b> ${data.header_hex_signature}
+
+<b>Metadata Properties:</b>
+${metaText}
+                    `;
+                } catch(err) {
+                    resDiv.innerHTML = `<span style="color:var(--accent-red);">Metadata Extraction Failure: ${err.message}</span>`;
+                }
+            };
+        }
+
+        // 6. NVD CVE & Security News Feed
+        async function fetchLatestNewsAndCves() {
+            const cveContainer = document.getElementById('nvd-cve-feed-container');
+            const newsContainer = document.getElementById('threat-news-feed-container');
+            
+            if (cveContainer) cveContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted);">Fetching live CVE catalog...</div>';
+            if (newsContainer) newsContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted);">Fetching news updates...</div>';
+            
+            // 1. Fetch News
+            try {
+                const newsRes = await fetch('/api/news/latest');
+                const newsData = await newsRes.json();
+                if (newsContainer) {
+                    newsContainer.innerHTML = '';
+                    newsData.news.forEach(item => {
+                        const card = document.createElement('div');
+                        card.style.background = 'var(--bg-dark)';
+                        card.style.border = '1px solid var(--border-panel)';
+                        card.style.borderRadius = '8px';
+                        card.style.padding = '12px';
+                        
+                        card.innerHTML = `
+                            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                                <span style="font-weight:bold; color:var(--text-main); font-size:0.85rem;">${item.title}</span>
+                                <span style="font-size:0.7rem; padding:2px 6px; border-radius:4px; background:rgba(220,38,38,0.1); color:var(--accent-red); font-weight:700;">${item.severity}</span>
+                            </div>
+                            <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.4; margin-bottom:6px;">${item.summary}</p>
+                            <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#64748b;">
+                                <span>Source: ${item.source}</span>
+                                <span>${item.date}</span>
+                            </div>
+                        `;
+                        newsContainer.appendChild(card);
+                    });
+                }
+            } catch(e) {
+                if (newsContainer) newsContainer.innerHTML = `<span style="color:var(--accent-red);">News offline: ${e.message}</span>`;
+            }
+            
+            // 2. Fetch CVEs
+            try {
+                const cveRes = await fetch('/api/threat/cve?query=CVE-2024');
+                const cveData = await cveRes.json();
+                if (cveContainer) {
+                    cveContainer.innerHTML = '';
+                    if(cveData.matches.length === 0) {
+                        cveContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.8rem;">No recent CVEs found.</div>';
+                    }
+                    cveData.matches.forEach(item => {
+                        const card = document.createElement('div');
+                        card.style.background = 'var(--bg-dark)';
+                        card.style.border = '1px solid var(--border-panel)';
+                        card.style.borderRadius = '8px';
+                        card.style.padding = '12px';
+                        
+                        card.innerHTML = `
+                            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                                <span style="font-weight:bold; color:var(--accent-red); font-size:0.85rem;">${item.id}</span>
+                                <span style="font-size:0.7rem; font-weight:700;">${item.severity}</span>
+                            </div>
+                            <p style="font-weight:600; font-size:0.75rem; color:var(--text-main); margin-bottom:4px;">${item.title}</p>
+                            <p style="font-size:0.7rem; color:var(--text-muted); line-height:1.4;">${item.description}</p>
+                        `;
+                        cveContainer.appendChild(card);
+                    });
+                }
+            } catch(e) {
+                if (cveContainer) cveContainer.innerHTML = `<span style="color:var(--accent-red);">CVE lookup offline: ${e.message}</span>`;
+            }
+        }
+
+        // 7. MITRE Mapping Search
+        async function runMitreMapping() {
+            const query = document.getElementById('mitre-search-input').value.trim();
+            if(!query) return alert("Please enter search parameters.");
+            
+            const resDiv = document.getElementById('res-mitre-mapping');
+            const resBox = document.getElementById('mitre-result-box');
+            resBox.style.display = 'block';
+            resDiv.innerHTML = "Searching MITRE ATT&CK mitigation databases...\n";
+            
+            try {
+                const response = await fetch(`/api/mitre/mapping?query=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                if(data.matches.length === 0) {
+                    resDiv.innerHTML = "No matching MITRE ATT&CK techniques found.";
+                    return;
+                }
+                
+                let matchesHtml = "";
+                data.matches.forEach(tech => {
+                    matchesHtml += `
+<b>[ID: ${tech.technique_id}] ${tech.name}</b>
+  - Tactic: ${tech.tactic}
+  - Description: ${tech.description}
+--------------------------------------------------\n`;
+                });
+                resDiv.innerHTML = matchesHtml;
+            } catch(e) {
+                resDiv.innerHTML = `<span style="color:var(--accent-red);">MITRE Search Failure: ${e.message}</span>`;
+            }
+        }
+
+        // 8. Academic rules & Announcements Posting CRUD
+        async function loadAcademicAnnouncements() {
+            const container = document.getElementById('academic-posts-feed-container');
+            if (!container) return;
+            container.innerHTML = '<div style="text-align: center; color: var(--text-muted);">Loading announcements...</div>';
+            
+            try {
+                const response = await fetch('/api/academic/posts');
+                const data = await response.json();
+                container.innerHTML = '';
+                
+                if (data.posts.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size:0.8rem;">No academic announcements registered.</div>';
+                    return;
+                }
+                
+                data.posts.forEach(post => {
+                    const card = document.createElement('div');
+                    card.style.background = 'var(--bg-dark)';
+                    card.style.border = '1px solid var(--border-panel)';
+                    card.style.borderRadius = '8px';
+                    card.style.padding = '15px';
+                    card.style.lineHeight = '1.6';
+                    
+                    card.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-panel); padding-bottom:6px; margin-bottom:10px;">
+                            <span style="font-weight:bold; color:var(--accent-red); font-size:0.95rem;">${post.title}</span>
+                            <span style="font-size:0.7rem; color:#64748b;">${post.timestamp}</span>
+                        </div>
+                        <p style="font-size:0.85rem; color:var(--text-main); margin-bottom:8px;">${post.content}</p>
+                        <div style="font-size:0.7rem; color:var(--text-muted); text-align:right;">
+                            Published by: <b>${post.author}</b>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch(e) {
+                container.innerHTML = `<span style="color:var(--accent-red);">Announcements offline: ${e.message}</span>`;
+            }
+        }
+
+        async function publishAcademicRule() {
+            const title = document.getElementById('academic-post-title').value.trim();
+            const content = document.getElementById('academic-post-content').value.trim();
+            
+            if(!title || !content) return alert("Please fill all rules content fields.");
+            
+            try {
+                const response = await fetch(`/api/academic/posts?role=${currentRole}&username=${currentUsername}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, content, author: currentUsername })
+                });
+                if(response.ok) {
+                    document.getElementById('academic-post-title').value = '';
+                    document.getElementById('academic-post-content').value = '';
+                    alert("Advisory published successfully.");
+                    loadAcademicAnnouncements();
+                } else {
+                    const data = await response.json();
+                    alert(data.detail || "Publishing failed.");
+                }
+            } catch(e) {
+                alert("Error connecting to server.");
+            }
+        }
+
+        // 9. Student User Account Manager (Admin CRUD Controls)
+        async function loadStudentListForManagement() {
+            const body = document.getElementById('student-management-list-body');
+            if(!body) return;
+            body.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Loading students registry...</td></tr>';
+            
+            try {
+                const response = await fetch(`/api/admin/users?role=${currentRole}&username=${currentUsername}`);
+                const data = await response.json();
+                body.innerHTML = '';
+                
+                data.users.forEach(user => {
+                    const tr = document.createElement('tr');
+                    
+                    let actionButtons = "";
+                    if(user.role === 'student') {
+                        if(user.status === 'Active') {
+                            actionButtons += `<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="adminBanUser('${user.username}')">Suspend 🚫</button> `;
+                        } else {
+                            actionButtons += `<button class="btn" style="padding:4px 8px; font-size:0.75rem; background-color:#10b981;" onclick="adminUnbanUser('${user.username}')">Activate 🟢</button> `;
+                        }
+                        actionButtons += `<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="adminDeleteUser('${user.username}')">Delete 🗑️</button>`;
+                    } else {
+                        actionButtons = `<span style="color:var(--text-muted); font-size:0.75rem;">Faculty Managed via Limit Settings</span>`;
+                    }
+                    
+                    tr.innerHTML = `
+                        <td><b>${user.username}</b></td>
+                        <td>${user.role.toUpperCase()}</td>
+                        <td><span style="font-weight:700; color:${user.status === 'Active' ? '#10b981' : 'var(--accent-red)'};">${user.status}</span></td>
+                        <td>${actionButtons}</td>
+                    `;
+                    body.appendChild(tr);
+                });
+            } catch(e) {
+                body.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--accent-red);">Failed to retrieve students database.</td></tr>`;
+            }
+        }
+
+        async function adminBanUser(name) {
+            if(!confirm(`Are you sure you want to suspend access for student: ${name}?`)) return;
+            try {
+                const response = await fetch(`/api/admin/user/ban?target_user=${name}&role=${currentRole}&username=${currentUsername}`, {
+                    method: 'POST'
+                });
+                if(response.ok) {
+                    loadStudentListForManagement();
+                    loadAdminMetrics();
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function adminUnbanUser(name) {
+            try {
+                const response = await fetch(`/api/admin/user/unban?target_user=${name}&role=${currentRole}&username=${currentUsername}`, {
+                    method: 'POST'
+                });
+                if(response.ok) {
+                    loadStudentListForManagement();
+                    loadAdminMetrics();
+                }
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function adminDeleteUser(name) {
+            if(!confirm(`Delete student credentials for: ${name}? This action is permanent.`)) return;
+            try {
+                const response = await fetch(`/api/admin/user?target_user=${name}&role=${currentRole}&username=${currentUsername}`, {
+                    method: 'DELETE'
+                });
+                if(response.ok) {
+                    loadStudentListForManagement();
                     loadAdminMetrics();
                 }
             } catch(e) {
@@ -2568,15 +3445,239 @@ SHA-1:    ${sha1Hex}
             recognition.start();
         }
 
-        function speakText(text) {
+        let voices = [];
+        let selectedVoiceIndex = -1;
+
+        function addTelemetryLog(msg) {
+            const logBox = document.getElementById('ai-telemetry-logs');
+            if (!logBox) return;
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const div = document.createElement('div');
+            div.textContent = `[${time}] ${msg}`;
+            logBox.appendChild(div);
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        // Telemetry stats updates
+        setInterval(() => {
+            const cpuEl = document.getElementById('telemetry-cpu');
+            const rttEl = document.getElementById('telemetry-rtt');
+            if (cpuEl) {
+                const load = (Math.random() * 20 + 15).toFixed(1);
+                cpuEl.textContent = `${load} %`;
+            }
+            if (rttEl) {
+                const latency = Math.floor(Math.random() * 30 + 35);
+                rttEl.textContent = `${latency} ms`;
+            }
+        }, 3000);
+
+        function populateVoices() {
+            if (typeof speechSynthesis === 'undefined') return;
+            voices = speechSynthesis.getVoices();
+            
+            // Populating select dropdown in settings just in case
+            const select = document.getElementById('chat-voice-select');
+            if (select) {
+                const prevVal = select.value;
+                select.innerHTML = '';
+                voices.forEach((voice, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    if (!prevVal && (voice.name.includes("Google") || voice.name.includes("Zira") || voice.name.includes("Natural") || voice.name.includes("David"))) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+                if (prevVal && select.options[prevVal]) {
+                    select.value = prevVal;
+                }
+            }
+
+            // Populating card container on the visualizer panel
+            const container = document.getElementById('neural-voice-models-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            let visibleIndex = 0;
+            
+            voices.forEach((voice, index) => {
+                if (visibleIndex >= 8) return; // Keep it clean to 8 elements
+                
+                const isEnglish = voice.lang.includes("en");
+                const isLocal = voice.lang.includes("in") || voice.lang.includes("hi") || voice.lang.includes("ml");
+                
+                if (isEnglish || isLocal || voices.length < 10) {
+                    const card = document.createElement('div');
+                    card.className = `voice-model-card ${selectedVoiceIndex === index ? 'active' : ''}`;
+                    card.onclick = () => selectVoiceModel(index);
+                    
+                    let cleanName = voice.name
+                        .replace("Microsoft", "")
+                        .replace("Google", "")
+                        .replace("Desktop", "")
+                        .replace("Natural", "")
+                        .replace("Voice", "")
+                        .trim();
+                    if (cleanName.length > 18) cleanName = cleanName.substring(0, 16) + "...";
+                    
+                    const gender = (voice.name.toLowerCase().includes("zira") || voice.name.toLowerCase().includes("hazel") || voice.name.toLowerCase().includes("female") || voice.name.toLowerCase().includes("haruka")) ? "FEMALE" : "MALE";
+                    const locale = voice.lang.toUpperCase().split("-")[0];
+
+                    card.innerHTML = `
+                        <div style="display:flex; flex-direction:column; gap:2px;">
+                            <span style="font-weight:700;">${cleanName || "Aegis Core"}</span>
+                            <span style="font-size:0.6rem; color:#94a3b8;">${gender} / ${locale}</span>
+                        </div>
+                        <span class="voice-model-badge">${voice.lang.split("-")[1] || "SYS"}</span>
+                    `;
+                    container.appendChild(card);
+                    visibleIndex++;
+                }
+            });
+            
+            if (selectedVoiceIndex === -1 && voices.length > 0) {
+                selectVoiceModel(0, true);
+            }
+        }
+        
+        function selectVoiceModel(index, silent = false) {
+            selectedVoiceIndex = index;
+            
+            // Sync settings dropdown selector
+            const select = document.getElementById('chat-voice-select');
+            if (select) select.value = index;
+            
+            populateVoices();
+            
+            const voiceName = voices[index] ? voices[index].name : "System Default";
+            addTelemetryLog(`Synapse sound model switched to: ${voiceName}`);
+            
+            if (!silent) {
+                speakText("Voice model loaded.");
+            }
+        }
+        
+        // Populate initially and whenever browser voice system updates
+        setTimeout(populateVoices, 600);
+        if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoices;
+        }
+
+        function toggleSpeechOutput() {
+            ttsEnabled = document.getElementById('tts-voice-toggle').checked;
+            if (ttsEnabled) {
+                speakText("Voice output enabled.", true);
+            } else {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        function updateSpeechParameters() {
+            voiceRate = parseFloat(document.getElementById('slider-voice-rate').value);
+            voicePitch = parseFloat(document.getElementById('slider-voice-pitch').value);
+            document.getElementById('lbl-voice-rate').textContent = `${voiceRate.toFixed(1)}x`;
+            document.getElementById('lbl-voice-pitch').textContent = `${voicePitch.toFixed(1)}x`;
+        }
+
+        function updateAgentPersona() {
+            activePersona = document.getElementById('chat-persona-select').value;
+            const personaNames = {
+                'defensive': 'Cyber Defensive Shield',
+                'auditor': 'Offensive Security Auditor',
+                'educator': 'NCAS Academic Educator'
+            };
+            const messagesContainer = document.getElementById('chat-messages');
+            const bubble = document.createElement('div');
+            bubble.className = 'chat-bubble assistant obsidian';
+            bubble.innerHTML = `<i>System notice: Persona switched to <b>${personaNames[activePersona]}</b>. Future answers will reflect this profile.</i>`;
+            messagesContainer.appendChild(bubble);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function resetChatSession() {
+            if (!confirm("Reset chat history?")) return;
+            const messagesContainer = document.getElementById('chat-messages');
+            messagesContainer.innerHTML = `
+                <div class="chat-bubble assistant obsidian">
+                    Hello! I am Natasha, your advanced cybersecurity AI assistant. You can:
+                    <br>• Type queries in **any regional language** (Hindi, Malayalam, Tamil, Arabic, etc.).
+                    <br>• Click 🎤 to speak your question.
+                    <br>• Click 📷 to **upload an image or screenshot** for multimodal AI analysis!
+                    <br><br><i>To hear responses read aloud automatically, toggle the 'Voice Output' switch in the AI control panel on the right.</i>
+                </div>
+            `;
+            window.speechSynthesis.cancel();
+        }
+
+        function exportChatTranscript() {
+            const messages = document.querySelectorAll('#chat-messages .chat-bubble');
+            let text = "--- CYBERSHIELD AI CHAT TRANSCRIPT ---\n\n";
+            messages.forEach(msg => {
+                const role = msg.classList.contains('user') ? "User" : "Natasha AI";
+                const plainText = msg.innerText.replace(/🔊 Read Aloud/g, '').trim();
+                text += `[${role}]:\n${plainText}\n\n`;
+            });
+            
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `cybershield_chat_${new Date().toISOString().slice(0, 10)}.txt`;
+            link.click();
+        }
+
+        function sanitizeTextForVoice(text) {
+            if (!text) return "";
+            return text
+                // 1. Remove emojis
+                .replace(/[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/g, '')
+                // 2. Remove formatting marks
+                .replace(/###/g, '')
+                .replace(/##/g, '')
+                .replace(/#/g, '')
+                .replace(/\*\*/g, '')
+                .replace(/\*/g, '')
+                .replace(/__/g, '')
+                .replace(/_/g, '')
+                .replace(/`/g, '')
+                // 3. Remove symbols & operators
+                .replace(/[●•■▪◆○◦*]/g, '')
+                .replace(/[-+]\s+/g, ' ')
+                .replace(/\[|\]|\(|\)/g, ' ')
+                .replace(/==|!=|<=|>=/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function speakText(text, force = false) {
+            if (!ttsEnabled && !force) return; // Stay quiet if TTS is disabled and not forced
+            
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const cleanText = text.replace(/###/g, '').replace(/\*\*/g, '').replace(/#/g, '');
-                const utterance = new SpeechSynthesisUtterance(cleanText);
-                utterance.lang = window.navigator.language || 'en-US';
-                window.speechSynthesis.speak(utterance);
-            } else {
-                alert("Text-to-speech is not supported in this browser.");
+                const sanitized = sanitizeTextForVoice(text);
+                if (!sanitized) return;
+                
+                // standard voice lookup
+                const SpeechUtterance = window.SpeechSynthesisUtterance || SpeechSynthesisUtterance;
+                const activeUtterance = new SpeechUtterance(sanitized);
+                
+                if (selectedVoiceIndex !== -1 && voices[selectedVoiceIndex]) {
+                    activeUtterance.voice = voices[selectedVoiceIndex];
+                }
+                
+                activeUtterance.rate = voiceRate;
+                activeUtterance.pitch = voicePitch;
+                
+                activeUtterance.onstart = () => {
+                    addTelemetryLog(`[TRANSCRIPT] Speaking: "${sanitized.substring(0, 45)}..."`);
+                };
+                
+                activeUtterance.onend = () => {
+                    addTelemetryLog(`[TRANSCRIPT] Speech output complete.`);
+                };
+                
+                window.speechSynthesis.speak(activeUtterance);
             }
         }
 
@@ -2612,8 +3713,20 @@ SHA-1:    ${sha1Hex}
             if (!userMsg && !chatImageBase64) return;
 
             input.value = '';
+
+            // User Label in specialized theme
+            const userLabel = document.createElement('div');
+            userLabel.style.fontSize = '0.7rem';
+            userLabel.style.fontWeight = 'bold';
+            userLabel.style.color = '#f97316'; // Glowing lava orange
+            userLabel.style.textAlign = 'right';
+            userLabel.style.marginBottom = '2px';
+            userLabel.style.marginTop = '12px';
+            userLabel.textContent = 'YOU (AUTHORIZED OPERATOR)';
+            messagesContainer.appendChild(userLabel);
+
             const userBubble = document.createElement('div');
-            userBubble.className = 'chat-bubble user';
+            userBubble.className = 'chat-bubble user magma';
             userBubble.textContent = userMsg || "[Sent Image]";
             
             // If image is attached, show a preview in bubble
@@ -2629,8 +3742,19 @@ SHA-1:    ${sha1Hex}
 
             messagesContainer.appendChild(userBubble);
 
+            // Natasha Label in specialized theme
+            const natashaLabel = document.createElement('div');
+            natashaLabel.style.fontSize = '0.7rem';
+            natashaLabel.style.fontWeight = 'bold';
+            natashaLabel.style.color = '#ef4444'; // Glowing lava red
+            natashaLabel.style.textAlign = 'left';
+            natashaLabel.style.marginBottom = '2px';
+            natashaLabel.style.marginTop = '12px';
+            natashaLabel.textContent = 'NATASHA (AI SECURITY CORE)';
+            messagesContainer.appendChild(natashaLabel);
+
             const assistBubble = document.createElement('div');
-            assistBubble.className = 'chat-bubble assistant';
+            assistBubble.className = 'chat-bubble assistant obsidian';
             assistBubble.textContent = "...";
             messagesContainer.appendChild(assistBubble);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -2639,11 +3763,28 @@ SHA-1:    ${sha1Hex}
             const tempImageMime = chatImageMime;
             removeChatImage(); // Reset UI state
 
+            // Determine custom system prompt based on active persona selector
+            let activeSystemInstructions = "You are Natasha, an advanced cybersecurity assistant. Answer the user's questions in their input language (support Hindi, Malayalam, Arabic, Spanish, etc.). Format your output in clean Markdown.";
+            if (activePersona === 'auditor') {
+                activeSystemInstructions = "You are Natasha, an offensive security engineer and expert penetration tester. Provide deeply technical explanations, security audits, code snippets, and CVE assessments. Answer in the user's input language. Format in clean Markdown.";
+            } else if (activePersona === 'educator') {
+                activeSystemInstructions = "You are Natasha, a computer science academic advisor. Explain cybersecurity, routing protocols, subnets, cookies, and digital threats in simple, friendly, easy-to-understand terms suitable for students. Answer in the user's input language. Format in clean Markdown.";
+            }
+
+            // Formatting helper function to convert markdown into our specialized volcanic theme elements
+            function applySpecializedFormatting(rawText) {
+                return rawText
+                    .replace(/\*\*(.*?)\*\*/g, '<b style="color:#f97316;">$1</b>') // Orange bold key concepts
+                    .replace(/### (.*?)\n/g, '<h4 style="color:#ef4444; border-bottom: 1px solid rgba(239,68,68,0.25); padding-bottom:4px; margin-top:12px; font-weight:700;">$1</h4>') // Volcano titles
+                    .replace(/`(.*?)`/g, '<code style="background:rgba(239,68,68,0.1); color:#f87171; padding: 2px 6px; border-radius:4px; font-family:\'JetBrains Mono\', monospace; font-size:0.85rem; border:1px solid rgba(239,68,68,0.15);">$1</code>') // Volcanic code
+                    .replace(/\n/g, '<br>');
+            }
+
             if (geminiApiKey) {
                 // REAL-WORLD GOOGLE GEMINI 1.5 FLASH MULTIMODAL API CALL
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiApiKey}`;
                 
-                const parts = [{ text: userMsg || "Describe this image and analyze any potential cybersecurity threats or questions related to it." }];
+                const parts = [{ text: activeSystemInstructions + "\n\nUser Question: " + (userMsg || "Describe this image and analyze any potential cybersecurity threats or questions related to it.") }];
                 if (tempImageBase64) {
                     parts.push({
                         inlineData: {
@@ -2668,45 +3809,61 @@ SHA-1:    ${sha1Hex}
                     const resData = await response.json();
                     const reply = resData.candidates[0].content.parts[0].text;
                     
-                    let formatted = reply
-                        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-                        .replace(/### (.*?)\n/g, '<h4>$1</h4>')
-                        .replace(/\n/g, '<br>');
-                    
+                    let formatted = applySpecializedFormatting(reply);
                     const safeSpeechContent = reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
-                    assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}')" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.8rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
+                    assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     
-                    // Auto-read response aloud
+                    // Auto-read response aloud (only if toggle switch is active)
                     speakText(reply);
                 } catch(e) {
                     assistBubble.textContent = `Gemini API Error: ${e.message}. Click settings ⚙️ to update your API Key.`;
                 }
             } else {
-                // LOCAL AI FALLBACK MODE
-                fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: userMsg })
-                })
-                .then(res => { checkResponseStatus(res); return res.json(); })
-                .then(data => {
-                    let formatted = data.reply
-                        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-                        .replace(/### (.*?)\n/g, '<h4>$1</h4>')
-                        .replace(/\n/g, '<br>');
+                // FREE ONLINE LLM MODE (POLLINATIONS.AI - NO KEYS REQUIRED)
+                const url = "https://text.pollinations.ai/";
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            messages: [
+                                { role: "system", content: activeSystemInstructions },
+                                { role: "user", content: userMsg }
+                            ],
+                            model: "openai"
+                        })
+                    });
                     
-                    const fallbackAlert = `<div style="font-size:0.8rem; color:var(--text-muted); background:#fee2e2; padding:8px; border-radius:4px; margin-bottom:10px;">⚠️ <b>Local Fallback Mode</b>: Paste a free Gemini API Key in Chat Settings ⚙️ to enable advanced, multimodal, multilingual AI.</div>`;
-                    const safeSpeechContent = data.reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
+                    if (!response.ok) throw new Error("Free assistant offline.");
+                    const reply = await response.text();
                     
-                    assistBubble.innerHTML = fallbackAlert + formatted + `<button onclick="speakText('${safeSpeechContent}')" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.8rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
+                    let formatted = applySpecializedFormatting(reply);
+                    const safeSpeechContent = reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
+                    
+                    assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     
-                    speakText(data.reply);
-                })
-                .catch(err => {
-                    assistBubble.textContent = err.message;
-                });
+                    speakText(reply);
+                } catch(err) {
+                    // Fall back to local search matching if this fails
+                    fetch('/api/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: userMsg })
+                    })
+                    .then(res => { checkResponseStatus(res); return res.json(); })
+                    .then(data => {
+                        let formatted = applySpecializedFormatting(data.reply);
+                        const safeSpeechContent = data.reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
+                        assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        speakText(data.reply);
+                    })
+                    .catch(e => {
+                        assistBubble.textContent = "Error: Chat service unavailable. Check your local internet.";
+                    });
+                }
             }
         }
 
