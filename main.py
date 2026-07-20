@@ -228,6 +228,7 @@ class ChatRequest(BaseModel):
     history: List[Dict[str, str]] = []
 
 class SignUpRequest(BaseModel):
+    email: str
     username: str
     password: str
 
@@ -264,7 +265,12 @@ class BanIPRequest(BaseModel):
 @app.post("/api/signup")
 async def signup(req: SignUpRequest, request: Request):
     username_clean = req.username.strip().lower()
+    email_clean = req.email.strip().lower()
     client_ip = request.client.host
+    
+    if not email_clean.endswith("@gmail.com"):
+        raise HTTPException(status_code=400, detail="Registration requires a valid Gmail address (@gmail.com).")
+        
     if username_clean in ["admin", "reiz"]:
         log_and_ban_intruder(request, req.username, "Privilege escalation attempt during signup")
         raise HTTPException(status_code=403, detail="Violation logged.")
@@ -272,7 +278,7 @@ async def signup(req: SignUpRequest, request: Request):
         raise HTTPException(status_code=400, detail="Username already registered.")
     student_db[username_clean] = req.password
     save_db(STUDENTS_FILE, student_db) # Persist on signup
-    log_activity(username_clean, "student", "Account registration completed", client_ip)
+    log_activity(username_clean, "student", f"Account registration completed (Gmail: {email_clean})", client_ip)
     return {"status": "success"}
 
 @app.post("/api/login")
@@ -1172,50 +1178,155 @@ async def find_place_by_image(req: MetadataRequest):
         "simulated_location_ip": simulated_ip
     }
 
-# 6. Latest Zero-Day Cybersecurity News Feed
+# 6. Latest Zero-Day Cybersecurity News Feed (Live NIST/CIRCL Integration + AI Summaries)
 @app.get("/api/news/latest")
 async def get_latest_security_news():
-    # Return zero-day real-world vulnerability notifications
-    news_feed = [
-        {
-            "id": 1,
-            "title": "Severe RCE Vulnerability Discovered in Core Web Application Engine",
-            "summary": "Security researchers have identified a critical vulnerability allowing remote threat actors to execute raw system commands by bypassing string filters.",
-            "source": "CyberShield Intelligence Feed",
-            "severity": "Critical",
-            "date": datetime.now().strftime("%Y-%m-%d")
-        },
-        {
-            "id": 2,
-            "title": "Phishing Attacks Targeting Student Credential Portals on the Rise",
-            "summary": "Institutional student networks are experiencing active credentials harvesting campaigns utilizing lookalike subdomains.",
-            "source": "NCAS Emergency Incident Center",
-            "severity": "High",
-            "date": datetime.now().strftime("%Y-%m-%d")
-        },
-        {
-            "id": 3,
-            "title": "DMARC Spoofing Defenses Hardened Worldwide",
-            "summary": "Major internet email systems are enforcing strict reject rules for domains lacking valid cryptographical signatures.",
-            "source": "Global Security Ledger",
-            "severity": "Medium",
-            "date": datetime.now().strftime("%Y-%m-%d")
-        }
-    ]
-    return {"news": news_feed}
+    cves = []
+    try:
+        url = "https://cve.circl.lu/api/last"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        loop = asyncio.get_event_loop()
+        def fetch_cve():
+            with urllib.request.urlopen(req, timeout=4) as response:
+                return json.loads(response.read().decode("utf-8"))
+        data = await loop.run_in_executor(None, fetch_cve)
+        if isinstance(data, list):
+            for item in data[:8]:
+                cves.append({
+                    "id": item.get("id", "CVE-Unknown"),
+                    "summary": item.get("summary", "No description available."),
+                    "cvss": item.get("cvss", "N/A"),
+                    "published": item.get("Published", "").split("T")[0]
+                })
+    except Exception as e:
+        print(f"[CVE FEED] Error: {e}")
+        cves = [
+            {"id": "CVE-2024-38063", "summary": "Windows TCP/IP Remote Code Execution Vulnerability.", "cvss": "9.8", "published": "2024-08-13"},
+            {"id": "CVE-2024-38178", "summary": "Scripting Engine Memory Corruption Vulnerability.", "cvss": "7.5", "published": "2024-08-13"}
+        ]
 
-# 7. MITRE ATT&CK Mappings Database
+    # Generate custom news items daily via Pollinations AI
+    news = []
+    try:
+        prompt = (
+            "Generate exactly 3 highly realistic or real zero-day cybersecurity news items. "
+            "Respond ONLY with a JSON array of objects having fields 'title', 'summary', 'severity', 'date'. "
+            "Do not include markdown tags like ```json or ```. Just raw JSON text."
+        )
+        raw_reply = await query_free_llm(prompt)
+        if raw_reply:
+            cleaned = raw_reply.replace("```json", "").replace("```", "").strip()
+            data = json.loads(cleaned)
+            if isinstance(data, list):
+                news = data[:3]
+    except Exception as e:
+        print(f"[NEWS FEED] AI Error: {e}")
+        
+    if not news:
+        news = [
+            {
+                "title": "New Ransomware Threat Targeting Academic Institutions Discovered",
+                "summary": "Security agencies have issued advisories regarding an active campaign exploiting remote access ports to deploy high-impact encryption routines.",
+                "severity": "Critical",
+                "date": datetime.now().strftime("%Y-%m-%d")
+            },
+            {
+                "title": "Popular open-source library vulnerable to Dependency Confusion attacks",
+                "summary": "An automated supply chain audit has revealed a malicious package uploaded to public registries masquerading as internal corporate helpers.",
+                "severity": "High",
+                "date": datetime.now().strftime("%Y-%m-%d")
+            }
+        ]
+        
+    return {"cves": cves, "news": news}
+
+# 7. MITRE ATT&CK Mappings Database (Local Lookups + Dynamic AI Mapping Fallbacks)
+MITRE_REGISTRY = [
+    {"technique_id": "T1566", "name": "Phishing", "tactic": "Initial Access", "description": "Tricking target users into downloading malware or entering credentials via spoofed interfaces."},
+    {"technique_id": "T1486", "name": "Data Encrypted for Impact", "tactic": "Impact", "description": "Ransomware encryption of target local user directories to restrict availability."},
+    {"technique_id": "T1046", "name": "Network Service Discovery", "tactic": "Discovery", "description": "Host and port scanning using tools (like nmap or ping sweeps) to find live ports."},
+    {"technique_id": "T1110", "name": "Brute Force", "tactic": "Credential Access", "description": "Systematic guessing of user account credentials to authenticate via local portals."},
+    {"technique_id": "T1071", "name": "Application Layer Protocol", "tactic": "Command and Control", "description": "Tunneling malicious data packets using standard HTTP/S protocols to bypass firewalls."}
+]
+
 @app.get("/api/mitre/mapping")
 async def query_mitre_mapping(query: str = Query(...)):
-    mitre_database = [
-        {"technique_id": "T1566", "name": "Phishing", "tactic": "Initial Access", "description": "Tricking target users into downloading malware or entering credentials via spoofed interfaces."},
-        {"technique_id": "T1486", "name": "Data Encrypted for Impact", "tactic": "Impact", "description": "Ransomware encryption of target local user directories to restrict availability."},
-        {"technique_id": "T1046", "name": "Network Service Discovery", "tactic": "Discovery", "description": "Host and port scanning using tools (like nmap or ping sweeps) to find live ports."},
-        {"technique_id": "T1110", "name": "Brute Force", "tactic": "Credential Access", "description": "Systematic guessing of user account credentials to authenticate via local portals."},
-        {"technique_id": "T1071", "name": "Application Layer Protocol", "tactic": "Command and Control", "description": "Tunneling malicious data packets using standard HTTP/S protocols to bypass firewalls."}
-    ]
-    matches = [tech for tech in mitre_database if query.lower() in tech["technique_id"].lower() or query.lower() in tech["name"].lower() or query.lower() in tech["tactic"].lower()]
+    query_lower = query.lower()
+    matches = [tech for tech in MITRE_REGISTRY if query_lower in tech["technique_id"].lower() or query_lower in tech["name"].lower() or query_lower in tech["tactic"].lower()]
+    
+    if not matches:
+        prompt = (
+            f"Generate a MITRE ATT&CK technique mapping for the term: '{query}'. "
+            f"Provide a realistic Technique ID (e.g. TXXXX), Tactic name, and description. "
+            f"Respond ONLY with a JSON object having fields 'technique_id', 'name', 'tactic', 'description'."
+        )
+        try:
+            raw_reply = await query_free_llm(prompt)
+            if raw_reply:
+                cleaned = raw_reply.replace("```json", "").replace("```", "").strip()
+                data = json.loads(cleaned)
+                if "technique_id" in data:
+                    matches.append(data)
+        except Exception:
+            pass
+            
+    if not matches:
+        matches.append({
+            "technique_id": "T1059",
+            "name": f"Command and Scripting Interpreter: {query.capitalize()}",
+            "tactic": "Execution",
+            "description": f"Execution of commands or scripts associated with {query} to bypass application filters and achieve user execution."
+        })
+        
     return {"matches": matches}
+
+# 7b. Infinite Security Quiz Generator
+@app.get("/api/quiz/generate")
+async def generate_quiz_question():
+    import random
+    prompt = (
+        "Generate a single, highly realistic, expert cybersecurity multiple-choice question. "
+        "Provide 4 distinct options, the index of the correct option (0, 1, 2, or 3), and a detailed technical explanation of the answer. "
+        "Respond ONLY with a JSON object having fields 'q' (question text), 'o' (array of 4 options), 'a' (integer index of correct option), 'e' (explanation text). "
+        "Do not include markdown tags like ```json or ```. Just raw JSON text."
+    )
+    try:
+        raw_reply = await query_free_llm(prompt)
+        if raw_reply:
+            cleaned = raw_reply.replace("```json", "").replace("```", "").strip()
+            data = json.loads(cleaned)
+            if "q" in data and "o" in data and "a" in data:
+                return data
+    except Exception as e:
+        print(f"[QUIZ GENERATOR] AI Error: {e}")
+        
+    quiz_pool = [
+        {
+            "q": "Which header parameter mitigates Clickjacking attacks by restricting framing options?",
+            "o": ["X-Frame-Options", "Content-Type", "Access-Control-Allow-Origin", "Strict-Transport-Security"],
+            "a": 0,
+            "e": "X-Frame-Options allows web hosts to restrict framing, preventing unauthorized UI redressing (Clickjacking)."
+        },
+        {
+            "q": "What is the primary target of an ARP poisoning attack on local Ethernet networks?",
+            "o": ["Injecting routing loops in DNS resolvers", "Mapping a target IP address to a malicious MAC address", "Flooding MAC address tables of layer 2 switches", "Exhausting DHCP server IP allocations"],
+            "a": 1,
+            "e": "ARP poisoning maps the gateway's IP address to the attacker's MAC address, routing local peer packets to the attacker."
+        },
+        {
+            "q": "Which TCP flag configuration is used to initiate a stealth SYN scan?",
+            "o": ["FIN, PSH, URG", "Only the SYN flag is set", "SYN and ACK flags are set", "No flags are set (Null scan)"],
+            "a": 1,
+            "e": "A SYN scan sets only the SYN flag, waiting for a SYN-ACK response to determine port availability without establishing a full handshake."
+        },
+        {
+            "q": "What does a DMARC policy of 'p=reject' tell receiving mail servers to do with spoofed emails?",
+            "o": ["Quarantine them in the junk folder", "Discard/reject the emails immediately", "Deliver them normally but flag them as spam", "Forward them to the administrator's account"],
+            "a": 1,
+            "e": "A DMARC policy of reject instructs mail transfer agents to completely drop emails that fail SPF and DKIM checks."
+        }
+    ]
+    return random.choice(quiz_pool)
 
 # 8. User Management Endpoint (Admin Controls)
 @app.get("/api/admin/users")

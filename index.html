@@ -935,6 +935,11 @@
             <div id="auth-error" style="color: var(--accent-red); font-size: 0.9rem; margin-bottom: 14px; display: none;"></div>
             <div id="auth-success" style="color: var(--text-main); font-size: 0.9rem; margin-bottom: 14px; display: none;"></div>
             
+            <div class="auth-field" id="auth-email-field" style="display: none; margin-bottom: 16px;">
+                <label>Gmail Address</label>
+                <input type="email" id="auth-email" class="input-text" placeholder="yourusername@gmail.com">
+            </div>
+            
             <div class="auth-field">
                 <label>Username</label>
                 <input type="text" id="auth-user" class="input-text" placeholder="Enter username">
@@ -945,7 +950,7 @@
                 <input type="password" id="auth-pass" class="input-text" placeholder="Enter password">
             </div>
 
-            <button class="btn" id="btn-auth-submit" style="width: 100%; margin-top: 10px;" onclick="executeAuthentication()">Sign In</button>
+            <button class="btn" id="btn-auth-submit" style="width: 100%; margin-top: 10px;" onclick="executeAuthentication()"></button>
         </div>
     </div>
 
@@ -996,7 +1001,7 @@
             <h2 class="panel-title">Safety Status Overview</h2>
             <div class="stats-grid">
                 <div class="stat-card">
-                    <span class="stat-num" id="metrics-score">95%</span>
+                    <span class="stat-num" id="metrics-score" style="color: #10b981;">100%</span>
                     <span class="stat-label">Device Security Score</span>
                 </div>
                 <div class="stat-card">
@@ -2018,6 +2023,7 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             document.getElementById('tab-login').className = mode === 'login' ? 'auth-tab active' : 'auth-tab';
             document.getElementById('tab-signup').className = mode === 'signup' ? 'auth-tab active' : 'auth-tab';
             document.getElementById('btn-auth-submit').textContent = mode === 'login' ? 'Sign In' : 'Register Student';
+            document.getElementById('auth-email-field').style.display = mode === 'signup' ? 'block' : 'none';
         }
 
         function checkResponseStatus(resp) {
@@ -2045,11 +2051,23 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             }
 
             if (activeAuthMode === 'signup') {
+                const email = document.getElementById('auth-email').value.trim();
+                if (!email) {
+                    errorDiv.textContent = "Please enter your Gmail address.";
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                if (!email.toLowerCase().endsWith("@gmail.com")) {
+                    errorDiv.textContent = "Registration requires a valid @gmail.com address.";
+                    errorDiv.style.display = 'block';
+                    return;
+                }
+                
                 try {
                     const response = await fetch('/api/signup', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username: user, password: pass })
+                        body: JSON.stringify({ email: email, username: user, password: pass })
                     });
                     
                     checkResponseStatus(response);
@@ -2162,6 +2180,15 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             // Stop camera if leaving scanner workspace
             if (panelName !== 'camera-scanner') {
                 stopCameraScanner();
+            }
+            
+            // Dynamically load panel-specific feeds upon switching tabs
+            if (panelName === 'cve-news-feed') {
+                fetchLatestNewsAndCves();
+            } else if (panelName === 'academic-rules-center') {
+                loadAcademicAnnouncements();
+            } else if (panelName === 'student-user-management') {
+                loadStudentListForManagement();
             }
         }
 
@@ -2554,66 +2581,69 @@ ${osmLink}
             if (cveContainer) cveContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted);">Fetching live CVE catalog...</div>';
             if (newsContainer) newsContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted);">Fetching news updates...</div>';
             
-            // 1. Fetch News
             try {
-                const newsRes = await fetch('/api/news/latest');
-                const newsData = await newsRes.json();
+                const response = await fetch('/api/news/latest');
+                const data = await response.json();
+                
+                // 1. Render News
                 if (newsContainer) {
                     newsContainer.innerHTML = '';
-                    newsData.news.forEach(item => {
-                        const card = document.createElement('div');
-                        card.style.background = 'var(--bg-dark)';
-                        card.style.border = '1px solid var(--border-panel)';
-                        card.style.borderRadius = '8px';
-                        card.style.padding = '12px';
-                        
-                        card.innerHTML = `
-                            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                                <span style="font-weight:bold; color:var(--text-main); font-size:0.85rem;">${item.title}</span>
-                                <span style="font-size:0.7rem; padding:2px 6px; border-radius:4px; background:rgba(220,38,38,0.1); color:var(--accent-red); font-weight:700;">${item.severity}</span>
-                            </div>
-                            <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.4; margin-bottom:6px;">${item.summary}</p>
-                            <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#64748b;">
-                                <span>Source: ${item.source}</span>
-                                <span>${item.date}</span>
-                            </div>
-                        `;
-                        newsContainer.appendChild(card);
-                    });
+                    if (!data.news || data.news.length === 0) {
+                        newsContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.8rem;">No recent news found.</div>';
+                    } else {
+                        data.news.forEach(item => {
+                            const card = document.createElement('div');
+                            card.style.background = 'var(--bg-dark)';
+                            card.style.border = '1px solid var(--border-panel)';
+                            card.style.borderRadius = '8px';
+                            card.style.padding = '12px';
+                            
+                            card.innerHTML = `
+                                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                                    <span style="font-weight:bold; color:var(--text-main); font-size:0.85rem;">${item.title}</span>
+                                    <span style="font-size:0.7rem; padding:2px 6px; border-radius:4px; background:rgba(220,38,38,0.1); color:var(--accent-red); font-weight:700;">${item.severity || 'High'}</span>
+                                </div>
+                                <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.4; margin-bottom:6px;">${item.summary}</p>
+                                <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#64748b;">
+                                    <span>Source: Threat Intelligence Core</span>
+                                    <span>${item.date}</span>
+                                </div>
+                            `;
+                            newsContainer.appendChild(card);
+                        });
+                    }
+                }
+                
+                // 2. Render CVEs
+                if (cveContainer) {
+                    cveContainer.innerHTML = '';
+                    if (!data.cves || data.cves.length === 0) {
+                        cveContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.8rem;">No recent CVEs found.</div>';
+                    } else {
+                        data.cves.forEach(item => {
+                            const card = document.createElement('div');
+                            card.style.background = 'var(--bg-dark)';
+                            card.style.border = '1px solid var(--border-panel)';
+                            card.style.borderRadius = '8px';
+                            card.style.padding = '12px';
+                            
+                            card.innerHTML = `
+                                <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                                    <span style="font-weight:bold; color:var(--accent-red); font-size:0.85rem;">${item.id}</span>
+                                    <span style="font-size:0.7rem; font-weight:700; color:#ef4444;">CVSS: ${item.cvss}</span>
+                                </div>
+                                <p style="font-size:0.7rem; color:var(--text-muted); line-height:1.4;">${item.summary}</p>
+                                <div style="display:flex; justify-content:flex-end; font-size:0.65rem; color:#64748b; margin-top:4px;">
+                                    <span>Published: ${item.published}</span>
+                                </div>
+                            `;
+                            cveContainer.appendChild(card);
+                        });
+                    }
                 }
             } catch(e) {
                 if (newsContainer) newsContainer.innerHTML = `<span style="color:var(--accent-red);">News offline: ${e.message}</span>`;
-            }
-            
-            // 2. Fetch CVEs
-            try {
-                const cveRes = await fetch('/api/threat/cve?query=CVE-2024');
-                const cveData = await cveRes.json();
-                if (cveContainer) {
-                    cveContainer.innerHTML = '';
-                    if(cveData.matches.length === 0) {
-                        cveContainer.innerHTML = '<div style="color:var(--text-muted); font-size:0.8rem;">No recent CVEs found.</div>';
-                    }
-                    cveData.matches.forEach(item => {
-                        const card = document.createElement('div');
-                        card.style.background = 'var(--bg-dark)';
-                        card.style.border = '1px solid var(--border-panel)';
-                        card.style.borderRadius = '8px';
-                        card.style.padding = '12px';
-                        
-                        card.innerHTML = `
-                            <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                                <span style="font-weight:bold; color:var(--accent-red); font-size:0.85rem;">${item.id}</span>
-                                <span style="font-size:0.7rem; font-weight:700;">${item.severity}</span>
-                            </div>
-                            <p style="font-weight:600; font-size:0.75rem; color:var(--text-main); margin-bottom:4px;">${item.title}</p>
-                            <p style="font-size:0.7rem; color:var(--text-muted); line-height:1.4;">${item.description}</p>
-                        `;
-                        cveContainer.appendChild(card);
-                    });
-                }
-            } catch(e) {
-                if (cveContainer) cveContainer.innerHTML = `<span style="color:var(--accent-red);">CVE lookup offline: ${e.message}</span>`;
+                if (cveContainer) cveContainer.innerHTML = `<span style="color:var(--accent-red);">CVE offline: ${e.message}</span>`;
             }
         }
 
@@ -4027,47 +4057,56 @@ SHA-1:    ${sha1Hex}
             }
         ];
 
-        let currentQuestionIdx = 0;
+        let currentQuestion = null;
         let answered = false;
+        let score = 0;
+        let totalQuestions = 0;
 
-        function loadQuestion() {
+        async function loadQuestion() {
             answered = false;
             document.getElementById('btn-next-quiz').style.display = 'none';
             const quizContainer = document.getElementById('quiz-container');
-            const data = quizData[currentQuestionIdx];
+            quizContainer.innerHTML = '<div style="text-align: center; color: var(--text-muted);">Decrypting expert cybersecurity challenge...</div>';
 
-            quizContainer.innerHTML = `
-                <div class="quiz-card">
-                    <div class="quiz-question">Question ${currentQuestionIdx + 1}: ${data.q}</div>
-                    <div class="quiz-options">
-                        ${data.o.map((opt, i) => `<div class="quiz-option" onclick="checkAnswer(${i}, this)">${opt}</div>`).join('')}
+            try {
+                const response = await fetch('/api/quiz/generate');
+                currentQuestion = await response.json();
+                totalQuestions++;
+                
+                quizContainer.innerHTML = `
+                    <div class="quiz-card">
+                        <div class="quiz-question">Question ${totalQuestions}: ${currentQuestion.q}</div>
+                        <div class="quiz-options">
+                            ${currentQuestion.o.map((opt, i) => `<div class="quiz-option" onclick="checkAnswer(${i}, this)">${opt}</div>`).join('')}
+                        </div>
+                        <div class="quiz-explanation" id="quiz-explain">${currentQuestion.e}</div>
                     </div>
-                    <div class="quiz-explanation" id="quiz-explain">${data.e}</div>
-                </div>
-            `;
+                `;
+            } catch(e) {
+                quizContainer.innerHTML = `<div style="color:var(--accent-red); text-align:center;">Failed to resolve quiz challenges: ${e.message}</div>`;
+            }
         }
 
         function checkAnswer(selectedIdx, element) {
             if (answered) return;
             answered = true;
-            const data = quizData[currentQuestionIdx];
             const options = document.querySelectorAll('.quiz-option');
 
-            if (selectedIdx === data.a) {
+            if (selectedIdx === currentQuestion.a) {
                 element.classList.add('correct');
+                score++;
             } else {
                 element.classList.add('incorrect');
-                options[data.a].classList.add('correct');
+                options[currentQuestion.a].classList.add('correct');
             }
 
             document.getElementById('quiz-explain').style.display = 'block';
-            if (currentQuestionIdx < quizData.length - 1) {
-                document.getElementById('btn-next-quiz').style.display = 'inline-block';
-            }
+            const btnNext = document.getElementById('btn-next-quiz');
+            btnNext.style.display = 'inline-block';
+            btnNext.textContent = `Generate Next Challenge [Score: ${score}/${totalQuestions}] ⚔️`;
         }
 
         function loadNextQuestion() {
-            currentQuestionIdx++;
             loadQuestion();
         }
 
