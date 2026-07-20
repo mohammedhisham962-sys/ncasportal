@@ -174,15 +174,7 @@ def log_activity(username: str, role: str, action: str, ip: str, user_agent: str
         "location": location
     })
 
-def get_subnet_prefix(ip: str) -> str:
-    if not ip:
-        return ""
-    parts = ip.split(".")
-    if len(parts) == 4:
-        return f"{parts[0]}.{parts[1]}.{parts[2]}."
-    return ip
-
-# Middleware to intercept and reject banned IPs & subnets
+# Middleware to intercept and reject banned IPs
 @app.middleware("http")
 async def check_ban_status(request: Request, call_next):
     client_ip = request.client.host
@@ -196,17 +188,6 @@ async def check_ban_status(request: Request, call_next):
             status_code=403,
             content={"detail": "ACCESS TERMINATED: Your IP address has been banned due to security violations."}
         )
-        
-    client_prefix = get_subnet_prefix(client_ip)
-    for banned_ip in banned_ips:
-        if banned_ip in ["127.0.0.1", "localhost", "::1"]:
-            continue
-        banned_prefix = get_subnet_prefix(banned_ip)
-        if client_prefix and banned_prefix == client_prefix:
-            return JSONResponse(
-                status_code=403,
-                content={"detail": "ACCESS TERMINATED: Your network subnet has been blacklisted due to security violations."}
-            )
             
     return await call_next(request)
 
@@ -296,8 +277,8 @@ async def signup(req: SignUpRequest, request: Request):
     email_clean = req.email.strip().lower()
     client_ip = request.client.host
     
-    if not email_clean.endswith("@gmail.com"):
-        raise HTTPException(status_code=400, detail="Registration requires a valid Gmail address (@gmail.com).")
+    if "@" not in email_clean or "." not in email_clean:
+        raise HTTPException(status_code=400, detail="Registration requires a valid email address.")
         
     if username_clean in ["admin", "reiz"]:
         log_and_ban_intruder(request, req.username, "Privilege escalation attempt during signup")
@@ -306,7 +287,7 @@ async def signup(req: SignUpRequest, request: Request):
         raise HTTPException(status_code=400, detail="Username already registered.")
     student_db[username_clean] = req.password
     save_db(STUDENTS_FILE, student_db) # Persist on signup
-    log_activity(username_clean, "student", f"Account registration completed (Gmail: {email_clean})", client_ip)
+    log_activity(username_clean, "student", f"Account registration completed (Email: {email_clean})", client_ip)
     return {"status": "success"}
 
 @app.post("/api/login")
@@ -538,21 +519,19 @@ async def query_free_llm(prompt: str) -> Optional[str]:
         return AI_CACHE[prompt_clean]
         
     system_prompt = (
-        "You are Natasha (AI SECURITY CORE), a professional, highly advanced security assistant. "
-        "Answer the user's question about cybersecurity, computer networks, or diagnostic features. "
-        "Your reply must be extremely helpful and formatted in clean Markdown. "
-        "Keep your response concise and direct."
+        "You are Natasha, a professional, highly advanced AI assistant. "
+        "Answer the user's questions on any real-world topic (general knowledge, calculations, time, cybersecurity, and beyond) in their input language. "
+        "Keep your response concise, direct, and formatted in clean Markdown."
     )
     
     # URL encode system persona and user prompt
     encoded_text = urllib.parse.quote(f"System: {system_prompt}\nUser: {prompt}")
-    api_url = f"https://text.pollinations.ai/{encoded_text}"
+    api_url = f"https://text.pollinations.ai/{encoded_text}?model=openai-gpt-4o-mini"
     
     try:
         loop = asyncio.get_event_loop()
         def fetch():
             req = urllib.request.Request(api_url, headers={"User-Agent": "Mozilla/5.0"})
-            # 5 seconds timeout to load keyless AI replies fast
             with urllib.request.urlopen(req, timeout=5) as response:
                 return response.read().decode("utf-8").strip()
         text = await loop.run_in_executor(None, fetch)
@@ -1365,6 +1344,17 @@ async def generate_quiz_question():
     ]
     return random.choice(quiz_pool)
 
+@app.get("/api/auth/status")
+async def check_auth_status(username: str = Query(...), role: str = Query(...), request: Request = None):
+    client_ip = request.client.host
+    if client_ip not in ["127.0.0.1", "localhost", "::1"]:
+        if client_ip in banned_ips:
+            raise HTTPException(status_code=403, detail="ACCESS TERMINATED: Your IP has been banned.")
+    username_clean = username.strip().lower()
+    if username_clean in banned_users:
+        raise HTTPException(status_code=403, detail="ACCESS TERMINATED: Your user account is banned.")
+    return {"status": "active"}
+
 # 8. User Management Endpoint (Admin Controls)
 @app.get("/api/admin/users")
 async def get_user_list(role: str = Query(...), username: str = Query(...), request: Request = None):
@@ -1538,12 +1528,11 @@ def generate_offline_reply(user_msg: str) -> str:
     
     return (
         f"### Offline AI Diagnostic Core - Active Security Analysis\n\n"
-        f"You are currently offline, but the **Aegis Local Core** has processed your query regarding: `{keyword}`.\n\n"
+        f"The **Aegis Local Core** has processed your query regarding: `{keyword}`.\n\n"
         f"**Defensive Recommendations**:\n"
         f"1. **Access Controls**: Restrict raw system access to this resource and enforce role-based authentication (RBAC).\n"
         f"2. **Log Monitoring**: Enable detailed audit logs on local endpoints to detect anomalies.\n"
-        f"3. **Network Isolation**: Segment internal assets using VLANs and local firewall zones to contain lateral movement.\n\n"
-        f"*Connection Notice: Reconnect to the internet or configure a Gemini API key in settings to enable full generative responses.*"
+        f"3. **Network Isolation**: Segment internal assets using VLANs and local firewall zones to contain lateral movement."
     )
 
 # Chat assistant (Free Backend LLM + Local Heuristics Generative Routing)
