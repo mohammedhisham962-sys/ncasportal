@@ -174,15 +174,40 @@ def log_activity(username: str, role: str, action: str, ip: str, user_agent: str
         "location": location
     })
 
-# Middleware to intercept and reject banned IPs
+def get_subnet_prefix(ip: str) -> str:
+    if not ip:
+        return ""
+    parts = ip.split(".")
+    if len(parts) == 4:
+        return f"{parts[0]}.{parts[1]}.{parts[2]}."
+    return ip
+
+# Middleware to intercept and reject banned IPs & subnets
 @app.middleware("http")
 async def check_ban_status(request: Request, call_next):
     client_ip = request.client.host
+    
+    # Exclude loopback/localhost IPs from any bans
+    if client_ip in ["127.0.0.1", "localhost", "::1"]:
+        return await call_next(request)
+        
     if client_ip in banned_ips:
         return JSONResponse(
             status_code=403,
             content={"detail": "ACCESS TERMINATED: Your IP address has been banned due to security violations."}
         )
+        
+    client_prefix = get_subnet_prefix(client_ip)
+    for banned_ip in banned_ips:
+        if banned_ip in ["127.0.0.1", "localhost", "::1"]:
+            continue
+        banned_prefix = get_subnet_prefix(banned_ip)
+        if client_prefix and banned_prefix == client_prefix:
+            return JSONResponse(
+                status_code=403,
+                content={"detail": "ACCESS TERMINATED: Your network subnet has been blacklisted due to security violations."}
+            )
+            
     return await call_next(request)
 
 # Helper to log and ban intruders
@@ -192,6 +217,9 @@ def log_and_ban_intruder(request: Request, username: Optional[str], action: str)
     path = request.url.path
     method = request.method
     
+    if client_ip in ["127.0.0.1", "localhost", "::1"]:
+        return
+        
     banned_ips.add(client_ip)
     if username:
         banned_users.add(username.lower())
@@ -463,6 +491,8 @@ async def ban_ip(req: BanIPRequest, role: str = Query(...), username: str = Quer
     if role != "admin" or username_clean != "reiz":
         log_and_ban_intruder(request, username, "IP termination bypass attempt")
         raise HTTPException(status_code=403, detail="Access denied.")
+    if req.ip in ["127.0.0.1", "localhost", "::1"]:
+        raise HTTPException(status_code=400, detail="Cannot ban loopback / localhost IP address.")
     banned_ips.add(req.ip)
     log_activity("reiz", "admin", f"Administratively banned & terminated IP: {req.ip}", request.client.host)
     return {"status": "banned"}
