@@ -22,7 +22,7 @@ app = FastAPI(title="NCAS Cyber Portal - CyberShield Suite")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
