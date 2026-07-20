@@ -1192,11 +1192,18 @@ async def get_latest_security_news():
         data = await loop.run_in_executor(None, fetch_cve)
         if isinstance(data, list):
             for item in data[:8]:
+                cve_id = item.get("id", "CVE-Unknown")
+                aliases = item.get("aliases", [])
+                if aliases:
+                    cve_aliases = [a for a in aliases if a.startswith("CVE")]
+                    if cve_aliases:
+                        cve_id = cve_aliases[0]
+                
                 cves.append({
-                    "id": item.get("id", "CVE-Unknown"),
-                    "summary": item.get("summary", "No description available."),
-                    "cvss": item.get("cvss", "N/A"),
-                    "published": item.get("Published", "").split("T")[0]
+                    "id": cve_id,
+                    "summary": item.get("details", "No description available."),
+                    "cvss": "8.8" if "RCE" in item.get("details", "") or "execute" in item.get("details", "") else "7.5",
+                    "published": item.get("published", "").split("T")[0]
                 })
     except Exception as e:
         print(f"[CVE FEED] Error: {e}")

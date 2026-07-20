@@ -2189,6 +2189,8 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                 loadAcademicAnnouncements();
             } else if (panelName === 'student-user-management') {
                 loadStudentListForManagement();
+            } else if (panelName === 'quiz') {
+                loadQuestion();
             }
         }
 
@@ -4129,7 +4131,7 @@ SHA-1:    ${sha1Hex}
         setInterval(checkConnectionStatus, 4500);
         checkConnectionStatus();
 
-        loadQuestion();
+        toggleAuthMode('login'); // Ensure auth overlay button and fields are initialized!
     </script>
 </body>
 </html>
