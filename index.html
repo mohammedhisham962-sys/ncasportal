@@ -1164,6 +1164,15 @@
                 <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('cve-news-feed')">📰 CVE & News</li>
             </ul>
 
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('academy')">🎓 Academy & CTF Hub <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-academy">
+                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('academy-dashboard')">📊 Academy Dashboard</li>
+                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('academy-paths')">🗺️ Guided Paths</li>
+                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('academy-labs')">🖥️ Interactive Labs</li>
+                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('academy-ctf')">🚩 CTF Challenges</li>
+                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('academy-certificates')">📜 Certificate Vault</li>
+            </ul>
+
             <li class="nav-category-header" onclick="toggleSidebarAccordion('control')">🏫 Academic Control Hub <span class="accordion-arrow">▲</span></li>
             <ul class="nav-sub-list" id="sub-control">
                 <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('academic-rules-center')">📣 Rules & Bulletins</li>
@@ -1258,7 +1267,7 @@
                             <li>Expand the Hubs in the sidebar dropdown menu</li>
                             <li>Navigate specific tools by clicking sub-menu items</li>
                             <li>Use the breadcrumb button to return to the Hub dashboard</li>
-                            <li>Query Natasha (AI assistant) for security assistance</li>
+                            <li>Query AI assistant for security assistance</li>
                             <li>Report cyber threats to the faculty using the reporting panel</li>
                         </ul>
                     </div>
@@ -1507,7 +1516,7 @@
                 <div class="hub-card" onclick="switchPanel('chat')">
                     <div class="hub-card-icon">💬</div>
                     <div class="hub-card-title">AI Cyber Assistant</div>
-                    <div class="hub-card-desc">Interact with Natasha, your advanced multilingual assistant, featuring voice output and image queries.</div>
+                    <div class="hub-card-desc">Interact with the AI assistant, featuring voice output, multi-language support, and image queries.</div>
                 </div>
                 <div class="hub-card" onclick="switchPanel('quiz')">
                     <div class="hub-card-icon">❓</div>
@@ -2002,7 +2011,7 @@
         <!-- 11. AI ASSISTANT CHAT -->
         <div id="panel-chat" class="panel">
             <h2 class="panel-title" style="justify-content: space-between;">
-                <span>AI Cyber Agent (Natasha Core)</span>
+                <span>AI Cyber Agent (Secure AI Core)</span>
                 <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; margin: 0;" onclick="toggleGeminiSettings()">⚙️ Settings</button>
             </h2>
 
@@ -2024,10 +2033,10 @@
                 <!-- Left: Chat Container (Volcano & Asteroid Styled) -->
                 <div class="chat-container volcano-asteroid-chat" style="height: 520px; position: relative;">
                     <div class="chat-messages" id="chat-messages" style="height: calc(100% - 70px); overflow-y: auto;">
-                        <div style="font-size: 0.7rem; font-weight: bold; color: #ef4444; text-align: left; margin-bottom: 2px; margin-top: 10px;">NATASHA (AI SECURITY CORE)</div>
+                        <div style="font-size: 0.7rem; font-weight: bold; color: #10b981; text-align: left; margin-bottom: 2px; margin-top: 10px;">NCAS SECURE AI CORE</div>
                         <div class="chat-bubble assistant obsidian">
-                            Hello! I am Natasha, your advanced cybersecurity AI assistant. You can:
-                            <br>• Type queries in <b style="color:#f97316;">any regional language</b> (Hindi, Malayalam, Tamil, Arabic, etc.).
+                            Welcome! I am the NCAS Cyber Shield AI assistant. I can help answer your doubts about cybersecurity and any other basic questions in any language.
+                            <br>• Type queries in <b style="color:#f97316;">any language</b> (Hindi, Malayalam, Tamil, Arabic, etc.).
                             <br>• Click 🎤 to speak your question.
                             <br>• Click 📷 to <b style="color:#f97316;">upload an image or screenshot</b> for multimodal AI analysis!
                             <br><br><i>To hear responses read aloud automatically, toggle the 'Voice Output' switch in the AI control panel on the right.</i>
@@ -2037,7 +2046,7 @@
                         <div id="gemini-missing-alert-card" style="background: rgba(249, 115, 22, 0.05); border: 1px solid rgba(249, 115, 22, 0.2); padding: 16px; border-radius: 8px; margin: 12px 0 16px 0; font-family: inherit;">
                             <h4 style="margin: 0 0 6px 0; color: #f97316; font-size: 0.95rem; font-weight: 700;">🌐 Enable Real-World Gemini LLM (100% Free)</h4>
                             <p style="margin: 0 0 12px 0; font-size: 0.82rem; color: #94a3b8; line-height: 1.4;">
-                                Natasha is running in basic fallback mode. To activate the full, original **Google Gemini 1.5 LLM** (supporting all custom questions and multiple regional languages for free), simply activate a free key:
+                                The AI assistant is running in basic fallback mode. To activate the full, original **Google Gemini 1.5 LLM** (supporting all custom questions and multiple regional languages for free), simply activate a free key:
                             </p>
                             <div style="display: flex; gap: 8px; margin-bottom: 8px;">
                                 <input type="password" id="direct-gemini-key" placeholder="Paste free AI Studio key (AIzaSy...)" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-panel); background: #070b13; color: #ffffff; font-size: 0.8rem; outline: none;">
@@ -2057,7 +2066,7 @@
                         <button onclick="document.getElementById('chat-image-input').click()" id="btn-chat-image" style="background:none; border:none; padding:0 12px; color:#64748b; font-size:1.35rem; cursor:pointer;">📷</button>
                         <input type="file" id="chat-image-input" style="display: none;" accept="image/*" onchange="previewChatImage(this.files[0])">
                         
-                        <input type="text" id="chat-input" placeholder="Ask Natasha AI or upload a screenshot..." style="color: #f3f4f6;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                        <input type="text" id="chat-input" placeholder="Ask AI assistant or upload a screenshot..." style="color: #f3f4f6;" onkeypress="if(event.key === 'Enter') sendChatMessage()">
                         <button onclick="sendChatMessage()">Send</button>
                     </div>
                 </div>
@@ -2124,6 +2133,310 @@
                     <div style="display: flex; gap: 8px; margin-top: 5px;">
                         <button class="btn btn-secondary" style="flex: 1; padding: 10px; font-size: 0.8rem;" onclick="resetChatSession()">Reset Chat 🔄</button>
                         <button class="btn" style="flex: 1; padding: 10px; font-size: 0.8rem;" onclick="exportChatTranscript()">Export 💾</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACADEMY DASHBOARD -->
+        <div id="panel-academy-dashboard" class="panel">
+            <h2 class="panel-title">🎓 Student Academy Control Room</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value" id="academy-xp">2,450 XP</div>
+                    <div class="metric-label">Total Experience Points</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="academy-rank">#12 / Student Level 14</div>
+                    <div class="metric-label">Global Leaderboard Rank</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">🔥 7 Days</div>
+                    <div class="metric-label">Active Daily Streak</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">🎯 3 / 5</div>
+                    <div class="metric-label">Weekly Goals Completed</div>
+                </div>
+            </div>
+
+            <!-- Gamified Goals and Badges -->
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-top: 24px;">
+                <div class="result-block">
+                    <div class="result-header">Weekly Academy Missions</div>
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                            <div>
+                                <div style="font-weight: 700; color: #fff;">🔑 Decrypting Secrets Lab</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Decrypt files using AES-256 in the interactive terminal.</div>
+                            </div>
+                            <span class="badge" style="background: #10b981; color:#fff; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">Complete (+200 XP)</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                            <div>
+                                <div style="font-weight: 700; color: #fff;">🚩 Retrieve OSINT CTF Flag</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Extract the hidden flag in the WHOIS lookup challenge.</div>
+                            </div>
+                            <span class="badge" style="background: #f59e0b; color:#fff; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">In Progress (+150 XP)</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                            <div>
+                                <div style="font-weight: 700; color: #fff;">🧪 Complete Web application OWASP Room</div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Solve all lessons related to XSS vulnerabilities.</div>
+                            </div>
+                            <span class="badge" style="background: #ef4444; color:#fff; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem;">Locked</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header">Earned Badges</div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px; text-align: center;">
+                        <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(16,185,129,0.2);">
+                            <div style="font-size: 1.8rem;">🛡️</div>
+                            <div style="font-size: 0.72rem; font-weight: 700; color: #10b981; margin-top: 4px;">Defense Cadet</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(59,130,246,0.2);">
+                            <div style="font-size: 1.8rem;">🔌</div>
+                            <div style="font-size: 0.72rem; font-weight: 700; color: #3b82f6; margin-top: 4px;">L7 Auditor</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 8px; border: 1px solid rgba(245,158,11,0.2);">
+                            <div style="font-size: 1.8rem;">🔥</div>
+                            <div style="font-size: 0.72rem; font-weight: 700; color: #f59e0b; margin-top: 4px;">7-Day Streak</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GUIDED LEARNING PATHS -->
+        <div id="panel-academy-paths" class="panel">
+            <h2 class="panel-title">🗺️ Guided Learning Paths</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 20px;">
+                <!-- Beginner Path -->
+                <div class="result-block">
+                    <div class="result-header" style="justify-content: space-between; display: flex;">
+                        <span>🎓 Beginner Path</span>
+                        <span style="color: #10b981; font-weight: 700; font-size: 0.85rem;">80% Completed</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <label class="checkbox-container">✓ Cyber Security Basics <span style="font-size:0.75rem; color:#10b981;">(Passed)</span></label>
+                        <label class="checkbox-container">✓ Linux Fundamentals <span style="font-size:0.75rem; color:#10b981;">(Passed)</span></label>
+                        <label class="checkbox-container">✓ Windows Basics <span style="font-size:0.75rem; color:#10b981;">(Passed)</span></label>
+                        <label class="checkbox-container">✓ Networking Fundamentals <span style="font-size:0.75rem; color:#10b981;">(Passed)</span></label>
+                        <label class="checkbox-container"><input type="checkbox"> Web Fundamentals <span style="font-size:0.75rem; color:#3b82f6;">(Active Study)</span></label>
+                    </div>
+                </div>
+
+                <!-- Intermediate Path -->
+                <div class="result-block">
+                    <div class="result-header" style="justify-content: space-between; display: flex;">
+                        <span>🛡️ Intermediate (Red/Blue Operations)</span>
+                        <span style="color: #f59e0b; font-weight: 700; font-size: 0.85rem;">25% Completed</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <label class="checkbox-container">✓ OWASP Top 10 Web Threats <span style="font-size:0.75rem; color:#10b981;">(Passed)</span></label>
+                        <label class="checkbox-container"><input type="checkbox"> Nmap Scanning & Discovery</label>
+                        <label class="checkbox-container"><input type="checkbox"> Wireshark Packet Analysis</label>
+                        <label class="checkbox-container"><input type="checkbox"> Password Audits & Attacks</label>
+                        <label class="checkbox-container"><input type="checkbox"> Practical Cryptography</label>
+                    </div>
+                </div>
+
+                <!-- Advanced Path -->
+                <div class="result-block">
+                    <div class="result-header" style="justify-content: space-between; display: flex;">
+                        <span>⚔️ Advanced Security Engineering</span>
+                        <span style="color: #ef4444; font-weight: 700; font-size: 0.85rem;">0% Completed</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <label class="checkbox-container" style="color: var(--text-muted);"><input type="checkbox" disabled> Active Directory Domain Auditing</label>
+                        <label class="checkbox-container" style="color: var(--text-muted);"><input type="checkbox" disabled> Linux/Windows Privilege Escalation</label>
+                        <label class="checkbox-container" style="color: var(--text-muted);"><input type="checkbox" disabled> Malware Analysis & Reverse Engineering</label>
+                        <label class="checkbox-container" style="color: var(--text-muted);"><input type="checkbox" disabled> Enterprise Threat Hunting</label>
+                    </div>
+                </div>
+
+                <!-- Cloud & SOC Analyst -->
+                <div class="result-block">
+                    <div class="result-header" style="justify-content: space-between; display: flex;">
+                        <span>☁️ Cloud Security & Incident Response</span>
+                        <span style="color: #a855f7; font-weight: 700; font-size: 0.85rem;">Locked</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <label class="checkbox-container" style="color: var(--text-muted);"><input type="checkbox" disabled> AWS/Azure Cloud Infrastructure Security</label>
+                        <label class="checkbox-container" style="color: var(--text-muted);"><input type="checkbox" disabled> SOC Analysis & Log Audits (Splunk/ELK)</label>
+                        <label class="checkbox-container" style="color: var(--text-muted);"><input type="checkbox" disabled> Docker & Kubernetes Security Hardening</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INTERACTIVE LABS -->
+        <div id="panel-academy-labs" class="panel">
+            <h2 class="panel-title">🖥️ Interactive Security Labs</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px; margin-top: 20px;">
+                <!-- Left: Lab selector and hints -->
+                <div>
+                    <div class="result-block" style="margin-bottom: 20px;">
+                        <div class="result-header">Active Sandbox Lab</div>
+                        <div style="margin-top: 10px;">
+                            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">CHOOSE TARGET</label>
+                            <select class="input-text" id="active-lab-select" style="width:100%; display:block; height:40px; padding: 6px 12px; margin-top: 6px;" onchange="loadSelectedLab()">
+                                <option value="basics">Lab 1: Cryptography Decryption Basics</option>
+                                <option value="web">Lab 2: OWASP SQL Injection Sandbox</option>
+                                <option value="linux">Lab 3: Privilege Escalation Lab</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-top: 15px;">
+                            <button class="btn btn-secondary" style="flex:1;" onclick="resetAcademyLab()">Reset Lab 🔄</button>
+                            <button class="btn" style="flex:1;" onclick="unlockLabWalkthrough()">Walkthrough 📖</button>
+                        </div>
+                    </div>
+
+                    <div class="result-block">
+                        <div class="result-header">Lab Flag Submission</div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">Find the flag hidden in the sandbox filesystem and paste it below:</p>
+                        <div style="display: flex; gap: 8px; margin-top: 12px;">
+                            <input type="text" id="lab-flag-input" class="input-text" placeholder="e.g. NCAS{f1l3_s3cr3t_1nvad3d}" style="flex:1;">
+                            <button class="btn" onclick="submitLabFlag()">Submit</button>
+                        </div>
+                        <div id="lab-flag-feedback" style="margin-top: 10px; font-weight:700; font-size:0.85rem; display:none;"></div>
+                    </div>
+                </div>
+
+                <!-- Right: Simulated interactive terminal -->
+                <div class="result-block" style="padding: 16px; background: #020617; border-color: rgba(59,130,246,0.3); display: flex; flex-direction: column;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom:10px; margin-bottom:10px;">
+                        <span style="font-family:'JetBrains Mono', monospace; font-size:0.85rem; color:#3b82f6; font-weight:700;">🖥️ Secure SSH Terminal [kali-linux-target-01]</span>
+                        <div style="display:flex; gap:6px;">
+                            <span style="display:inline-block; width:12px; height:12px; background:#10b981; border-radius:50%;"></span>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">ONLINE [Time Left: 29:55]</span>
+                        </div>
+                    </div>
+
+                    <!-- Split terminal pane simulator -->
+                    <div style="flex:1; display:flex; gap:16px; height:380px;">
+                        <!-- File explorer -->
+                        <div style="width:140px; border-right:1px solid rgba(255,255,255,0.08); padding-right:10px; font-family:'JetBrains Mono', monospace; font-size:0.75rem;">
+                            <div style="color:#64748b; font-weight:700; margin-bottom:8px;">📁 Filesystem</div>
+                            <div style="color:#3b82f6; cursor:pointer;" onclick="runCommandOnTerminal('ls -l')">📁 home/</div>
+                            <div style="color:#3b82f6; cursor:pointer; margin-left:10px;" onclick="runCommandOnTerminal('cat secret.txt')">📄 secret.txt</div>
+                            <div style="color:#3b82f6; cursor:pointer; margin-left:10px;" onclick="runCommandOnTerminal('cat hint.txt')">📄 hint.txt</div>
+                            <div style="color:#64748b; cursor:pointer; margin-top:10px;" onclick="runCommandOnTerminal('ls /var/log')">📁 var/</div>
+                        </div>
+
+                        <!-- Main command interface -->
+                        <div style="flex:1; display:flex; flex-direction:column; background:#000; padding:12px; border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:0.85rem; color:#10b981; overflow-y:auto;" id="simulated-terminal-body">
+                            <div>Welcome to NCAS Simulated Kali Linux Terminal. Type 'help' to begin.</div>
+                            <div>ncas@kali-linux:~$</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:12px;">
+                        <span style="font-family:'JetBrains Mono', monospace; align-self:center; color:#3b82f6;">$</span>
+                        <input type="text" id="terminal-input" class="input-text" placeholder="Type terminal command (e.g. ls, cat secret.txt, help) and press Enter..." style="flex:1; background:#000; color:#10b981; font-family:'JetBrains Mono', monospace; border-color:rgba(59,130,246,0.35);" onkeypress="if(event.key === 'Enter') executeSimulatedCommand()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAPTURE THE FLAG CHALLENGES -->
+        <div id="panel-academy-ctf" class="panel">
+            <h2 class="panel-title">🚩 Capture The Flag Arena</h2>
+            
+            <div style="display: grid; grid-template-columns: 2fr 1.2fr; gap: 24px; margin-top: 20px;">
+                <!-- CTF Challenges list -->
+                <div class="result-block">
+                    <div class="result-header">Active Flags & OSINT Challenges</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 15px;">
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 16px; border-radius: 8px;">
+                            <div style="font-size: 0.8rem; font-weight: 700; color: #ef4444;">OSINT / RECON</div>
+                            <h4 style="margin: 4px 0; color: #fff; font-size: 1.05rem;">WHOIS Hidden Flag</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Find the hidden registry contact email address for domain: `ncas-cyber-auth.ncas`.</p>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="switchPanel('osint-whois')">Run WHOIS Tool</button>
+                        </div>
+
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); padding: 16px; border-radius: 8px;">
+                            <div style="font-size: 0.8rem; font-weight: 700; color: #3b82f6;">CRYPTOGRAPHY</div>
+                            <h4 style="margin: 4px 0; color: #fff; font-size: 1.05rem;">AES Key Recovery</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Decrypt the ciphertext found in the steganography decoder using key: `KEY_DEC_2026`.</p>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="switchPanel('crypto-tools')">Run Decrypter</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dynamic Scoreboard -->
+                <div class="result-block">
+                    <div class="result-header">Global CTF Scoreboard</div>
+                    <table class="table-results" style="width: 100%; margin-top: 10px; font-size: 0.8rem;">
+                        <thead>
+                            <tr>
+                                <th style="color:var(--text-muted);">Rank</th>
+                                <th style="color:var(--text-muted);">Team Name</th>
+                                <th style="color:var(--text-muted);">Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>🥇 1</td>
+                                <td>RedTeam_Elite</td>
+                                <td>3,450</td>
+                            </tr>
+                            <tr>
+                                <td>🥈 2</td>
+                                <td>Buffer_Overflowers</td>
+                                <td>3,120</td>
+                            </tr>
+                            <tr>
+                                <td>🥉 3</td>
+                                <td>Cyber_Wolves</td>
+                                <td>2,800</td>
+                            </tr>
+                            <tr style="background: rgba(249,115,22,0.1);">
+                                <td><b>12</b></td>
+                                <td><b>Your Student Account (Solo)</b></td>
+                                <td><b>2,450</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- CERTIFICATE VAULT -->
+        <div id="panel-academy-certificates" class="panel">
+            <h2 class="panel-title">📜 Certificate Vault</h2>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:24px; margin-top:20px;">
+                <div class="result-block" style="text-align: center; padding: 30px;">
+                    <h3 style="color:#fff; margin-bottom:10px;">Security Fundamentals Certification</h3>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Issued upon completing the beginner cybersecurity path.</p>
+                    
+                    <!-- Dynamic CSS/HTML Certificate Mockup -->
+                    <div style="border: 4px double #f97316; padding: 24px; background: #070b13; text-align: center; font-family: 'Outfit', sans-serif; position: relative;" id="cert-print-area">
+                        <div style="font-size: 0.7rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 2px;">National College of Arts and Science</div>
+                        <h4 style="color: #fff; font-size: 1.1rem; margin: 10px 0; font-family: serif; letter-spacing: 1px;">CERTIFICATE OF COMPLETION</h4>
+                        <div style="font-size: 0.75rem; color: var(--text-muted);">This is proudly presented to:</div>
+                        <div style="font-size: 1.15rem; font-weight: 700; color: #f97316; margin: 8px 0; text-decoration: underline;" id="cert-student-name">Security Student</div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.3;">for successfully executing and completing all interactive rooms, network tasks, and cryptography labs under the Cyber Shield training program.</div>
+                        <div style="margin-top: 15px; display: flex; justify-content: space-between; font-size: 0.65rem; color: #71717a;">
+                            <div>ID: NCAS-CERT-2026-A14</div>
+                            <div>QR verified: OK</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:20px; justify-content:center;">
+                        <button class="btn" style="padding: 10px 20px;" onclick="printCertificate()">Print / Download PDF 📄</button>
+                    </div>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header">How to Earn Certificates</div>
+                    <div style="display:flex; flex-direction:column; gap:12px; margin-top:15px; font-size:0.85rem; line-height:1.4; color:var(--text-muted);">
+                        <p>1. Complete all lessons and labs in a designated <b>Guided Path</b>.</p>
+                        <p>2. Maintain your **daily login streak** and submit correct flags for the interactive sandboxes.</p>
+                        <p>3. Once verified, certificates will instantly unlock, showing your unique Certificate ID and QR code.</p>
                     </div>
                 </div>
             </div>
@@ -4938,20 +5251,20 @@ SHA-1:    ${sha1Hex}
 
             messagesContainer.appendChild(userBubble);
 
-            // Natasha Label in specialized theme
+            // AI Label in specialized theme
             const natashaLabel = document.createElement('div');
             natashaLabel.style.fontSize = '0.7rem';
             natashaLabel.style.fontWeight = 'bold';
-            natashaLabel.style.color = '#ef4444'; // Glowing lava red
+            natashaLabel.style.color = '#10b981'; // Cool green
             natashaLabel.style.textAlign = 'left';
             natashaLabel.style.marginBottom = '2px';
             natashaLabel.style.marginTop = '12px';
-            natashaLabel.textContent = 'NATASHA (AI SECURITY CORE)';
+            natashaLabel.textContent = 'NCAS SECURE AI CORE';
             messagesContainer.appendChild(natashaLabel);
 
             const assistBubble = document.createElement('div');
             assistBubble.className = 'chat-bubble assistant obsidian';
-            assistBubble.innerHTML = '<div class="thinking-loader"><div class="volcanic-radar"><div class="radar-sweep"></div><div class="radar-blip"></div></div><div class="thinking-text-container"><div class="thinking-text-main">NATASHA DECRYPTING RESPONSE...</div><div class="thinking-text-sub">ESTABLISHING SECURE SYSTEM CORE [PORT 8080]</div></div></div>';
+            assistBubble.innerHTML = '<div class="thinking-loader"><div class="volcanic-radar"><div class="radar-sweep"></div><div class="radar-blip"></div></div><div class="thinking-text-container"><div class="thinking-text-main">AI GENERATING RESPONSE...</div><div class="thinking-text-sub">ESTABLISHING SECURE SYSTEM CORE [PORT 8080]</div></div></div>';
             messagesContainer.appendChild(assistBubble);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
@@ -4960,11 +5273,11 @@ SHA-1:    ${sha1Hex}
             removeChatImage(); // Reset UI state
 
             // Determine custom system prompt based on active persona selector
-            let activeSystemInstructions = "You are Natasha, an advanced AI assistant. Answer the user's questions on any real-world topic (general knowledge, calculations, time, cybersecurity, and beyond) in their input language. Format your output in clean Markdown.";
+            let activeSystemInstructions = "You are a professional, highly knowledgeable cybersecurity AI assistant. Answer the user's questions on any real-world topic (general knowledge, calculations, time, cybersecurity, and beyond) in their input language. Format your output in clean Markdown.";
             if (activePersona === 'auditor') {
-                activeSystemInstructions = "You are Natasha, an offensive security engineer and expert penetration tester. Provide deeply technical explanations, security audits, code snippets, and CVE assessments. Answer in the user's input language. Format in clean Markdown.";
+                activeSystemInstructions = "You are a professional offensive security engineer and expert penetration tester. Provide deeply technical explanations, security audits, code snippets, and CVE assessments. Answer in the user's input language. Format in clean Markdown.";
             } else if (activePersona === 'educator') {
-                activeSystemInstructions = "You are Natasha, a computer science academic advisor. Explain cybersecurity, routing protocols, subnets, cookies, and digital threats in simple, friendly, easy-to-understand terms suitable for students. Answer in the user's input language. Format in clean Markdown.";
+                activeSystemInstructions = "You are a professional computer science academic advisor. Explain cybersecurity, routing protocols, subnets, cookies, and digital threats in simple, friendly, easy-to-understand terms suitable for students. Answer in the user's input language. Format in clean Markdown.";
             }
 
             // Formatting helper function to convert markdown into our specialized volcanic theme elements
@@ -4991,12 +5304,12 @@ SHA-1:    ${sha1Hex}
                 
                 // 1. Match Malayalam language request
                 if (userMsgLower.includes("malayalam") || userMsgLower.includes("മലയാളം")) {
-                    return `### 🌐 നടാഷ മലയാളം സുരക്ഷാ കോർ (Natasha Malayalam Security Core)\n\nതീർച്ചയായും, എനിക്ക് മലയാളത്തിൽ സംസാരിക്കാൻ കഴിയും! ഞാൻ **നടാഷ**, നിങ്ങളുടെ സൈബർ സുരക്ഷാ സഹായിയാണ്. \n\n**പ്രധാന സുരക്ഷാ മാർഗ്ഗനിർദ്ദേശങ്ങൾ (Key Security Guidelines)**:\n1. **ശക്തമായ രഹസ്യവാക്കുകൾ (Strong Passwords)**: എല്ലാ അക്കൗണ്ടുകൾക്കും ഉചിതമായ സങ്കീർണ്ണമായ പാസ്‌വേഡുകൾ ഉപയോഗിക്കുക, ഒപ്പം 2-ഘട്ട സുരക്ഷ (2FA) എപ്പോഴും ഓൺ ചെയ്യുക.\n2. **സംശയാസ്പദമായ ലിങ്കുകൾ (Phishing Protection)**: അപരിചിതരിൽ നിന്നുള്ള ലിങ്കുകളിലോ അറ്റാച്ച്മെന്റുകളിലോ ക്ലിക്ക് ചെയ്യാതിരിക്കുക.\n3. **സിസ്റ്റം അപ്‌ഡേറ്റുകൾ (Software Updates)**: നിങ്ങളുടെ മൊബൈൽ/കമ്പ്യൂട്ടർ ഓപ്പറേറ്റിംഗ് സിസ്റ്റം പുതിയ പതിപ്പിലേക്ക് അപ്‌ഡേറ്റ് ചെയ്യുക.\n\nനിങ്ങൾക്ക് അറിയേണ്ട ഏത് സുരക്ഷാ/സാങ്കേതിക ചോദ്യവും ഇവിടെ ചോദിക്കാം!`;
+                    return `### 🌐 മലയാളം സുരക്ഷാ കോർ (Malayalam Security Core)\n\nതീർച്ചയായും, എനിക്ക് മലയാളത്തിൽ സംസാരിക്കാൻ കഴിയും! ഞാൻ നിങ്ങളുടെ സൈബർ സുരക്ഷാ സഹായിയാണ്. \n\n**പ്രധാന സുരക്ഷാ മാർഗ്ഗനിർദ്ദേശങ്ങൾ (Key Security Guidelines)**:\n1. **ശക്തമായ രഹസ്യവാക്കുകൾ (Strong Passwords)**: എല്ലാ അക്കൗണ്ടുകൾക്കും ഉചിതമായ സങ്കീർണ്ണമായ പാസ്‌വേഡുകൾ ഉപയോഗിക്കുക, ഒപ്പം 2-ഘട്ട സുരക്ഷ (2FA) എപ്പോഴും ഓൺ ചെയ്യുക.\n2. **സംശയാസ്പദമായ ലിങ്കുകൾ (Phishing Protection)**: അപരിചിതരിൽ നിന്നുള്ള ലിങ്കുകളിലോ അറ്റാച്ച്മെന്റുകളിലോ ക്ലിക്ക് ചെയ്യാതിരിക്കുക.\n3. **സിസ്റ്റം അപ്‌ഡേറ്റുകൾ (Software Updates)**: നിങ്ങളുടെ മൊബൈൽ/കമ്പ്യൂട്ടർ ഓപ്പറേറ്റിംഗ് സിസ്റ്റം പുതിയ പതിപ്പിലേക്ക് അപ്‌ഡേറ്റ് ചെയ്യുക.\n\nനിങ്ങൾക്ക് അറിയേണ്ട ഏത് സുരക്ഷാ/സാങ്കേതിക ചോദ്യവും ഇവിടെ ചോദിക്കാം!`;
                 }
 
                 // 2. Match greetings and casual prompts
-                if (["hi", "hello", "hey", "hii", "hi natasha", "hello natasha"].includes(userMsgLower)) {
-                    return `### 🛡️ Natasha AI Security Intelligence Core Active\n\nHello! I am **Natasha**, your dedicated AI Assistant. I can help you with:\n- **Threat Intelligence & Vulnerability Auditing**\n- **Network Diagnostics & Wireless Security**\n- **Cryptography, Hash Audits & Steganography**\n- **OSINT Reconnaissance & Portal Controls**\n\nHow can I assist your operations today?`;
+                if (["hi", "hello", "hey", "hii", "hi assistant", "hello assistant"].includes(userMsgLower)) {
+                    return `### 🛡️ AI Security Intelligence Core Active\n\nHello! I am your dedicated AI Assistant. I can help you with:\n- **Threat Intelligence & Vulnerability Auditing**\n- **Network Diagnostics & Wireless Security**\n- **Cryptography, Hash Audits & Steganography**\n- **OSINT Reconnaissance & Portal Controls**\n\nHow can I assist your operations today?`;
                 }
 
                 if (userMsgLower.includes("thank")) {
@@ -5030,7 +5343,7 @@ SHA-1:    ${sha1Hex}
                     return `### 💡 Insights & Analysis: ${titleSubject}\n\nRegarding **${subject}**, here is a structured analysis:\n\n1. **Core Concept**: Understanding ${subject} requires analyzing both system architecture and operational risk factors.\n2. **Key Security Considerations**: Enforce strict access control mechanisms, encrypt data in transit and at rest, and maintain comprehensive audit logging.\n3. **Recommended Next Steps**: Conduct diagnostic lookups, verify active configurations, and update security controls regularly.`;
                 }
 
-                return `### 🛡️ Natasha AI Response: ${titleSubject}\n\nThank you for your query regarding **${userMsg}**.\n\n**Security Evaluation**:\n- **Primary Focus**: ${titleSubject} operational security and access management.\n- **Defensive Standard**: Apply the Principle of Least Privilege, implement rate limiting, and maintain active monitoring logs.\n- **Auditing**: Use the NCAS Cyber Portal hubs to verify domain, IP, and local device parameters.`;
+                return `### 🛡️ AI Response: ${titleSubject}\n\nThank you for your query regarding **${userMsg}**.\n\n**Security Evaluation**:\n- **Primary Focus**: ${titleSubject} operational security and access management.\n- **Defensive Standard**: Apply the Principle of Least Privilege, implement rate limiting, and maintain active monitoring logs.\n- **Auditing**: Use the NCAS Cyber Portal hubs to verify domain, IP, and local device parameters.`;
             }
 
             // Check Cache for instant response (no network roundtrip, extreme fast!)
@@ -5100,7 +5413,7 @@ SHA-1:    ${sha1Hex}
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            inputs: `<|im_start|>system\nYou are Natasha, a friendly and highly knowledgeable AI assistant. You answer all cybersecurity, technical, and general questions. Provide clear, structured, and helpful answers in the language requested by the user.<|im_end|>\n<|im_start|>user\n${userMsg}<|im_end|>\n<|im_start|>assistant\n`
+                            inputs: `<|im_start|>system\nYou are a friendly and highly knowledgeable AI assistant. You answer all cybersecurity, technical, and general questions. Provide clear, structured, and helpful answers in the language requested by the user.<|im_end|>\n<|im_start|>user\n${userMsg}<|im_end|>\n<|im_start|>assistant\n`
                         })
                     });
                     
@@ -5239,6 +5552,155 @@ SHA-1:    ${sha1Hex}
         }
         setInterval(checkConnectionStatus, 4500);
         checkConnectionStatus();
+
+        // ==========================================
+        // ACADEMY & CTF SIMULATED INTERACTIVE TERMINAL
+        // ==========================================
+        let currentActiveLab = "basics";
+        const terminalBody = document.getElementById('simulated-terminal-body');
+
+        const LAB_CONFIGS = {
+            basics: {
+                welcome: "Welcome to Lab 1: Cryptography Decryption Sandbox.\nFind the secret flag hidden in the filesystem. Hint: look around for text files using 'ls' and 'cat'.",
+                files: {
+                    "secret.txt": "Encrypted Flag Ciphertext: NCAS{a3s_c1ph3r_r3c0v3ry}",
+                    "hint.txt": "Try decryption tool to decode. Flag is: NCAS{a3s_c1ph3r_r3c0v3ry}"
+                },
+                flag: "NCAS{a3s_c1ph3r_r3c0v3ry}"
+            },
+            web: {
+                welcome: "Welcome to Lab 2: OWASP SQL Injection simulator.\nPerform SQL injection bypass. Command hint: query database utilizing admin bypass quotes (e.g. inject string: \"' OR 1=1 --\").",
+                files: {
+                    "db_schema.sql": "TABLE users (id INT, username VARCHAR(255), password VARCHAR(255))",
+                    "hint.txt": "Execute SQL payload: select * from users where username = '' OR 1=1 --"
+                },
+                flag: "NCAS{sqli_admin_bypass_success}"
+            },
+            linux: {
+                welcome: "Welcome to Lab 3: Privilege Escalation Lab.\nFind the system root escalation flag. Command hint: audit system permissions using 'sudo -l'.",
+                files: {
+                    "flag.txt": "NCAS{sudo_root_escalation}",
+                    "sys_info.log": "Kernel: Kali Linux 6.1.0-kali7-amd64"
+                },
+                flag: "NCAS{sudo_root_escalation}"
+            }
+        };
+
+        function loadSelectedLab() {
+            currentActiveLab = document.getElementById('active-lab-select').value;
+            resetAcademyLab();
+        }
+
+        function resetAcademyLab() {
+            if (!terminalBody) return;
+            const config = LAB_CONFIGS[currentActiveLab];
+            terminalBody.innerHTML = `<div>${config.welcome}</div><div>ncas@kali-linux:~$</div>`;
+            document.getElementById('lab-flag-input').value = "";
+            document.getElementById('lab-flag-feedback').style.display = "none";
+        }
+
+        function unlockLabWalkthrough() {
+            const config = LAB_CONFIGS[currentActiveLab];
+            alert(`Lab Flag: ${config.flag}\nSubmit this flag in the submission form to earn XP.`);
+        }
+
+        function submitLabFlag() {
+            const val = document.getElementById('lab-flag-input').value.trim();
+            const config = LAB_CONFIGS[currentActiveLab];
+            const feedback = document.getElementById('lab-flag-feedback');
+            
+            if (val === config.flag) {
+                feedback.style.color = "#10b981";
+                feedback.textContent = "✓ CORRECT FLAG! +200 XP Awarded.";
+                feedback.style.display = "block";
+                
+                // Add XP dynamically
+                let currentXp = parseInt(document.getElementById('academy-xp').textContent.replace(/,/g, "")) || 0;
+                currentXp += 200;
+                document.getElementById('academy-xp').textContent = currentXp.toLocaleString() + " XP";
+            } else {
+                feedback.style.color = "var(--accent-red)";
+                feedback.textContent = "✗ INVALID FLAG. Try analyzing sandbox parameters.";
+                feedback.style.display = "block";
+            }
+        }
+
+        function runCommandOnTerminal(cmd) {
+            const input = document.getElementById('terminal-input');
+            if (input) {
+                input.value = cmd;
+                executeSimulatedCommand();
+            }
+        }
+
+        function executeSimulatedCommand() {
+            const input = document.getElementById('terminal-input');
+            if (!input || !terminalBody) return;
+            const cmd = input.value.trim();
+            if (!cmd) return;
+
+            // Log command
+            const cmdLine = document.createElement('div');
+            cmdLine.style.color = "#3b82f6";
+            cmdLine.textContent = `ncas@kali-linux:~$ ${cmd}`;
+            terminalBody.appendChild(cmdLine);
+            
+            const replyLine = document.createElement('div');
+            replyLine.style.marginTop = "4px";
+            replyLine.style.marginBottom = "8px";
+
+            const parts = cmd.toLowerCase().split(/\s+/);
+            const action = parts[0];
+            const target = parts[1] || "";
+
+            const config = LAB_CONFIGS[currentActiveLab];
+
+            if (action === "help") {
+                replyLine.innerHTML = "Available commands:<br>• <b>ls</b> - List directory files<br>• <b>cat [filename]</b> - Read file content<br>• <b>whoami</b> - Print active username<br>• <b>clear</b> - Clear screen";
+            } else if (action === "clear") {
+                terminalBody.innerHTML = "<div>ncas@kali-linux:~$</div>";
+                input.value = "";
+                return;
+            } else if (action === "whoami") {
+                replyLine.textContent = currentUsername || "student-hacker";
+            } else if (action === "ls") {
+                replyLine.innerHTML = Object.keys(config.files).map(f => `<span style="color:#3b82f6;">${f}</span>`).join(" &nbsp; ");
+            } else if (action === "cat") {
+                if (!target) {
+                    replyLine.textContent = "Usage: cat [filename]";
+                } else if (config.files[target]) {
+                    replyLine.textContent = config.files[target];
+                } else {
+                    replyLine.textContent = `cat: ${target}: No such file or directory`;
+                }
+            } else if (cmd.includes("' or 1=1") || cmd.includes('" or 1=1') || cmd.includes("or 1=1 --")) {
+                if (currentActiveLab === "web") {
+                    replyLine.innerHTML = `Bypass success! Admin login loaded.<br><b style="color:#10b981;">FLAG FOUND: NCAS{sqli_admin_bypass_success}</b>`;
+                } else {
+                    replyLine.textContent = "SQL query execution error: table does not support injection.";
+                }
+            } else if (cmd === "sudo -l") {
+                if (currentActiveLab === "linux") {
+                    replyLine.innerHTML = `Matching Defaults for student-hacker:<br>  (root) NOPASSWD: /usr/bin/cat /root/flag.txt<br><br>Run "cat flag.txt" to read flag.`;
+                } else {
+                    replyLine.textContent = "Command error: sudo rights not configured.";
+                }
+            } else {
+                replyLine.textContent = `bash: ${action}: command not found`;
+            }
+
+            terminalBody.appendChild(replyLine);
+            terminalBody.scrollTop = terminalBody.scrollHeight;
+            input.value = "";
+        }
+
+        function printCertificate() {
+            const nameEl = document.getElementById('cert-student-name');
+            if (nameEl && currentUsername) {
+                nameEl.textContent = currentUsername.toUpperCase();
+            }
+            window.print();
+        }
 
         injectBackToHubButtons();
         toggleAuthMode('login'); // Ensure auth overlay button and fields are initialized!
