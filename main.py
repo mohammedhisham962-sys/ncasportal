@@ -1518,47 +1518,133 @@ OFFLINE_REPLIES = {
 }
 
 def generate_offline_reply(user_msg: str) -> str:
-    user_msg_lower = user_msg.lower()
+    user_msg_lower = user_msg.lower().strip()
     
-    # Match Malayalam language request
+    # 1. Match Malayalam language request
     if "malayalam" in user_msg_lower or "മലയാളം" in user_msg_lower:
-        return "### 🌐 നടാഷ മലയാളം സുരക്ഷാ കോർ (Natasha Malayalam Security Core)\n\nതീർച്ചയായും, എനിക്ക് മലയാളത്തിൽ സംസാരിക്കാൻ കഴിയും! ഞാൻ **നടാഷ**, നിങ്ങളുടെ സൈബർ സുരക്ഷാ സഹായിയാണ്. \n\n**പ്രധാന നിർദ്ദേശങ്ങൾ (Key Recommendations)**:\n1. **ശക്തമായ രഹസ്യവാക്കുകൾ (Strong Passwords)**: എല്ലാ അക്കൗണ്ടുകൾക്കും വ്യത്യസ്തമായ പാസ്‌വേഡുകൾ ഉപയോഗിക്കുക, ഒപ്പം 2-ഘട്ട സുരക്ഷ (2FA) ആക്റ്റീവ് ചെയ്യുക.\n2. **സംശയാസ്പദമായ ലിങ്കുകൾ (Phishing Links)**: അപരിചിതമായ ഇമെയിലുകളോ സന്ദേശങ്ങളോ വഴിയുള്ള ലിങ്കുകളിൽ ക്ലിക്ക് ചെയ്യാതിരിക്കുക.\n3. **സോഫ്റ്റ്‌വെയർ അപ്‌ഡേറ്റുകൾ (Software Updates)**: നിങ്ങളുടെ സിസ്റ്റങ്ങളും ആപ്ലിക്കേഷനുകളും എപ്പോഴും പുതിയ പതിപ്പിലേക്ക് അപ്‌ഡേറ്റ് ചെയ്യുക.\n\nനിങ്ങൾക്ക് ആവശ്യമായ സുരക്ഷാ ചോദ്യം ചോദിക്കുക, ഞാൻ സഹായിക്കാം!"
+        return (
+            "### 🌐 നടാഷ മലയാളം സുരക്ഷാ കോർ (Natasha Malayalam Security Core)\n\n"
+            "തീർച്ചയായും, എനിക്ക് മലയാളത്തിൽ സംസാരിക്കാൻ കഴിയും! ഞാൻ **നടാഷ**, നിങ്ങളുടെ സൈബർ സുരക്ഷാ സഹായിയാണ്. \n\n"
+            "**പ്രധാന സുരക്ഷാ മാർഗ്ഗനിർദ്ദേശങ്ങൾ (Key Security Guidelines)**:\n"
+            "1. **ശക്തമായ രഹസ്യവാക്കുകൾ (Strong Passwords)**: എല്ലാ അക്കൗണ്ടുകൾക്കും ഉചിതമായ സങ്കീർണ്ണമായ പാസ്‌വേഡുകൾ ഉപയോഗിക്കുക, ഒപ്പം 2-ഘട്ട സുരക്ഷ (2FA) എപ്പോഴും ഓൺ ചെയ്യുക.\n"
+            "2. **സംശയാസ്പദമായ ലിങ്കുകൾ (Phishing Protection)**: അപരിചിതരിൽ നിന്നുള്ള ലിങ്കുകളിലോ അറ്റാച്ച്മെന്റുകളിലോ ക്ലിക്ക് ചെയ്യാതിരിക്കുക.\n"
+            "3. **സിസ്റ്റം അപ്‌ഡേറ്റുകൾ (Software Updates)**: നിങ്ങളുടെ മൊബൈൽ/കമ്പ്യൂട്ടർ ഓപ്പറേറ്റിംഗ് സിസ്റ്റം പുതിയ പതിപ്പിലേക്ക് അപ്‌ഡേറ്റ് ചെയ്യുക.\n\n"
+            "നിങ്ങൾക്ക് അറിയേണ്ട ഏത് സുരക്ഷാ/സാങ്കേതിക ചോദ്യവും ഇവിടെ ചോദിക്കാം!"
+        )
 
-    # Match greetings
-    if "hello" in user_msg_lower or "hi " in user_msg_lower or user_msg_lower == "hi" or "hey" in user_msg_lower:
-        return "### 🛡️ NCAS Aegis System Core Active\n\nHello! I am **Natasha**, your advanced AI Security Assistant. How can I help protect your institutional network and digital assets today?"
+    # 2. Match greetings and casual prompts
+    if user_msg_lower in ["hi", "hello", "hey", "hii", "hi natasha", "hello natasha"]:
+        return (
+            "### 🛡️ Natasha AI Security Intelligence Core Active\n\n"
+            "Hello! I am **Natasha**, your dedicated AI Assistant. I can help you with:\n"
+            "- **Threat Intelligence & Vulnerability Auditing**\n"
+            "- **Network Diagnostics & Wireless Security**\n"
+            "- **Cryptography, Hash Audits & Steganography**\n"
+            "- **OSINT Reconnaissance & Portal Controls**\n\n"
+            "How can I assist your operations today?"
+        )
 
-    # Match thanks
-    if "thank you" in user_msg_lower or "thanks" in user_msg_lower:
-        return "### 🤝 Aegis Assistance Complete\n\nYou're very welcome! Security is a shared responsibility. Let me know if you need any other diagnostics or auditing help."
+    if "thank" in user_msg_lower:
+        return (
+            "### 🤝 Assistance Complete\n\n"
+            "You're very welcome! Security is an ongoing commitment. Let me know whenever you need further intelligence or auditing support."
+        )
 
-    # Match specific dictionary definitions
-    for key, val in OFFLINE_REPLIES.items():
-        if key in user_msg_lower:
-            return val
-            
-    # Match standard heuristics
-    if "ransomware" in user_msg_lower:
-        return "### [MITRE T1486] Data Encrypted for Impact Mitigation\n\n1. **Isolation**: Immediately disconnect affected hosts from local Wi-Fi/Ethernet loops.\n2. **Shadow Copies**: Verify VSS availability: `vssadmin list shadows`\n3. **AD Audits**: Audit remote file system mounting parameters and check Kerberos ticket anomalies."
-    if "port scan" in user_msg_lower or "nmap" in user_msg_lower:
-        return "### [MITRE T1046] Network Service Discovery Mitigation\n\n1. **Firewall Rules**: Enforce SYN connections rate-limiting on inbound routes.\n2. **Logging**: Run packet capture checks on router ports: `tcpdump -i any 'tcp[tcpflags] & (tcp-syn|tcp-ack) == tcp-syn'`\n3. **IDS Alignment**: Load rules to detect IP sweep configurations."
-    if "sql injection" in user_msg_lower or "sqli" in user_msg_lower:
-        return "### [OWASP A03:2021] Injection Remediation Action Plan\n\n1. **Prepared Statements**: Parametrize all database integrations to isolate code execution contexts.\n2. **WAF Filters**: Verify rules matching `' OR 1=1` and `UNION SELECT` signatures."
-    if "phishing" in user_msg_lower:
-        return "### [MITRE T1566] Phishing Threat Mitigation\n\n1. **Email Records**: Enforce strict DMARC policies (`p=reject`) and SPF checks (`v=spf1 -all`).\n2. **Filtering**: Block high-risk macro execution parameters at mail gateways."
-        
-    # Extract main topic words to generate customized advice
-    words = [w.strip("?,.!") for w in user_msg.split() if len(w) > 4]
-    keyword = words[0] if words else "Security Operations"
+    # 3. Topic-Specific Rich AI Responses
+    topics = {
+        "ransomware": (
+            "### ☣️ Ransomware Threat Analysis & Mitigation\n\n"
+            "**Ransomware** is malicious software designed to encrypt critical files on an endpoint or network, holding data hostage until a ransom is paid.\n\n"
+            "**Operational Lifecycle**:\n"
+            "1. **Infiltration**: Vector access via phishing campaigns, vulnerable RDP endpoints, or unpatched software.\n"
+            "2. **Execution**: Disables local Volume Shadow Copies (`vssadmin delete shadows`) and elevates privileges.\n"
+            "3. **Encryption**: Uses AES-256 or RSA-4096 algorithms to lock target extensions.\n\n"
+            "**Defensive Actions**:\n"
+            "- **Isolation**: Immediately disconnect infected devices from local subnet/Wi-Fi loops.\n"
+            "- **Immutable Backups**: Maintain offline, air-gapped backups (WORM architecture).\n"
+            "- **EDR Deployment**: Enforce endpoint detection tools with behavioral encryption blocking."
+        ),
+        "phishing": (
+            "### 🎣 Phishing Analysis & Anti-Spoofing Controls\n\n"
+            "**Phishing** involves social engineering tactics aimed at tricking users into revealing sensitive credentials or executing malicious payloads.\n\n"
+            "**Common Vectors**:\n"
+            "- **Spear Phishing**: Targeted campaigns tailored to specific individuals or administrators.\n"
+            "- **Credential Harvesting**: Fake portal login pages mirroring legitimate sites.\n\n"
+            "**Defensive Measures**:\n"
+            "- **Email Security Records**: Enforce strict DMARC (`p=reject`), SPF (`v=spf1 -all`), and DKIM signatures.\n"
+            "- **MFA Security Keys**: Deploy FIDO2/WebAuthn hardware keys to mitigate credential relay attacks."
+        ),
+        "firewall": (
+            "### 🧱 Firewall Architecture & Traffic Filtering\n\n"
+            "A **Firewall** monitors and controls incoming and outgoing network traffic based on predetermined security rules.\n\n"
+            "**Core Capabilities**:\n"
+            "1. **Stateful Packet Inspection (SPI)**: Tracks active TCP connection states (SYN, SYN-ACK, ACK).\n2. **Deep Packet Inspection (DPI)**: Inspects packet payloads at the Application Layer (L7).\n3. **Default-Deny Policy**: Blocks all unapproved inbound ports by default."
+        ),
+        "vpn": (
+            "### 🔒 Virtual Private Network (VPN) Security Protocols\n\n"
+            "A **VPN** establishes an encrypted, secure tunnel over public networks to protect data confidentiality.\n\n"
+            "- **Tunneling Ciphers**: Employs IPsec or WireGuard with AES-256-GCM encryption.\n"
+            "- **Zero-Trust Integration**: Combines continuous posture verification with MFA authentication."
+        ),
+        "xss": (
+            "### ⚡ Cross-Site Scripting (XSS) Prevention\n\n"
+            "**XSS** occurs when untrusted user input is rendered in a browser session without proper sanitization.\n\n"
+            "**Remediation Steps**:\n"
+            "1. **Context-Aware Output Encoding**: Escape HTML, JavaScript, and attribute contexts.\n"
+            "2. **Content Security Policy**: Enforce header: `Content-Security-Policy: default-src 'self'`.\n"
+            "3. **HttpOnly Cookies**: Prevent scripts from accessing session tokens."
+        ),
+        "sql injection": (
+            "### 💉 SQL Injection (SQLi) Remediation\n\n"
+            "**SQLi** occurs when attacker input alters the syntax of underlying database queries.\n\n"
+            "**Remediation Steps**:\n"
+            "1. **Parameterized Queries**: Always use Prepared Statements (ODBC/PDO) to isolate query parameters.\n"
+            "2. **ORM Frameworks**: Utilize secure Object-Relational Mapping libraries.\n"
+            "3. **WAF Rules**: Implement rules filtering `' OR 1=1` and `UNION SELECT` patterns."
+        ),
+        "password": (
+            "### 🔑 Credential Security & Password Hygiene\n\n"
+            "Strong credentials form the primary perimeter of digital identity protection.\n\n"
+            "**Best Practices**:\n"
+            "1. **Length over Complexity**: Use 14+ character passphrases (e.g. `Velvet#Orbit89!Bridge`).\n"
+            "2. **Unique Passwords**: Never reuse credentials across services.\n"
+            "3. **Password Managers**: Store credentials in encrypted vaults (e.g. Bitwarden, KeePass).\n"
+            "4. **Multi-Factor Authentication**: Enable TOTP or hardware authenticator apps."
+        ),
+        "portal": (
+            "### 🏫 NCAS Cyber Portal Infrastructure Overview\n\n"
+            "The **NCAS Cyber Portal** is a security operations platform built for threat intelligence and student training.\n\n"
+            "**Active Modules**:\n"
+            "- **SecOps Hub**: Live activity stream, Wi-Fi auditor, speed tests, and camera scanning.\n"
+            "- **OSINT Hub**: Domain WHOIS, IP lookup, email verification, and URL analysis.\n"
+            "- **Cyber Defense Hub**: AES Encryption tools, Steganography encoder, and AI Security Assistant."
+        )
+    }
+
+    for topic_key, response in topics.items():
+        if topic_key in user_msg_lower:
+            return response
+
+    # 4. Dynamic Generative Structure for any arbitrary prompt
+    words = [w.strip("?,.!") for w in user_msg.split() if len(w) > 3]
+    subject = " ".join(words[:3]) if words else "Security Intelligence"
     
+    if user_msg_lower.startswith(("what", "why", "how", "explain", "tell me", "can you")):
+        return (
+            f"### 💡 Insights & Analysis: {subject.title()}\n\n"
+            f"Regarding **{subject}**, here is a structured analysis:\n\n"
+            f"1. **Core Concept**: Understanding {subject} requires analyzing both system architecture and operational risk factors.\n"
+            f"2. **Key Security Considerations**: Enforce strict access control mechanisms, encrypt data in transit and at rest, and maintain comprehensive audit logging.\n"
+            f"3. **Recommended Next Steps**: Conduct diagnostic lookups, verify active configurations, and update security controls regularly."
+        )
+
     return (
-        f"### 🛡️ Natasha AI Core - Security Diagnostic & Threat Analysis\n\n"
-        f"I have analyzed your query regarding **{keyword}**.\n\n"
-        f"**Key Defensive Recommendations**:\n"
-        f"1. **Access Controls & Least Privilege**: Restrict administrative system privileges and enforce strict role-based access control (RBAC) across all endpoints.\n"
-        f"2. **Continuous Monitoring & Audit Logging**: Enable real-time event monitoring and audit logs on local endpoints to detect anomalies instantly.\n"
-        f"3. **Network Isolation & Segmentation**: Segment internal network assets using VLANs, firewalls, and micro-segmentation to prevent lateral threat movement.\n"
-        f"4. **System Hardening & Patch Management**: Keep all operating systems, software packages, and security solutions updated with the latest patches."
+        f"### 🛡️ Natasha AI Response: {subject.title()}\n\n"
+        f"Thank you for your query regarding **{user_msg}**.\n\n"
+        f"**Security Evaluation**:\n"
+        f"- **Primary Focus**: {subject.title()} operational security and access management.\n"
+        f"- **Defensive Standard**: Apply the Principle of Least Privilege, implement rate limiting, and maintain active monitoring logs.\n"
+        f"- **Auditing**: Use the NCAS Cyber Portal hubs to verify domain, IP, and local device parameters."
     )
 # Save API key to config.json
 class ConfigSaveRequest(BaseModel):
