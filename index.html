@@ -1175,6 +1175,49 @@
 
 
 
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('basics')">🛡️ Cyber Security Basics <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-basics">
+                <li class="nav-item basics-item" id="nav-basics-cia" onclick="switchBasicsPanel('cia')">📖 CIA Triad</li>
+                <li class="nav-item basics-item" id="nav-basics-social" onclick="switchBasicsPanel('social')">📖 Social Engineering</li>
+                <li class="nav-item basics-item" id="nav-basics-networking" onclick="switchBasicsPanel('networking')">📖 Network Basics</li>
+                <li class="nav-item basics-item" id="nav-basics-malware" onclick="switchBasicsPanel('malware')">📖 Malware & Threats</li>
+                <li class="nav-item basics-item" id="nav-basics-defense" onclick="switchBasicsPanel('defense')">📖 Defense-in-Depth</li>
+            </ul>
+
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('windows')">🪟 Windows Basics <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-windows">
+                <li class="nav-item windows-item" id="nav-windows-files" onclick="switchWindowsPanel('files')">📂 CMD & File Basics</li>
+                <li class="nav-item windows-item" id="nav-windows-diag" onclick="switchWindowsPanel('diag')">💻 System Diagnostics</li>
+                <li class="nav-item windows-item" id="nav-windows-proc" onclick="switchWindowsPanel('proc')">⚙️ Process Management</li>
+                <li class="nav-item windows-item" id="nav-windows-net" onclick="switchWindowsPanel('net')">🌐 Network Auditing</li>
+            </ul>
+
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('netcourse')">🌐 Computer Networking <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-netcourse">
+                <li class="nav-item netcourse-item" id="nav-netcourse-osi" onclick="switchNetcoursePanel('osi')">🌐 OSI Model & IPs</li>
+                <li class="nav-item netcourse-item" id="nav-netcourse-tcp" onclick="switchNetcoursePanel('tcp')">🌐 TCP/UDP & Ports</li>
+                <li class="nav-item netcourse-item" id="nav-netcourse-routing" onclick="switchNetcoursePanel('routing')">🌐 Routing & DNS</li>
+                <li class="nav-item netcourse-item" id="nav-netcourse-security" onclick="switchNetcoursePanel('security')">🌐 SecOps & Sniffing</li>
+            </ul>
+
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('webcourse')">🕸️ Web Fundamentals <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-webcourse">
+                <li class="nav-item webcourse-item" id="nav-webcourse-http" onclick="switchWebcoursePanel('http')">🌐 HTTP/HTTPS & Methods</li>
+                <li class="nav-item webcourse-item" id="nav-webcourse-dom" onclick="switchWebcoursePanel('dom')">🌐 HTML, CSS & DOM</li>
+                <li class="nav-item webcourse-item" id="nav-webcourse-cookies" onclick="switchWebcoursePanel('cookies')">🌐 Cookies & Sessions</li>
+                <li class="nav-item webcourse-item" id="nav-webcourse-cors" onclick="switchWebcoursePanel('cors')">🌐 CORS & Origins</li>
+            </ul>
+
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('linux')">🐧 Linux Bandit Levels <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-linux">
+                <li class="nav-item linux-item" id="nav-linux-lvl0" onclick="switchLinuxLevel('lvl0')">🔓 Level 0 → 1</li>
+                <li class="nav-item linux-item locked" id="nav-linux-lvl1" onclick="switchLinuxLevel('lvl1')">🔒 Level 1 → 2</li>
+                <li class="nav-item linux-item locked" id="nav-linux-lvl2" onclick="switchLinuxLevel('lvl2')">🔒 Level 2 → 3</li>
+                <li class="nav-item linux-item locked" id="nav-linux-lvl3" onclick="switchLinuxLevel('lvl3')">🔒 Level 3 → 4</li>
+                <li class="nav-item linux-item locked" id="nav-linux-lvl4" onclick="switchLinuxLevel('lvl4')">🔒 Level 4 → 5</li>
+                <li class="nav-item linux-item locked" id="nav-linux-lvl5" onclick="switchLinuxLevel('lvl5')">🔒 Level 5 → 6</li>
+            </ul>
+
             <li class="nav-category-header" onclick="toggleSidebarAccordion('owasp')">🔥 OWASP Top 10 <span class="accordion-arrow">▲</span></li>
             <ul class="nav-sub-list" id="sub-owasp">
                 <li class="nav-item owasp-item" id="nav-owasp-a01" onclick="switchOwaspPanel('a01')">🔓 A01: Broken Access</li>
@@ -1419,6 +1462,31 @@
                     <div class="hub-card-icon">🔥</div>
                     <div class="hub-card-title">OWASP Top 10 Course</div>
                     <div class="hub-card-desc">Audit and exploit the 10 most critical web application security risks sequentially.</div>
+                </div>
+                <div class="hub-card" onclick="switchBasicsPanel('cia')">
+                    <div class="hub-card-icon">🛡️</div>
+                    <div class="hub-card-title">Cyber Security Basics</div>
+                    <div class="hub-card-desc">Learn key foundational security concepts (CIA Triad, Networking, Threats) with hands-on practice.</div>
+                </div>
+                <div class="hub-card" onclick="switchLinuxLevel('lvl0')">
+                    <div class="hub-card-icon">🐧</div>
+                    <div class="hub-card-title">Linux Fundamentals (Bandit)</div>
+                    <div class="hub-card-desc">Play sequential OverTheWire Bandit levels directly inside the terminal to master the command line.</div>
+                </div>
+                <div class="hub-card" onclick="switchWindowsPanel('files')">
+                    <div class="hub-card-icon">🪟</div>
+                    <div class="hub-card-title">Windows Basics</div>
+                    <div class="hub-card-desc">Master the Windows Command Prompt (CMD) & PowerShell terminal commands and process filters.</div>
+                </div>
+                <div class="hub-card" onclick="switchNetcoursePanel('osi')">
+                    <div class="hub-card-icon">🌐</div>
+                    <div class="hub-card-title">Computer Networking</div>
+                    <div class="hub-card-desc">Learn networking concepts from basics to advanced, including OSI Model, TCP/UDP, DNS, Routing, and Wireshark.</div>
+                </div>
+                <div class="hub-card" onclick="switchWebcoursePanel('http')">
+                    <div class="hub-card-icon">🕸️</div>
+                    <div class="hub-card-title">Web Fundamentals</div>
+                    <div class="hub-card-desc">Master client-server interactions, HTTP request methods, cookies, sessions, and web security models like CORS.</div>
                 </div>
             </div>
         </div>
@@ -2647,6 +2715,917 @@
             </div>
         </div>
 
+        <!-- CYBER SECURITY BASICS PANELS -->
+        
+        <!-- CIA Triad Panel -->
+        <div id="panel-basics-cia" class="panel">
+            <h2 class="panel-title">🛡️ Cyber Security Basics: The CIA Triad</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">The CIA Triad Explained</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    The **CIA Triad** is the core foundational model designed to guide information security policies within an organization.<br><br>
+                    • <b>Confidentiality</b>: Ensuring that data is accessible only to authorized users.<br>
+                    <i>Real-World Example:</i> Encrypting your credit card details using SSL/TLS when making purchases online so that sniffers cannot read them.<br><br>
+                    • <b>Integrity</b>: Ensuring that data is accurate, complete, and has not been altered in transit.<br>
+                    <i>Real-World Example:</i> Using cryptographic hash signatures (like SHA256) when downloading an operating system ISO to verify it wasn't modified by an attacker.<br><br>
+                    • <b>Availability</b>: Ensuring that systems and data are accessible by authorized users when needed.<br>
+                    <i>Real-World Example:</i> Implementing redundant servers and Load Balancers to defend against Distributed Denial of Service (DDoS) attacks that aim to knock a website offline.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Interactive Lab: Classifying Security Breaches</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Identify the CIA Parameter compromised</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+                            Scenario: <i>"An attacker floods a banking portal with junk traffic, rendering the login screen inaccessible to legitimate customers."</i> Which triad principle is breached? (Type <b>Confidentiality</b>, <b>Integrity</b>, or <b>Availability</b>).
+                        </p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="basics-cia-t1-input" class="input-text" placeholder="Your answer" style="flex:1;">
+                            <button class="btn" onclick="verifyBasicsCiaT1()">Submit Answer</button>
+                        </div>
+                        <div id="basics-cia-t1-output" style="font-size:0.85rem; font-weight:700; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Social Engineering Panel -->
+        <div id="panel-basics-social" class="panel">
+            <h2 class="panel-title">🛡️ Cyber Security Basics: Social Engineering</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Social Engineering Explained</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Social Engineering</b> is the art of manipulating people into giving up confidential information (like passwords or bank details).<br><br>
+                    • <b>Phishing</b>: Sending spoofed emails that look legitimate to trick users into clicking malicious links.<br>
+                    <i>Real-World Example:</i> An email that looks exactly like a Netflix billing alert, directing the user to a fake credit card collection page.<br><br>
+                    • <b>Spear Phishing</b>: A targeted phishing attack aiming at a specific individual or organization.<br>
+                    <i>Real-World Example:</i> Attackers researching a company accountant's profile to craft a customized email impersonating the CEO, requesting an urgent wire transfer.<br><br>
+                    • <b>Tailgating</b>: Physical intrusion where an unauthorized person follows an authorized employee into a secured building.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Interactive Lab: Phishing Email Audit</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Inspect Email Header</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+                            Analyze this email header. Is it a <b>PHISHING</b> attempt or <b>LEGITIMATE</b>?
+                        </p>
+                        <div style="font-family:monospace; font-size:0.75rem; color:#a1a1aa; background:#000; padding:10px; border-radius:4px; margin-bottom:10px; line-height:1.4;">
+                            From: Support Team &lt;alert@netflix-billing-sec.com&gt;<br>
+                            To: customer@usermail.com<br>
+                            Subject: Update Payment Information immediately!
+                        </div>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="basics-social-t1-input" class="input-text" placeholder="Type PHISHING or LEGITIMATE" style="flex:1;">
+                            <button class="btn" onclick="verifyBasicsSocialT1()">Check Header</button>
+                        </div>
+                        <div id="basics-social-t1-output" style="font-size:0.85rem; font-weight:700; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Basics Panel -->
+        <div id="panel-basics-networking" class="panel">
+            <h2 class="panel-title">🛡️ Cyber Security Basics: Network Fundamentals</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Network Security Concepts</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    Understanding how systems talk over the internet is crucial for securing them.<br><br>
+                    • <b>IP Address</b>: A unique identifier for devices on a network (like a mailing address).<br>
+                    • <b>Ports</b>: Communication endpoints where specific services receive traffic (e.g., web traffic, file transfers).<br><br>
+                    • <b>Firewalls</b>: Systems that monitor and filter incoming/outgoing network traffic based on security rules.<br>
+                    <i>Real-World Example:</i> Blocking all incoming connections on port 22 (SSH) except from specific admin IP addresses to prevent unauthorized terminal access.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Interactive Lab: Secure Port Association</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Identify HTTP vs HTTPS default port</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+                            Which port is secure web traffic (HTTPS) transmitted on by default? (Type the numeric port, e.g. <b>80</b>, <b>22</b>, or <b>443</b>).
+                        </p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="basics-networking-t1-input" class="input-text" placeholder="e.g. 80" style="flex:1;">
+                            <button class="btn" onclick="verifyBasicsNetworkingT1()">Verify Port</button>
+                        </div>
+                        <div id="basics-networking-t1-output" style="font-size:0.85rem; font-weight:700; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Malware Panel -->
+        <div id="panel-basics-malware" class="panel">
+            <h2 class="panel-title">🛡️ Cyber Security Basics: Malware & Threat Vectors</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Malware Classifications</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Malware</b> refers to malicious software designed to compromise or disrupt systems.<br><br>
+                    • <b>Virus</b>: Malicious code that attaches itself to clean files and requires human execution to propagate.<br>
+                    • <b>Worm</b>: Self-replicating malware that spreads across networks without human intervention.<br>
+                    <i>Real-World Example:</i> The Conficker worm spreading via Windows vulnerabilities across corporate intranets globally.<br><br>
+                    • <b>Trojan</b>: Malware disguised as legitimate software.<br>
+                    <i>Real-World Example:</i> Downloading a free PDF editor tool that secretly installs a keylogger in the background.<br><br>
+                    • <b>Ransomware</b>: Encrypts files on the target device and demands a payment (often crypto) to decrypt them.<br>
+                    <i>Real-World Example:</i> WannaCry encrypting hospitals and enterprise servers worldwide in 2017.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Interactive Lab: Classify Threat Types</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Identify Ransomware Description</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+                            What class of malware holds computer files hostage using cryptography in exchange for money? (Type <b>Trojan</b>, <b>Worm</b>, or <b>Ransomware</b>).
+                        </p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="basics-malware-t1-input" class="input-text" placeholder="Malware class" style="flex:1;">
+                            <button class="btn" onclick="verifyBasicsMalwareT1()">Verify Answer</button>
+                        </div>
+                        <div id="basics-malware-t1-output" style="font-size:0.85rem; font-weight:700; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Defense in Depth Panel -->
+        <div id="panel-basics-defense" class="panel">
+            <h2 class="panel-title">🛡️ Cyber Security Basics: Defense-in-Depth</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Layered Security Model</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Defense-in-Depth</b> is a strategy that uses multiple security controls layered to protect organizational assets. If one defensive measure fails, others are ready to block the threat.<br><br>
+                    <b>Critical Layers:</b><br>
+                    1. <b>Physical Security</b>: Locks, ID badges, security guards, CCTV cameras.<br>
+                    2. <b>Network Security</b>: Firewalls, VPNs, network segmentation, wireless encryption.<br>
+                    3. <b>Endpoint Security</b>: Antivirus tools, SUID audits, endpoint detection and response (EDR).<br>
+                    4. <b>Application Security</b>: Input sanitization, regular software patches, secure authentication protocols.<br>
+                    5. <b>Human Layer</b>: Phishing awareness training, strict service policies.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Interactive Lab: Configuring Defensive Workstations</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Select Defensive Controls</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+                            Which defensive measure operates at the **Endpoint Security** layer? (Type <b>Antivirus</b>, <b>CCTV</b>, or <b>VPN</b>).
+                        </p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="basics-defense-t1-input" class="input-text" placeholder="Layer control" style="flex:1;">
+                            <button class="btn" onclick="verifyBasicsDefenseT1()">Audit Control</button>
+                        </div>
+                        <div id="basics-defense-t1-output" style="font-size:0.85rem; font-weight:700; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPUTER NETWORKING PANELS -->
+        
+        <!-- OSI Model & IP Addressing -->
+        <div id="panel-netcourse-osi" class="panel">
+            <h2 class="panel-title">🌐 Networking: The OSI Model & IP Addressing</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">The 7 Layers of the OSI Model</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    The **Open Systems Interconnection (OSI) Model** is a conceptual framework that standardizes network communication functions into seven logical layers:<br><br>
+                    • <b>L7: Application</b> - End-user protocols like HTTP, DNS, SMTP. (How users interact with network data).<br>
+                    • <b>L6: Presentation</b> - Data formatting, encryption, and compression (e.g., SSL/TLS, JSON).<br>
+                    • <b>L5: Session</b> - Establishes, manages, and terminates connection sessions between applications.<br>
+                    • <b>L4: Transport</b> - End-to-end data transfer protocols: TCP (reliable, connection-oriented) and UDP (unreliable, fast).<br>
+                    • <b>L3: Network</b> - Handles logical addressing and packet routing across routers. Operates with IP addresses (IPv4/IPv6).<br>
+                    • <b>L2: Data Link</b> - Handles physical addressing (MAC addresses) and frame formatting (e.g., Ethernet, Switches).<br>
+                    • <b>L1: Physical</b> - The raw hardware transmission of electrical signals, radio waves, or light pulses (e.g., cables, hubs).
+                </div>
+            </div>
+
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: ipconfig / ip addr</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>What</b>: Queries the network interface cards to retrieve configured IP, Subnet Mask, and Gateway addresses.<br>
+                    • <b>Why</b>: Crucial for auditing connection scopes, finding local IPs, and identifying DHCP configurations.<br>
+                    • <b>When</b>: Run this whenever diagnosing connectivity problems or verifying network interfaces.<br>
+                    • <b>How (Windows Command Prompt)</b>: <code>ipconfig</code><br>
+                    • <b>How (Linux Bash)</b>: <code>ip addr show</code> or <code>ifconfig</code>
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Interactive Challenge: OSI Layer Identification</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Identify router operation layer</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+                            Which layer of the OSI model does a router operate at to direct packet headers? (Type <b>Network</b> or <b>3</b>).
+                        </p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="netcourse-osi-t1-input" class="input-text" placeholder="OSI Layer" style="flex:1;">
+                            <button class="btn" onclick="verifyNetcourseOsiT1()">Audit Layer</button>
+                        </div>
+                        <div id="netcourse-osi-t1-output" style="font-size:0.85rem; font-weight:700; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TCP/UDP & Ports -->
+        <div id="panel-netcourse-tcp" class="panel">
+            <h2 class="panel-title">🌐 Networking: TCP, UDP, & Port Protocols</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">TCP vs UDP Protocols</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    Data packets are encapsulated into segments at the Transport Layer using either TCP or UDP:<br><br>
+                    • <b>TCP (Transmission Control Protocol)</b>:
+                      - <i>How it happens</i>: Uses a **3-Way Handshake** (SYN → SYN-ACK → ACK) to establish a connection.
+                      - <i>Why it happens</i>: Guarantees reliable data transmission, handles error checking, and reorders packets if they arrive out of sequence.
+                      - <i>When it's used</i>: Web browsing (HTTP/HTTPS), file transfers (FTP), and remote terminal access (SSH).<br><br>
+                    • <b>UDP (User Datagram Protocol)</b>:
+                      - <i>How it happens</i>: Connectionless. Packets are fired off to the destination address without verifying receipt.
+                      - <i>Why it happens</i>: Maximum speed and minimal transmission overhead.
+                      - <i>When it's used</i>: Live audio/video streaming, gaming, DNS queries, and DHCP.
+                </div>
+            </div>
+
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: nmap</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>What</b>: A network mapper tool used to scan targets for open ports and services.<br>
+                    • <b>Why</b>: Crucial for finding active services, system details, and vulnerabilities in server systems.<br>
+                    • <b>When</b>: Run this during network configuration audits or authorized pen-testing scans.<br>
+                    • <b>How</b>: <code>nmap -sS -p- [target_ip]</code> (performs a stealth SYN port scan on all ports).
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Interactive Challenge: Handshake Protocol Check</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 2: Identify connection-oriented protocol</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+                            Which protocol handles reliability and error checks using a 3-way handshake mechanism? (Type <b>TCP</b> or <b>UDP</b>).
+                        </p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="netcourse-tcp-t1-input" class="input-text" placeholder="Protocol" style="flex:1;">
+                            <button class="btn" onclick="verifyNetcourseTcpT1()">Audit Protocol</button>
+                        </div>
+                        <div id="netcourse-tcp-t1-output" style="font-size:0.85rem; font-weight:700; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Routing & DNS -->
+        <div id="panel-netcourse-routing" class="panel">
+            <h2 class="panel-title">🌐 Networking: Routing, DNS, & DHCP</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Domain Name System (DNS) & Routing Paths</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>DNS (Domain Name System)</b>:
+                      - <i>How it happens</i>: Acts as the phonebook of the internet. Translates human-readable domain names (e.g. <code>google.com</code>) into computer-readable IP addresses.<br><br>
+                    • <b>IP Routing</b>:
+                      - <i>How it happens</i>: Routers look up destination IPs in their **Routing Tables** and forward packets hop-by-hop using protocols like OSPF or BGP.<br><br>
+                    • <b>DHCP (Dynamic Host Configuration Protocol)</b>:
+                      - <i>How it happens</i>: Automatically assigns temporary IP addresses, subnet masks, gateways, and DNS servers to joining devices.
+                </div>
+            </div>
+
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: nslookup / dig</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>What</b>: Queries DNS servers directly to resolve domain records (IPs, MX records, etc.).<br>
+                    • <b>Why</b>: Diagnoses whether domain resolution or site accessibility failures are caused by DNS outages.<br>
+                    • <b>When</b>: Run this when testing if websites fail to load because of domain name configuration issues.<br>
+                    • <b>How</b>: <code>nslookup google.com</code> or <code>dig google.com MX</code>
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Interactive Challenge: DNS Diagnostic Query</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 3: DNS query utility check</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+                            Which CMD utility allows you to query DNS maps manually to lookup a site's IP? (Type <b>nslookup</b> or <b>dig</b>).
+                        </p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="netcourse-routing-t1-input" class="input-text" placeholder="Utility command" style="flex:1;">
+                            <button class="btn" onclick="verifyNetcourseRoutingT1()">Query Domain</button>
+                        </div>
+                        <div id="netcourse-routing-t1-output" style="font-size:0.85rem; font-weight:700; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SecOps & Sniffing -->
+        <div id="panel-netcourse-security" class="panel">
+            <h2 class="panel-title">🌐 Networking: Network Security, Firewalls & Sniffing</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Securing Networks and Sniffing Data</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Packet Sniffing</b>:
+                      - <i>How it happens</i>: Captures frames passing through a network interface card (NIC) set in **promiscuous mode**.<br><br>
+                    • <b>Firewalls</b>:
+                      - <i>Stateful Firewalls</i>: Track the active state of connections (e.g. established sessions) to dynamically allow return traffic.
+                      - <i>Stateless Firewalls</i>: Filter packets strictly based on static rule grids (e.g. source IP, destination port).<br><br>
+                    • <b>VPN (Virtual Private Network)</b>:
+                      - Encrypts traffic tunnels between a user's device and a remote server, securing transfers across public Wi-Fi.
+                </div>
+            </div>
+
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: tcpdump</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>What</b>: A command-line packet capture and analyzer tool.<br>
+                    • <b>Why</b>: Used to inspect network packet payloads and debug suspicious traffic flow directly from the shell.<br>
+                    • <b>When</b>: Run this during active network intrusions to see raw traffic payloads in real time.<br>
+                    • <b>How</b>: <code>tcpdump -i eth0 port 80 -X</code> (captures HTTP payload hex dumps on interface eth0).
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Interactive Challenge: Packet Auditing Utility</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 4: Sniffer utility choice</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">
+                            Which CLI utility captures and prints raw packets matching connection parameters? (Type <b>tcpdump</b>).
+                        </p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="netcourse-security-t1-input" class="input-text" placeholder="Sniff utility" style="flex:1;">
+                            <button class="btn" onclick="verifyNetcourseSecurityT1()">Audit Packets</button>
+                        </div>
+                        <div id="netcourse-security-t1-output" style="font-size:0.85rem; font-weight:700; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEB FUNDAMENTALS PANELS -->
+        
+        <!-- HTTP/HTTPS & Methods -->
+        <div id="panel-webcourse-http" class="panel">
+            <h2 class="panel-title">🕸️ Web Fundamentals: HTTP/HTTPS & Methods</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">How HTTP Client-Server Transactions Happen</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>HTTP (HyperText Transfer Protocol)</b>: A stateless client-server protocol. A client (e.g. browser) sends a request, and the server returns a response.<br>
+                    • <b>HTTPS (Secure HTTP)</b>: Encrypts the data channel using SSL/TLS, preventing passive eavesdropping or man-in-the-middle attacks.<br>
+                    • <b>HTTP Methods</b>:<br>
+                      - <code>GET</code>: Request data from a specified resource.<br>
+                      - <code>POST</code>: Submit data to be processed (e.g. login credentials, form data).<br>
+                      - <code>PUT</code>/<code>DELETE</code>: Create/replace or destroy server-side assets.
+                </div>
+            </div>
+
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: curl -I</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>What</b>: Queries the server and requests ONLY the HTTP response headers (metadata), omitting the body payload.<br>
+                    • <b>Why</b>: Inspects server configurations, server headers, and redirects without downloading entire file content.<br>
+                    • <b>When</b>: Run this to check status codes (e.g. 200 OK, 301 Redirect) or server version attributes.<br>
+                    • <b>How</b>: <code>curl -I http://example.com</code>
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">💻 Web Fundamentals Interactive Terminal Console</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0 15px 0;">
+                    <b>Task</b>: Retrieve the HTTP headers for <code>http://example.com</code> using curl to solve the challenge.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; font-family:monospace; border:1px solid rgba(255,255,255,0.06);">
+                    <div id="web-terminal-http-output" style="color:#10b981; min-height:100px; max-height:200px; overflow-y:auto; font-size:0.85rem; white-space:pre-wrap;">Web Terminal ready. Type your command.</div>
+                    <div style="display:flex; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; margin-top:10px;">
+                        <span style="color:#06b6d4; font-weight:bold; margin-right:8px;">$</span>
+                        <input type="text" id="web-terminal-http-input" onkeydown="handleWebTerminalKey(event, 'http')" style="background:transparent; border:none; color:#fff; font-family:monospace; font-size:0.85rem; flex:1; outline:none;" placeholder="curl ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HTML, CSS & DOM -->
+        <div id="panel-webcourse-dom" class="panel">
+            <h2 class="panel-title">🕸️ Web Fundamentals: HTML, CSS & the DOM</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Structure, Style, and Programmatic Representation</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>HTML (HyperText Markup Language)</b>: Defines the structure and content of a web page using elements and tags.<br>
+                    • <b>CSS (Cascading Style Sheets)</b>: Decouples structure from design, applying styles, fonts, and responsive grid layouts.<br>
+                    • <b>DOM (Document Object Model)</b>: A tree-like object structure representing the HTML document in browser memory, allowing JavaScript to dynamically read, edit, or delete page nodes.
+                </div>
+            </div>
+
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: curl -o</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>What</b>: Downloads a web page resource and writes the raw output payload into a local file.<br>
+                    • <b>Why</b>: Allows auditing of client-side source code, identifying hardcoded credentials in script comments, or analyzing local structure.<br>
+                    • <b>When</b>: Run this to inspect raw HTML source code structure directly from your terminal session.<br>
+                    • <b>How</b>: <code>curl -o index.html http://example.com</code>
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">💻 Web Fundamentals Interactive Terminal Console</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0 15px 0;">
+                    <b>Task</b>: Download and write the HTML source of <code>http://example.com</code> to <code>index.html</code> to solve the challenge.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; font-family:monospace; border:1px solid rgba(255,255,255,0.06);">
+                    <div id="web-terminal-dom-output" style="color:#10b981; min-height:100px; max-height:200px; overflow-y:auto; font-size:0.85rem; white-space:pre-wrap;">Web Terminal ready. Type your command.</div>
+                    <div style="display:flex; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; margin-top:10px;">
+                        <span style="color:#06b6d4; font-weight:bold; margin-right:8px;">$</span>
+                        <input type="text" id="web-terminal-dom-input" onkeydown="handleWebTerminalKey(event, 'dom')" style="background:transparent; border:none; color:#fff; font-family:monospace; font-size:0.85rem; flex:1; outline:none;" placeholder="curl ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cookies & Sessions -->
+        <div id="panel-webcourse-cookies" class="panel">
+            <h2 class="panel-title">🕸️ Web Fundamentals: Cookies & Session Management</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">State Retention and Cookie Security Flags</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>State Management</b>: Since HTTP is stateless, servers send unique session identifier strings in a <code>Set-Cookie</code> header to persist login sessions.<br>
+                    • <b>Critical Security Attributes</b>:<br>
+                      - <code>HttpOnly</code>: Prevents client-side scripts (e.g. XSS) from reading the cookie value via <code>document.cookie</code>.<br>
+                      - <code>Secure</code>: Restricts cookie transmission strictly over TLS (HTTPS) channels.<br>
+                      - <code>SameSite</code>: Controls cross-site cookie transmission to mitigate Cross-Site Request Forgery (CSRF).
+                </div>
+            </div>
+
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: curl -b</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>What</b>: Sends a request header containing custom cookie name-value parameters (e.g., <code>Cookie: session=xyz</code>).<br>
+                    • <b>Why</b>: Tests server authorization logic under different roles (e.g., administrator, standard user).<br>
+                    • <b>When</b>: Run this during API testing or cookie access audits.<br>
+                    • <b>How</b>: <code>curl -b "session=admin" http://example.com/dashboard</code>
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">💻 Web Fundamentals Interactive Terminal Console</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0 15px 0;">
+                    <b>Task</b>: Request the page <code>http://example.com/dashboard</code> passing a cookie named <code>session</code> with the value <code>admin</code>.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; font-family:monospace; border:1px solid rgba(255,255,255,0.06);">
+                    <div id="web-terminal-cookies-output" style="color:#10b981; min-height:100px; max-height:200px; overflow-y:auto; font-size:0.85rem; white-space:pre-wrap;">Web Terminal ready. Type your command.</div>
+                    <div style="display:flex; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; margin-top:10px;">
+                        <span style="color:#06b6d4; font-weight:bold; margin-right:8px;">$</span>
+                        <input type="text" id="web-terminal-cookies-input" onkeydown="handleWebTerminalKey(event, 'cookies')" style="background:transparent; border:none; color:#fff; font-family:monospace; font-size:0.85rem; flex:1; outline:none;" placeholder="curl ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CORS & Origins -->
+        <div id="panel-webcourse-cors" class="panel">
+            <h2 class="panel-title">🕸️ Web Fundamentals: Same-Origin Policy & CORS</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Same-Origin Policy & Cross-Origin Rules</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Same-Origin Policy (SOP)</b>: A critical browser security sandbox. Restricts scripts on site A from reading sensitive data from site B, unless they share the same scheme, host, and port.<br>
+                    • <b>CORS (Cross-Origin Resource Sharing)</b>: A mechanism using HTTP headers that tells browsers when it is safe to permit cross-origin requests.<br>
+                    • <b>CORS Vulnerabilities</b>: Misconfiguring <code>Access-Control-Allow-Origin: *</code> with <code>Access-Control-Allow-Credentials: true</code> exposes site data to malicious domains.
+                </div>
+            </div>
+
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: curl -H</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>What</b>: Appends custom request header parameters to query audits.<br>
+                    • <b>Why</b>: Tests CORS policies by submitting artificial request origins to see if the server returns insecure wildcard permits.<br>
+                    • <b>When</b>: Run this to verify if API servers are correctly restricting access from unauthorized external domains.<br>
+                    • <b>How</b>: <code>curl -H "Origin: http://evil.com" -I http://example.com/api</code>
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">💻 Web Fundamentals Interactive Terminal Console</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0 15px 0;">
+                    <b>Task</b>: Probe <code>http://example.com/api</code> sending a custom request header <code>Origin: http://evil.com</code> and check the response headers.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; font-family:monospace; border:1px solid rgba(255,255,255,0.06);">
+                    <div id="web-terminal-cors-output" style="color:#10b981; min-height:100px; max-height:200px; overflow-y:auto; font-size:0.85rem; white-space:pre-wrap;">Web Terminal ready. Type your command.</div>
+                    <div style="display:flex; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; margin-top:10px;">
+                        <span style="color:#06b6d4; font-weight:bold; margin-right:8px;">$</span>
+                        <input type="text" id="web-terminal-cors-input" onkeydown="handleWebTerminalKey(event, 'cors')" style="background:transparent; border:none; color:#fff; font-family:monospace; font-size:0.85rem; flex:1; outline:none;" placeholder="curl ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WINDOWS BASICS PANELS -->
+        
+        <!-- CMD & File Basics Panel -->
+        <div id="panel-windows-files" class="panel">
+            <h2 class="panel-title">🪟 Windows Basics: CMD & File System</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: Directory & File Navigation</div>
+                <table class="table-results" style="width:100%; font-size:0.8rem; margin-top:10px;">
+                    <thead>
+                        <tr><th>Command</th><th>What & Why</th><th>How to use</th><th>Expected Command Prompt Output</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>dir</code></td>
+                            <td>Lists directory files. Used to view directory items.</td>
+                            <td><code>dir</code></td>
+                            <td>Lists files, directories, sizes, and timestamps.</td>
+                        </tr>
+                        <tr>
+                            <td><code>cd</code></td>
+                            <td>Changes the current directory directory path.</td>
+                            <td><code>cd Documents</code></td>
+                            <td>Updates prompt to current folder path.</td>
+                        </tr>
+                        <tr>
+                            <td><code>type</code></td>
+                            <td>Displays the contents of text files. Equivalent to Linux 'cat'.</td>
+                            <td><code>type flag.txt</code></td>
+                            <td>Prints text content of the file.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PowerShell Terminal Simulator -->
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🖥️ Windows PowerShell Terminal (CMD Sandbox)</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Task 1:</b> Navigate to the <code>C:\Users\Student\Documents</code> folder using <code>cd Documents</code>, list the files using <code>dir</code>, and read the flag in <code>flag.txt</code> using <code>type flag.txt</code>!
+                </p>
+                <div class="windows-terminal-box" style="background:#012456; border:2px solid #fff; border-radius:6px; font-family:'Consolas', monospace; color:#fff; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-winfiles-output">
+                    <div>Windows PowerShell</div>
+                    <div>Copyright (C) Microsoft Corporation. All rights reserved.</div>
+                    <br>
+                    <div>PS C:\Users\Student></div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#00ffff; font-family:'Consolas', monospace; align-self:center; font-weight:700;">PS C:\Users\Student></span>
+                    <input type="text" id="terminal-winfiles-input" class="input-text" placeholder="Type dir, cd, type flag.txt..." style="flex:1; background:#012456; border-color:#fff; color:#fff; font-family:monospace;" onkeydown="handleWindowsTerminalKey(event, 'winfiles')">
+                </div>
+            </div>
+        </div>
+
+        <!-- System Diagnostics Panel -->
+        <div id="panel-windows-diag" class="panel">
+            <h2 class="panel-title">🪟 Windows Basics: System Diagnostics</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: Diagnostics Utilities</div>
+                <table class="table-results" style="width:100%; font-size:0.8rem; margin-top:10px;">
+                    <thead>
+                        <tr><th>Command</th><th>What & Why</th><th>How to use</th><th>Expected Command Prompt Output</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>whoami</code></td>
+                            <td>Displays the current active user and group names.</td>
+                            <td><code>whoami</code></td>
+                            <td><code>desktop-a10\\student</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>hostname</code></td>
+                            <td>Prints the hostname/device name of the computer.</td>
+                            <td><code>hostname</code></td>
+                            <td><code>WIN-NCAS-LAB-01</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>ipconfig</code></td>
+                            <td>Displays network connection configuration parameters.</td>
+                            <td><code>ipconfig</code></td>
+                            <td>Shows IPv4 Address, Subnet Mask, Default Gateway.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PowerShell Terminal Simulator -->
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🖥️ Windows PowerShell Terminal (CMD Diagnostics Sandbox)</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Task 2:</b> Identify the system host name by typing <code>hostname</code>.
+                </p>
+                <div class="windows-terminal-box" style="background:#012456; border:2px solid #fff; border-radius:6px; font-family:'Consolas', monospace; color:#fff; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-windiag-output">
+                    <div>Windows PowerShell</div>
+                    <div>Copyright (C) Microsoft Corporation. All rights reserved.</div>
+                    <br>
+                    <div>PS C:\Users\Student></div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#00ffff; font-family:'Consolas', monospace; align-self:center; font-weight:700;">PS C:\Users\Student></span>
+                    <input type="text" id="terminal-windiag-input" class="input-text" placeholder="Type hostname..." style="flex:1; background:#012456; border-color:#fff; color:#fff; font-family:monospace;" onkeydown="handleWindowsTerminalKey(event, 'windiag')">
+                </div>
+            </div>
+        </div>
+
+        <!-- Process Management Panel -->
+        <div id="panel-windows-proc" class="panel">
+            <h2 class="panel-title">🪟 Windows Basics: Process & Tasks Control</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: Process Management</div>
+                <table class="table-results" style="width:100%; font-size:0.8rem; margin-top:10px;">
+                    <thead>
+                        <tr><th>Command</th><th>What & Why</th><th>How to use</th><th>Expected Command Prompt Output</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>tasklist</code></td>
+                            <td>Lists all running processes along with their Process IDs (PID).</td>
+                            <td><code>tasklist</code></td>
+                            <td>List containing Image Name, PID, Session, Memory.</td>
+                        </tr>
+                        <tr>
+                            <td><code>taskkill</code></td>
+                            <td>Terminates/forces running processes to stop.</td>
+                            <td><code>taskkill /PID 1234</code> or <code>taskkill /IM malicious.exe /F</code></td>
+                            <td><code>SUCCESS: Sent termination signal to process.</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PowerShell Terminal Simulator -->
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🖥️ Windows PowerShell Terminal (CMD Process Sandbox)</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Task 3:</b> List running processes using <code>tasklist</code>, locate the rogue process named <code>malware.exe</code>, and terminate it using <code>taskkill /PID 3040</code>!
+                </p>
+                <div class="windows-terminal-box" style="background:#012456; border:2px solid #fff; border-radius:6px; font-family:'Consolas', monospace; color:#fff; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-winproc-output">
+                    <div>Windows PowerShell</div>
+                    <div>Copyright (C) Microsoft Corporation. All rights reserved.</div>
+                    <br>
+                    <div>PS C:\Users\Student></div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#00ffff; font-family:'Consolas', monospace; align-self:center; font-weight:700;">PS C:\Users\Student></span>
+                    <input type="text" id="terminal-winproc-input" class="input-text" placeholder="Type tasklist or taskkill /PID 3040..." style="flex:1; background:#012456; border-color:#fff; color:#fff; font-family:monospace;" onkeydown="handleWindowsTerminalKey(event, 'winproc')">
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Auditing Panel -->
+        <div id="panel-windows-net" class="panel">
+            <h2 class="panel-title">🪟 Windows Basics: Network Auditing & Ports</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: Network Audits</div>
+                <table class="table-results" style="width:100%; font-size:0.8rem; margin-top:10px;">
+                    <thead>
+                        <tr><th>Command</th><th>What & Why</th><th>How to use</th><th>Expected Command Prompt Output</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>netstat</code></td>
+                            <td>Displays active TCP/UDP ports connections and listening details.</td>
+                            <td><code>netstat -ano</code></td>
+                            <td>Columns showing Proto, Local IP:Port, Foreign IP:Port, State, PID.</td>
+                        </tr>
+                        <tr>
+                            <td><code>ping</code></td>
+                            <td>Tests network connectivity to a host.</td>
+                            <td><code>ping google.com</code></td>
+                            <td>Sent/Received packets, ping trip times in ms.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PowerShell Terminal Simulator -->
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🖥️ Windows PowerShell Terminal (CMD Network Sandbox)</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Task 4:</b> Inspect active port connections by running <code>netstat -ano</code>, find the suspicious local port connection listening on port <code>4444</code>, and determine its corresponding PID!
+                </p>
+                <div class="windows-terminal-box" style="background:#012456; border:2px solid #fff; border-radius:6px; font-family:'Consolas', monospace; color:#fff; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-winnet-output">
+                    <div>Windows PowerShell</div>
+                    <div>Copyright (C) Microsoft Corporation. All rights reserved.</div>
+                    <br>
+                    <div>PS C:\Users\Student></div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#00ffff; font-family:'Consolas', monospace; align-self:center; font-weight:700;">PS C:\Users\Student></span>
+                    <input type="text" id="terminal-winnet-input" class="input-text" placeholder="Type netstat -ano..." style="flex:1; background:#012456; border-color:#fff; color:#fff; font-family:monospace;" onkeydown="handleWindowsTerminalKey(event, 'winnet')">
+                </div>
+            </div>
+        </div>
+
+        <!-- LINUX BANDIT CHALLENGES (LEVELS 0 - 5) -->
+        
+        <!-- Level 0 -->
+        <div id="panel-linux-lvl0" class="panel">
+            <h2 class="panel-title">🐧 Bandit Level 0 → Level 1: readme</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guides: ls & cat</div>
+                <table class="table-results" style="width:100%; font-size:0.8rem; margin-top:10px;">
+                    <thead>
+                        <tr><th>Command</th><th>What & Why</th><th>How to use</th><th>Expected Linux Output</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>ls</code></td>
+                            <td>Lists directory contents. Crucial for exploring file structures.</td>
+                            <td><code>ls</code> or <code>ls -l</code></td>
+                            <td><code>readme  notes.txt  inhere/</code></td>
+                        </tr>
+                        <tr>
+                            <td><code>cat</code></td>
+                            <td>Concatenates and displays file contents on screen.</td>
+                            <td><code>cat [filename]</code></td>
+                            <td>Prints text contents of file.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(16,185,129,0.3); background:#020617;">
+                <div class="result-header">🖥️ Level 0 Terminal Sandbox</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Goal:</b> Find the password for Level 1 stored in the <code>readme</code> file located in the home directory. Use <code>ls</code> to find it, then read it with <code>cat</code>. Copy the password to unlock Level 1 in the sidebar!
+                </p>
+                <div class="linux-terminal-box" style="background:#090d16; border:1px solid #10b981; border-radius:6px; font-family:'JetBrains Mono', monospace; color:#10b981; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-lvl0-output">
+                    <div>Welcome to Bandit Level 0. Terminal connected.</div>
+                    <div>bandit0@ncas-linux:~$</div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#10b981; font-family:'JetBrains Mono', monospace; align-self:center; font-weight:700;">bandit0@ncas-linux:~$</span>
+                    <input type="text" id="terminal-lvl0-input" class="input-text" placeholder="Type ls or cat readme..." style="flex:1; background:#000; border-color:#10b981; color:#fff; font-family:monospace;" onkeydown="handleBanditTerminalKey(event, 'lvl0')">
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 1 -->
+        <div id="panel-linux-lvl1" class="panel">
+            <h2 class="panel-title">🐧 Bandit Level 1 → Level 2: Dash Filename</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: Reading special filenames</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>What is the issue?</b> Standard utilities treat filenames starting with a dash (<code>-</code>) as options (flags) rather than input files.<br>
+                    <b>Why does this happen?</b> When running <code>cat -</code>, the shell interprets the dash as standard input.<br>
+                    <b>How to solve:</b> Provide a relative directory prefix path (<code>./</code>) so the program knows it is reading a file path, e.g. <code>cat ./-</code>.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(16,185,129,0.3); background:#020617;">
+                <div class="result-header">🖥️ Level 1 Terminal Sandbox</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Goal:</b> Find the password for Level 2 stored in a file named <code>-</code> in the home directory. Access it using relative prefix pathing.
+                </p>
+                <div class="linux-terminal-box" style="background:#090d16; border:1px solid #10b981; border-radius:6px; font-family:'JetBrains Mono', monospace; color:#10b981; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-lvl1-output">
+                    <div>Welcome to Bandit Level 1. Terminal connected.</div>
+                    <div>bandit1@ncas-linux:~$</div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#10b981; font-family:'JetBrains Mono', monospace; align-self:center; font-weight:700;">bandit1@ncas-linux:~$</span>
+                    <input type="text" id="terminal-lvl1-input" class="input-text" placeholder="Type cat ./-..." style="flex:1; background:#000; border-color:#10b981; color:#fff; font-family:monospace;" onkeydown="handleBanditTerminalKey(event, 'lvl1')">
+                </div>
+                <div style="margin-top:15px; display:flex; gap:10px; align-items:center;">
+                    <input type="text" id="unlock-lvl1-pass" class="input-text" placeholder="Enter Password to unlock Level 1 workspace" style="max-width:320px;">
+                    <button class="btn" onclick="unlockBanditLevel('lvl1')">Unlock Level</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 2 -->
+        <div id="panel-linux-lvl2" class="panel">
+            <h2 class="panel-title">🐧 Bandit Level 2 → Level 3: Spaces in Filename</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: Quoting & Escaping</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>What is the issue?</b> Linux shells use spaces to separate command arguments. Running <code>cat file name</code> tells cat to look for two files: `file` and `name`.<br>
+                    <b>Why?</b> Space is a command parameter delimiter.<br>
+                    <b>How to solve:</b><br>
+                    1. Quote the string: <code>cat "spaces in this filename"</code>.<br>
+                    2. Escape spaces using backslashes: <code>cat spaces\\ in\\ this\\ filename</code>.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(16,185,129,0.3); background:#020617;">
+                <div class="result-header">🖥️ Level 2 Terminal Sandbox</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Goal:</b> Find the password for Level 3 stored in the file <code>spaces in this filename</code> located in the home directory.
+                </p>
+                <div class="linux-terminal-box" style="background:#090d16; border:1px solid #10b981; border-radius:6px; font-family:'JetBrains Mono', monospace; color:#10b981; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-lvl2-output">
+                    <div>Welcome to Bandit Level 2. Terminal connected.</div>
+                    <div>bandit2@ncas-linux:~$</div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#10b981; font-family:'JetBrains Mono', monospace; align-self:center; font-weight:700;">bandit2@ncas-linux:~$</span>
+                    <input type="text" id="terminal-lvl2-input" class="input-text" placeholder="Type cat &quot;spaces in...&quot;" style="flex:1; background:#000; border-color:#10b981; color:#fff; font-family:monospace;" onkeydown="handleBanditTerminalKey(event, 'lvl2')">
+                </div>
+                <div style="margin-top:15px; display:flex; gap:10px; align-items:center;">
+                    <input type="text" id="unlock-lvl2-pass" class="input-text" placeholder="Enter Password to unlock Level 2 workspace" style="max-width:320px;">
+                    <button class="btn" onclick="unlockBanditLevel('lvl2')">Unlock Level</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 3 -->
+        <div id="panel-linux-lvl3" class="panel">
+            <h2 class="panel-title">🐧 Bandit Level 3 → Level 4: Hidden Files</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: Listing Hidden Files</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>What is a hidden file?</b> Any file in Linux starting with a dot (<code>.</code>) is hidden from normal directory listing searches.<br>
+                    <b>Why?</b> Keeps directories clean of configuration or setup files.<br>
+                    <b>How to list them:</b> Add the <code>-a</code> or <code>-la</code> flags to the list command: <code>ls -la</code>.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(16,185,129,0.3); background:#020617;">
+                <div class="result-header">🖥️ Level 3 Terminal Sandbox</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Goal:</b> Navigate to the <code>inhere</code> folder, list all hidden files, and read the password file for Level 4.
+                </p>
+                <div class="linux-terminal-box" style="background:#090d16; border:1px solid #10b981; border-radius:6px; font-family:'JetBrains Mono', monospace; color:#10b981; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-lvl3-output">
+                    <div>Welcome to Bandit Level 3. Terminal connected.</div>
+                    <div>bandit3@ncas-linux:~$</div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#10b981; font-family:'JetBrains Mono', monospace; align-self:center; font-weight:700;">bandit3@ncas-linux:~$</span>
+                    <input type="text" id="terminal-lvl3-input" class="input-text" placeholder="Type cd inhere && ls -la..." style="flex:1; background:#000; border-color:#10b981; color:#fff; font-family:monospace;" onkeydown="handleBanditTerminalKey(event, 'lvl3')">
+                </div>
+                <div style="margin-top:15px; display:flex; gap:10px; align-items:center;">
+                    <input type="text" id="unlock-lvl3-pass" class="input-text" placeholder="Enter Password to unlock Level 3 workspace" style="max-width:320px;">
+                    <button class="btn" onclick="unlockBanditLevel('lvl3')">Unlock Level</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 4 -->
+        <div id="panel-linux-lvl4" class="panel">
+            <h2 class="panel-title">🐧 Bandit Level 4 → Level 5: File Characteristics</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: Identifying File Types</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>What is the issue?</b> You are given a directory of files, but most are binary garbage or compiled structures, not ASCII text.<br>
+                    <b>How to find the human-readable text file:</b> Run the <code>file</code> command on targets. It examines the file headers and contents to classify the type, e.g. <code>file ./*</code>.<br>
+                    <b>Expected output:</b> <code>./data: ASCII text</code> or <code>./image: JPEG image data</code>.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(16,185,129,0.3); background:#020617;">
+                <div class="result-header">🖥️ Level 4 Terminal Sandbox</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Goal:</b> Find the only human-readable file inside the <code>maybehere</code> directory. Use <code>file</code>, find the text target, and view its contents to retrieve the Level 5 password.
+                </p>
+                <div class="linux-terminal-box" style="background:#090d16; border:1px solid #10b981; border-radius:6px; font-family:'JetBrains Mono', monospace; color:#10b981; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-lvl4-output">
+                    <div>Welcome to Bandit Level 4. Terminal connected.</div>
+                    <div>bandit4@ncas-linux:~$</div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#10b981; font-family:'JetBrains Mono', monospace; align-self:center; font-weight:700;">bandit4@ncas-linux:~$</span>
+                    <input type="text" id="terminal-lvl4-input" class="input-text" placeholder="Type cd maybehere && file ./*..." style="flex:1; background:#000; border-color:#10b981; color:#fff; font-family:monospace;" onkeydown="handleBanditTerminalKey(event, 'lvl4')">
+                </div>
+                <div style="margin-top:15px; display:flex; gap:10px; align-items:center;">
+                    <input type="text" id="unlock-lvl4-pass" class="input-text" placeholder="Enter Password to unlock Level 4 workspace" style="max-width:320px;">
+                    <button class="btn" onclick="unlockBanditLevel('lvl4')">Unlock Level</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Level 5 -->
+        <div id="panel-linux-lvl5" class="panel">
+            <h2 class="panel-title">🐧 Bandit Level 5 → Level 6: Base64 Decoding</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: Base64 Decoders</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>What is Base64?</b> A binary-to-text encoding scheme commonly used to transmit binary assets cleanly over ASCII channels.<br>
+                    <b>Why do this?</b> It obfuscates contents slightly or formats them for transfers.<br>
+                    <b>How to decode:</b> Run <code>base64 -d [filename]</code> to print the decoded plaintext.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(16,185,129,0.3); background:#020617;">
+                <div class="result-header">🖥️ Level 5 Terminal Sandbox</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Goal:</b> Retrieve the final completion flag stored in <code>data.txt</code> by decoding it using <code>base64 -d data.txt</code>.
+                </p>
+                <div class="linux-terminal-box" style="background:#090d16; border:1px solid #10b981; border-radius:6px; font-family:'JetBrains Mono', monospace; color:#10b981; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-lvl5-output">
+                    <div>Welcome to Bandit Level 5. Terminal connected.</div>
+                    <div>bandit5@ncas-linux:~$</div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#10b981; font-family:'JetBrains Mono', monospace; align-self:center; font-weight:700;">bandit5@ncas-linux:~$</span>
+                    <input type="text" id="terminal-lvl5-input" class="input-text" placeholder="Type base64 -d data.txt..." style="flex:1; background:#000; border-color:#10b981; color:#fff; font-family:monospace;" onkeydown="handleBanditTerminalKey(event, 'lvl5')">
+                </div>
+                <div style="margin-top:15px; display:flex; gap:10px; align-items:center;">
+                    <input type="text" id="unlock-lvl5-pass" class="input-text" placeholder="Enter Password to unlock Level 5 workspace" style="max-width:320px;">
+                    <button class="btn" onclick="unlockBanditLevel('lvl5')">Unlock Level</button>
+                </div>
+            </div>
+        </div>
+
         <!-- OWASP TOP 10 PANELS -->
         
         <!-- A01: Broken Access Control -->
@@ -3492,11 +4471,23 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             const sidebar = document.querySelector('.sidebar');
             const workspace = document.querySelector('.workspace');
             if (sidebar && workspace) {
-                if (panelName === 'hub-cyberlab' || panelName.startsWith('owasp-')) {
+                if (panelName === 'hub-cyberlab' || panelName.startsWith('owasp-') || panelName.startsWith('basics-') || panelName.startsWith('linux-') || panelName.startsWith('windows-') || panelName.startsWith('netcourse-') || panelName.startsWith('webcourse-')) {
                     sidebar.style.setProperty('display', 'block', 'important');
                     workspace.style.setProperty('margin-left', '280px', 'important');
                     workspace.style.setProperty('width', 'calc(100% - 280px)', 'important');
-                    openSidebarAccordion('owasp');
+                    if (panelName.startsWith('basics-')) {
+                        openSidebarAccordion('basics');
+                    } else if (panelName.startsWith('linux-')) {
+                        openSidebarAccordion('linux');
+                    } else if (panelName.startsWith('windows-')) {
+                        openSidebarAccordion('windows');
+                    } else if (panelName.startsWith('netcourse-')) {
+                        openSidebarAccordion('netcourse');
+                    } else if (panelName.startsWith('webcourse-')) {
+                        openSidebarAccordion('webcourse');
+                    } else {
+                        openSidebarAccordion('owasp');
+                    }
                 } else {
                     sidebar.style.setProperty('display', 'none', 'important');
                     workspace.style.setProperty('margin-left', '0', 'important');
@@ -6195,6 +7186,655 @@ SHA-1:    ${sha1Hex}
         }
 
         // ==========================================
+        // VIRTUAL LINUX BANDIT SHELL ENGINE
+        // ==========================================
+        let banditUnlocked = {
+            lvl0: true,
+            lvl1: false,
+            lvl2: false,
+            lvl3: false,
+            lvl4: false,
+            lvl5: false
+        };
+
+        try {
+            const saved = localStorage.getItem('bandit_unlocked_status');
+            if (saved) {
+                banditUnlocked = JSON.parse(saved);
+            }
+        } catch(e) {}
+
+        const BANDIT_PASSWORDS = {
+            lvl1: "bandit_lvl1_dash",
+            lvl2: "bandit_lvl2_spaces",
+            lvl3: "bandit_lvl3_hidden",
+            lvl4: "bandit_lvl4_human",
+            lvl5: "bandit_lvl5_base64"
+        };
+
+        let banditCurrentDirs = {
+            lvl0: "/home/bandit0",
+            lvl1: "/home/bandit1",
+            lvl2: "/home/bandit2",
+            lvl3: "/home/bandit3",
+            lvl4: "/home/bandit4",
+            lvl5: "/home/bandit5"
+        };
+
+        let banditFS = {
+            "lvl0": {
+                "/home/bandit0": { type: "dir", children: ["readme", "notes.txt"] },
+                "/home/bandit0/readme": { type: "file", content: "bandit_lvl1_dash" },
+                "/home/bandit0/notes.txt": { type: "file", content: "Use cat readme to find the password to unlock Level 1." }
+            },
+            "lvl1": {
+                "/home/bandit1": { type: "dir", children: ["-"] },
+                "/home/bandit1/-": { type: "file", content: "bandit_lvl2_spaces" }
+            },
+            "lvl2": {
+                "/home/bandit2": { type: "dir", children: ["spaces in this filename"] },
+                "/home/bandit2/spaces in this filename": { type: "file", content: "bandit_lvl3_hidden" }
+            },
+            "lvl3": {
+                "/home/bandit3": { type: "dir", children: ["inhere", "notes.txt"] },
+                "/home/bandit3/inhere": { type: "dir", children: [".hidden"] },
+                "/home/bandit3/inhere/.hidden": { type: "file", content: "bandit_lvl4_human" },
+                "/home/bandit3/notes.txt": { type: "file", content: "Look inside the inhere folder for hidden configurations." }
+            },
+            "lvl4": {
+                "/home/bandit4": { type: "dir", children: ["maybehere"] },
+                "/home/bandit4/maybehere": { type: "dir", children: ["file0", "file1", "file2"] },
+                "/home/bandit4/maybehere/file0": { type: "file", content: "\x00\x01\x02\x03\x04 ELF Executable data", isBinary: true },
+                "/home/bandit4/maybehere/file1": { type: "file", content: "\x89PNG\r\n\x1a\n Image binary", isBinary: true },
+                "/home/bandit4/maybehere/file2": { type: "file", content: "bandit_lvl5_base64", isBinary: false }
+            },
+            "lvl5": {
+                "/home/bandit5": { type: "dir", children: ["data.txt"] },
+                "/home/bandit5/data.txt": { type: "file", content: "TktBU3tiYW5kaXRfbHZsNV9iYXNlNjRfZGVjb2RlZH0=" }
+            }
+        };
+
+        function switchLinuxLevel(lvl) {
+            if (!banditUnlocked[lvl]) {
+                alert(`Level ${lvl.replace('lvl','')} is currently locked! Please submit the password from the previous level to unlock it.`);
+                return;
+            }
+            switchPanel(`linux-${lvl}`);
+            document.querySelectorAll('.linux-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-linux-${lvl}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        function updateBanditSidebar() {
+            for (let i = 0; i <= 5; i++) {
+                const lvl = `lvl${i}`;
+                const el = document.getElementById(`nav-linux-${lvl}`);
+                if (el) {
+                    if (banditUnlocked[lvl]) {
+                        el.classList.remove('locked');
+                        el.innerHTML = `🔓 Level ${i} → ${i+1}`;
+                    } else {
+                        el.classList.add('locked');
+                        el.innerHTML = `🔒 Level ${i} → ${i+1}`;
+                    }
+                }
+            }
+        }
+
+        function unlockBanditLevel(lvl) {
+            const input = document.getElementById(`unlock-${lvl}-pass`);
+            if (!input) return;
+            const val = input.value.trim();
+            if (val === BANDIT_PASSWORDS[lvl]) {
+                banditUnlocked[lvl] = true;
+                try {
+                    localStorage.setItem('bandit_unlocked_status', JSON.stringify(banditUnlocked));
+                } catch(e) {}
+                updateBanditSidebar();
+                alert(`Level ${lvl.replace('lvl','')} unlocked successfully!`);
+                switchLinuxLevel(lvl);
+            } else {
+                alert("Incorrect password! Find it by solving the previous level tasks.");
+            }
+        }
+
+        function handleBanditTerminalKey(event, lvl) {
+            if (event.key === "Enter") {
+                const inputEl = document.getElementById(`terminal-${lvl}-input`);
+                const commandStr = inputEl.value.trim();
+                if (!commandStr) return;
+
+                writeBanditLine(lvl, `bandit${lvl.replace('lvl','')}` + "@ncas-linux:~$ " + commandStr, "#fff");
+                const parts = commandStr.split(/\s+/);
+                const cmd = parts[0];
+                const arg = parts.slice(1).join(' ');
+                let output = "";
+                let outputColor = "#10b981";
+
+                const fs = banditFS[lvl];
+                let currentDir = banditCurrentDirs[lvl];
+
+                if (cmd === "pwd") {
+                    output = currentDir;
+                } else if (cmd === "ls") {
+                    const includeHidden = arg.includes("-a") || arg.includes("-la");
+                    const pathParts = arg.split(/\s+/).filter(p => !p.startsWith("-"));
+                    let checkDir = currentDir;
+                    if (pathParts.length > 0) {
+                        const target = pathParts[0];
+                        checkDir = target.startsWith("/") ? target : (currentDir === "/" ? `/${target}` : `${currentDir}/${target}`);
+                        checkDir = checkDir.replace(/\/+$/, "");
+                    }
+
+                    if (fs[checkDir] && fs[checkDir].type === "dir") {
+                        let children = [...fs[checkDir].children];
+                        if (!includeHidden) {
+                            children = children.filter(c => !c.startsWith("."));
+                        }
+                        output = children.join("   ") || "(directory is empty)";
+                    } else {
+                        output = `ls: cannot access '${arg}': No such file or directory`;
+                        outputColor = "var(--accent-red)";
+                    }
+                } else if (cmd === "cd") {
+                    if (!arg || arg === "~") {
+                        banditCurrentDirs[lvl] = `/home/bandit${lvl.replace('lvl','')}`;
+                    } else if (arg === "..") {
+                        if (currentDir !== "/") {
+                            const lastSlash = currentDir.lastIndexOf("/");
+                            banditCurrentDirs[lvl] = currentDir.substring(0, lastSlash) || "/";
+                        }
+                    } else {
+                        let targetPath = arg.startsWith("/") ? arg : (currentDir === "/" ? `/${arg}` : `${currentDir}/${arg}`);
+                        targetPath = targetPath.replace(/\/+$/, "");
+                        if (fs[targetPath] && fs[targetPath].type === "dir") {
+                            banditCurrentDirs[lvl] = targetPath;
+                        } else {
+                            output = `cd: no such file or directory: ${arg}`;
+                            outputColor = "var(--accent-red)";
+                        }
+                    }
+                } else if (cmd === "cat") {
+                    if (!arg) {
+                        output = "cat: missing file operand";
+                        outputColor = "var(--accent-red)";
+                    } else {
+                        let cleanArg = arg.replace(/^["']|["']$/g, '');
+                        let filePath = cleanArg.startsWith("/") ? cleanArg : (currentDir === "/" ? `/${cleanArg}` : `${currentDir}/${cleanArg}`);
+                        filePath = filePath.replace(/\/+$/, "");
+
+                        if (fs[filePath] && fs[filePath].type === "file") {
+                            output = fs[filePath].content;
+                            if (lvl === "lvl0" && filePath.endsWith("readme")) {
+                                output += "\n\n[LEVEL COMPLETE] Password found! +100 XP awarded.\nRedirecting to Level 1 in 2 seconds...";
+                                banditUnlocked["lvl1"] = true;
+                                try { localStorage.setItem('bandit_unlocked_status', JSON.stringify(banditUnlocked)); } catch(e) {}
+                                updateBanditSidebar();
+                                setTimeout(() => switchLinuxLevel('lvl1'), 2000);
+                            } else if (lvl === "lvl1" && filePath.endsWith("-")) {
+                                output += "\n\n[LEVEL COMPLETE] Password found! +100 XP awarded.\nRedirecting to Level 2 in 2 seconds...";
+                                banditUnlocked["lvl2"] = true;
+                                try { localStorage.setItem('bandit_unlocked_status', JSON.stringify(banditUnlocked)); } catch(e) {}
+                                updateBanditSidebar();
+                                setTimeout(() => switchLinuxLevel('lvl2'), 2000);
+                            } else if (lvl === "lvl2" && filePath.endsWith("spaces in this filename")) {
+                                output += "\n\n[LEVEL COMPLETE] Password found! +100 XP awarded.\nRedirecting to Level 3 in 2 seconds...";
+                                banditUnlocked["lvl3"] = true;
+                                try { localStorage.setItem('bandit_unlocked_status', JSON.stringify(banditUnlocked)); } catch(e) {}
+                                updateBanditSidebar();
+                                setTimeout(() => switchLinuxLevel('lvl3'), 2000);
+                            } else if (lvl === "lvl3" && filePath.endsWith(".hidden")) {
+                                output += "\n\n[LEVEL COMPLETE] Password found! +100 XP awarded.\nRedirecting to Level 4 in 2 seconds...";
+                                banditUnlocked["lvl4"] = true;
+                                try { localStorage.setItem('bandit_unlocked_status', JSON.stringify(banditUnlocked)); } catch(e) {}
+                                updateBanditSidebar();
+                                setTimeout(() => switchLinuxLevel('lvl4'), 2000);
+                            } else if (lvl === "lvl4" && filePath.endsWith("file2")) {
+                                output += "\n\n[LEVEL COMPLETE] Password found! +100 XP awarded.\nRedirecting to Level 5 in 2 seconds...";
+                                banditUnlocked["lvl5"] = true;
+                                try { localStorage.setItem('bandit_unlocked_status', JSON.stringify(banditUnlocked)); } catch(e) {}
+                                updateBanditSidebar();
+                                setTimeout(() => switchLinuxLevel('lvl5'), 2000);
+                            }
+                        } else {
+                            output = `cat: ${arg}: No such file or directory`;
+                            outputColor = "var(--accent-red)";
+                        }
+                    }
+                } else if (cmd === "file") {
+                    if (!arg) {
+                        output = "file: missing operand";
+                        outputColor = "var(--accent-red)";
+                    } else {
+                        let searchDir = currentDir;
+                        if (fs[searchDir] && fs[searchDir].type === "dir") {
+                            let results = [];
+                            fs[searchDir].children.forEach(child => {
+                                const fullPath = searchDir === "/" ? `/${child}` : `${searchDir}/${child}`;
+                                const node = fs[fullPath];
+                                if (node && node.type === "file") {
+                                    if (node.isBinary) {
+                                        results.push(`./${child}: ELF 64-bit LSB executable, data`);
+                                    } else {
+                                        results.push(`./${child}: ASCII text`);
+                                    }
+                                }
+                            });
+                            output = results.join("\n");
+                        } else {
+                            output = "file: directory error";
+                        }
+                    }
+                } else if (cmd === "base64") {
+                    if (arg === "-d data.txt" || arg === "-d < data.txt" || arg.includes("-d")) {
+                        let filePath = currentDir === "/" ? "/data.txt" : `${currentDir}/data.txt`;
+                        if (fs[filePath]) {
+                            output = "NCAS{bandit_lvl5_base64_decoded}";
+                            output += "\n\n[TASK COMPLETE] Flag verified! 🎉 Congratulations! You completed the Linux Fundamentals course!";
+                        } else {
+                            output = "base64: data.txt: No such file or directory";
+                        }
+                    } else {
+                        output = "base64: missing options. Did you mean base64 -d?";
+                    }
+                } else if (cmd === "clear") {
+                    const outBox = document.getElementById(`terminal-${lvl}-output`);
+                    if (outBox) outBox.innerHTML = "";
+                    inputEl.value = "";
+                    return;
+                } else {
+                    output = `bash: command not found: ${cmd}`;
+                    outputColor = "var(--accent-red)";
+                }
+
+                writeBanditLine(lvl, output, outputColor);
+                inputEl.value = "";
+            }
+        }
+
+        function writeBanditLine(lvl, text, color) {
+            const outBox = document.getElementById(`terminal-${lvl}-output`);
+            if (!outBox) return;
+            const line = document.createElement("div");
+            line.style.color = color;
+            line.style.marginTop = "4px";
+            line.style.whiteSpace = "pre-wrap";
+            line.textContent = text;
+            outBox.appendChild(line);
+            outBox.scrollTop = outBox.scrollHeight;
+        }
+
+        // ==========================================
+        // WINDOWS BASICS TERMINAL ENGINE
+        // ==========================================
+        let winCurrentDir = "C:\\Users\\Student";
+        let winFS = {
+            "C:\\Users\\Student": { type: "dir", children: ["Documents", "Downloads", "Desktop"] },
+            "C:\\Users\\Student\\Documents": { type: "dir", children: ["flag.txt", "notes.txt"] },
+            "C:\\Users\\Student\\Documents\\flag.txt": { type: "file", content: "NCAS{windows_cmd_filesystem_dir_navigation}" },
+            "C:\\Users\\Student\\Documents\\notes.txt": { type: "file", content: "CMD supports standard navigation via 'cd' and reading files via 'type'." },
+            "C:\\Users\\Student\\Downloads": { type: "dir", children: [] },
+            "C:\\Users\\Student\\Desktop": { type: "dir", children: [] }
+        };
+
+        // ==========================================
+        // COMPUTER NETWORKING ENGINE
+        // ==========================================
+        function switchNetcoursePanel(code) {
+            switchPanel(`netcourse-${code}`);
+            document.querySelectorAll('.netcourse-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-netcourse-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        function verifyNetcourseOsiT1() {
+            const val = document.getElementById('netcourse-osi-t1-input').value.trim().toLowerCase();
+            const out = document.getElementById('netcourse-osi-t1-output');
+            out.style.display = 'block';
+            if (val === 'network' || val === '3') {
+                out.style.color = '#10b981';
+                out.innerHTML = '✓ CORRECT! Routers operate at Layer 3 (Network Layer) of the OSI model.<br>Flag: NCAS{osi_network_routing_layer3}<br><span style="color:#06b6d4;">Moving to the next lesson...</span>';
+                setTimeout(() => switchNetcoursePanel('tcp'), 2000);
+            } else {
+                out.style.color = 'var(--accent-red)';
+                out.textContent = '✗ INCORRECT. Hint: The Network Layer handles logical IP addresses and routing.';
+            }
+        }
+
+        function verifyNetcourseTcpT1() {
+            const val = document.getElementById('netcourse-tcp-t1-input').value.trim().toLowerCase();
+            const out = document.getElementById('netcourse-tcp-t1-output');
+            out.style.display = 'block';
+            if (val === 'tcp') {
+                out.style.color = '#10b981';
+                out.innerHTML = '✓ CORRECT! TCP establishes a connection-oriented reliable path using a 3-way handshake.<br>Flag: NCAS{tcp_handshake_reliability}<br><span style="color:#06b6d4;">Moving to the next lesson...</span>';
+                setTimeout(() => switchNetcoursePanel('routing'), 2000);
+            } else {
+                out.style.color = 'var(--accent-red)';
+                out.textContent = '✗ INCORRECT. Hint: It stands for Transmission Control Protocol.';
+            }
+        }
+
+        function verifyNetcourseRoutingT1() {
+            const val = document.getElementById('netcourse-routing-t1-input').value.trim().toLowerCase();
+            const out = document.getElementById('netcourse-routing-t1-output');
+            out.style.display = 'block';
+            if (val === 'nslookup' || val === 'dig') {
+                out.style.color = '#10b981';
+                out.innerHTML = '✓ CORRECT! Both nslookup and dig allow querying DNS mapping servers.<br>Flag: NCAS{dns_nslookup_query_diagnostic}<br><span style="color:#06b6d4;">Moving to the next lesson...</span>';
+                setTimeout(() => switchNetcoursePanel('security'), 2000);
+            } else {
+                out.style.color = 'var(--accent-red)';
+                out.textContent = '✗ INCORRECT. Hint: CMD uses nslookup, while Linux terminals favor dig.';
+            }
+        }
+
+        function verifyNetcourseSecurityT1() {
+            const val = document.getElementById('netcourse-security-t1-input').value.trim().toLowerCase();
+            const out = document.getElementById('netcourse-security-t1-output');
+            out.style.display = 'block';
+            if (val === 'tcpdump') {
+                out.style.color = '#10b981';
+                out.innerHTML = '✓ CORRECT! tcpdump is the classic Linux command-line sniffer utility.<br>Flag: NCAS{tcpdump_live_packet_sniffing}<br><span style="color:#eab308; font-weight:bold;">🎉 Congratulations! You completed the Computer Networking course!</span>';
+            } else {
+                out.style.color = 'var(--accent-red)';
+                out.textContent = '✗ INCORRECT. Hint: Starts with tcp...';
+            }
+        }
+
+        // ==========================================
+        // WEB FUNDAMENTALS COURSE ENGINE
+        // ==========================================
+        function switchWebcoursePanel(code) {
+            switchPanel(`webcourse-${code}`);
+            document.querySelectorAll('.webcourse-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-webcourse-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        function handleWebTerminalKey(event, type) {
+            if (event.key === "Enter") {
+                const inputEl = document.getElementById(`web-terminal-${type}-input`);
+                const commandStr = inputEl.value.trim();
+                if (!commandStr) return;
+
+                const outBox = document.getElementById(`web-terminal-${type}-output`);
+                if (!outBox) return;
+
+                // Echo command
+                const echo = document.createElement("div");
+                echo.style.color = "#fff";
+                echo.textContent = `$ ${commandStr}`;
+                outBox.appendChild(echo);
+
+                const responseLine = document.createElement("div");
+                responseLine.style.marginTop = "4px";
+                responseLine.style.whiteSpace = "pre-wrap";
+
+                let outputText = "";
+                let isCorrect = false;
+
+                if (type === "http") {
+                    if (commandStr === "curl -I http://example.com") {
+                        isCorrect = true;
+                        outputText = "HTTP/1.1 200 OK\nDate: Mon, 22 Jul 2026 00:00:01 GMT\nServer: Apache/2.4.41 (Unix)\nLast-Modified: Thu, 17 Oct 2019 07:18:26 GMT\nETag: \"2f-5950a41753900\"\nAccept-Ranges: bytes\nContent-Length: 47\nContent-Type: text/html; charset=UTF-8\nX-Flag: NCAS{curl_http_headers_inspect_ok}\n\n[TASK COMPLETE] Headers successfully retrieved! Flag verified!\nRedirecting to HTML, CSS & DOM in 2 seconds...";
+                        setTimeout(() => switchWebcoursePanel('dom'), 2000);
+                    } else {
+                        outputText = `curl: (6) Could not resolve host or invalid parameters. Try running exactly:\ncurl -I http://example.com`;
+                        responseLine.style.color = "var(--accent-red)";
+                    }
+                } else if (type === "dom") {
+                    if (commandStr === "curl -o index.html http://example.com") {
+                        isCorrect = true;
+                        outputText = "  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current\n                                 Dload  Upload   Total   Spent    Left  Speed\n100    47  100    47    0     0   4700      0 --:--:-- --:--:-- --:--:--  4700\n[Saved to index.html]\n\nSource preview:\n<!DOCTYPE html>\n<html>\n<head><title>Example Page</title></head>\n<body>\n  <h1>Welcome!</h1>\n  <!-- Hidden flag: NCAS{curl_download_page_source_code} -->\n</body>\n</html>\n\n[TASK COMPLETE] Source code downloaded! Flag verified!\nRedirecting to Cookies & Sessions in 2 seconds...";
+                        setTimeout(() => switchWebcoursePanel('cookies'), 2000);
+                    } else {
+                        outputText = `curl: (6) Could not resolve host or invalid parameters. Try running exactly:\ncurl -o index.html http://example.com`;
+                        responseLine.style.color = "var(--accent-red)";
+                    }
+                } else if (type === "cookies") {
+                    if (commandStr === 'curl -b "session=admin" http://example.com/dashboard' || commandStr === "curl -b 'session=admin' http://example.com/dashboard") {
+                        isCorrect = true;
+                        outputText = "HTTP/1.1 200 OK\nContent-Type: text/html\n\nWelcome back Admin!\nFlag: NCAS{cookies_hijacking_session_bypass}\n\n[TASK COMPLETE] Authenticated route verified! Flag verified!\nRedirecting to CORS & Origins in 2 seconds...";
+                        setTimeout(() => switchWebcoursePanel('cors'), 2000);
+                    } else {
+                        outputText = `Access Denied: Missing or invalid authentication cookie.\nTry running exactly:\ncurl -b "session=admin" http://example.com/dashboard`;
+                        responseLine.style.color = "var(--accent-red)";
+                    }
+                } else if (type === "cors") {
+                    if (commandStr === 'curl -H "Origin: http://evil.com" -I http://example.com/api' || commandStr === "curl -H 'Origin: http://evil.com' -I http://example.com/api") {
+                        isCorrect = true;
+                        outputText = "HTTP/1.1 200 OK\nDate: Mon, 22 Jul 2026 00:00:01 GMT\nServer: Apache\nAccess-Control-Allow-Origin: http://evil.com\nAccess-Control-Allow-Credentials: true\nContent-Type: application/json\n\nFlag: NCAS{cors_wildcard_origin_vulnerability}\n\n[TASK COMPLETE] CORS origin check completed! Flag verified!\n🎉 Congratulations! You completed the Web Fundamentals course!";
+                    } else {
+                        outputText = `Access Denied or CORS Preflight blocked.\nTry running exactly:\ncurl -H "Origin: http://evil.com" -I http://example.com/api`;
+                        responseLine.style.color = "var(--accent-red)";
+                    }
+                }
+
+                if (isCorrect) {
+                    responseLine.style.color = "#10b981";
+                }
+                responseLine.textContent = outputText;
+                outBox.appendChild(responseLine);
+                outBox.scrollTop = outBox.scrollHeight;
+                inputEl.value = "";
+            }
+        }
+
+        function switchWindowsPanel(code) {
+            switchPanel(`windows-${code}`);
+            document.querySelectorAll('.windows-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-windows-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        function handleWindowsTerminalKey(event, terminalId) {
+            if (event.key === "Enter") {
+                const inputEl = document.getElementById(`terminal-${terminalId}-input`);
+                const commandStr = inputEl.value.trim();
+                if (!commandStr) return;
+
+                // Echo command
+                writeWindowsLine(terminalId, `PS ${winCurrentDir}> ${commandStr}`, "#fff");
+                
+                const parts = commandStr.split(/\s+/);
+                const cmd = parts[0].toLowerCase();
+                const arg = parts.slice(1).join(' ');
+
+                let output = "";
+                let outputColor = "#fff";
+
+                if (cmd === "dir") {
+                    const dirNode = winFS[winCurrentDir];
+                    if (dirNode && dirNode.type === "dir") {
+                        let lines = [" Directory of " + winCurrentDir, ""];
+                        dirNode.children.forEach(child => {
+                            const fullPath = `${winCurrentDir}\\${child}`;
+                            const childNode = winFS[fullPath];
+                            const timeStr = "2026-07-22  10:00 AM";
+                            if (childNode && childNode.type === "dir") {
+                                lines.push(`${timeStr}    <DIR>          ${child}`);
+                            } else {
+                                lines.push(`${timeStr}                   ${child}`);
+                            }
+                        });
+                        output = lines.join("\n");
+                    } else {
+                        output = "Directory reading error.";
+                        outputColor = "var(--accent-red)";
+                    }
+                } else if (cmd === "cd") {
+                    if (!arg) {
+                        output = winCurrentDir;
+                    } else if (arg === "..") {
+                        if (winCurrentDir !== "C:\\Users\\Student") {
+                            const lastBackslash = winCurrentDir.lastIndexOf("\\");
+                            winCurrentDir = winCurrentDir.substring(0, lastBackslash);
+                        }
+                    } else {
+                        // resolve relative path
+                        let cleanArg = arg.replace(/^["']|["']$/g, '');
+                        let targetPath = `${winCurrentDir}\\${cleanArg}`;
+                        if (winFS[targetPath] && winFS[targetPath].type === "dir") {
+                            winCurrentDir = targetPath;
+                        } else {
+                            output = `The system cannot find the path specified: ${arg}`;
+                            outputColor = "var(--accent-red)";
+                        }
+                    }
+                } else if (cmd === "type") {
+                    if (!arg) {
+                        output = "The syntax of the command is incorrect.";
+                        outputColor = "var(--accent-red)";
+                    } else {
+                        let cleanArg = arg.replace(/^["']|["']$/g, '');
+                        let filePath = `${winCurrentDir}\\${cleanArg}`;
+                        if (winFS[filePath] && winFS[filePath].type === "file") {
+                            output = winFS[filePath].content;
+                            if (cleanArg === "flag.txt" && winCurrentDir === "C:\\Users\\Student\\Documents") {
+                                 output += "\n\n[TASK COMPLETE] Flag verified! +100 XP awarded.\nRedirecting to System Diagnostics in 2 seconds...";
+                                 setTimeout(() => switchWindowsPanel('diag'), 2000);
+                            }
+                        } else {
+                            output = `The system cannot find the file specified: ${arg}`;
+                            outputColor = "var(--accent-red)";
+                        }
+                    }
+                } else if (cmd === "whoami") {
+                    output = "desktop-ncas\\student";
+                } else if (cmd === "hostname") {
+                    output = "WIN-NCAS-LAB-01";
+                    output += "\n\n[TASK COMPLETE] Hostname found! Flag: NCAS{hostname_system_diagnostics}\nRedirecting to Process Management in 2 seconds...";
+                    setTimeout(() => switchWindowsPanel('proc'), 2000);
+                } else if (cmd === "ipconfig") {
+                    output = "Windows IP Configuration\n\nEthernet adapter Ethernet0:\n   Connection-specific DNS Suffix  . : \n   IPv4 Address. . . . . . . . . . . : 192.168.1.105\n   Subnet Mask . . . . . . . . . . . : 255.255.255.0\n   Default Gateway . . . . . . . . . : 192.168.1.1";
+                } else if (cmd === "tasklist") {
+                    output = "Image Name                     PID Session Name        Session#    Mem Usage\n========================= ======== ================ =========== ============\nSystem                           4 Services                   0        120 K\nsvchost.exe                    820 Services                   0     24,104 K\nexplorer.exe                  1420 Console                    1     84,204 K\nmalware.exe                   3040 Services                   0     15,410 K";
+                } else if (cmd === "taskkill") {
+                    if (arg === "/PID 3040" || arg === "/pid 3040" || arg.includes("3040")) {
+                        output = "SUCCESS: Sent termination signal to process with PID 3040.\n\n[TASK COMPLETE] Process terminated! Flag: NCAS{taskkill_process_terminated_success}\nRedirecting to Network Auditing in 2 seconds...";
+                        setTimeout(() => switchWindowsPanel('net'), 2000);
+                    } else {
+                        output = "ERROR: Invalid argument check. Did you specify /PID [pid]?";
+                        outputColor = "var(--accent-red)";
+                    }
+                } else if (cmd === "netstat") {
+                    if (arg === "-ano" || arg.includes("-a")) {
+                        output = "Active Connections\n\n  Proto  Local Address          Foreign Address        State           PID\n  TCP    0.0.0.0:135            0.0.0.0:0              LISTENING       820\n  TCP    127.0.0.1:4444         0.0.0.0:0              LISTENING       3040\n  TCP    192.168.1.105:8080     0.0.0.0:0              LISTENING       1420";
+                        output += "\n\n[TASK COMPLETE] Listening port identified! Suspicious PID 3040 mapped.\nFlag: NCAS{netstat_port_auditing_listening_service}\n🎉 Congratulations! You completed the Windows Basics course!";
+                    } else {
+                        output = "netstat: missing parameters. Try running netstat -ano.";
+                        outputColor = "var(--accent-red)";
+                    }
+                } else if (cmd === "ping") {
+                    output = "Pinging google.com [142.250.190.46] with 32 bytes of data:\nReply from 142.250.190.46: bytes=32 time=12ms TTL=118\nReply from 142.250.190.46: bytes=32 time=11ms TTL=118\n\nPing statistics for 142.250.190.46:\n    Packets: Sent = 2, Received = 2, Lost = 0 (0% loss)";
+                } else if (cmd === "cls" || cmd === "clear") {
+                    const outEl = document.getElementById(`terminal-${terminalId}-output`);
+                    if (outEl) outEl.innerHTML = "";
+                    inputEl.value = "";
+                    return;
+                } else {
+                    output = `'${cmd}' is not recognized as an internal or external command,\noperable program or batch file.`;
+                    outputColor = "var(--accent-red)";
+                }
+
+                writeWindowsLine(terminalId, output, outputColor);
+                inputEl.value = "";
+            }
+        }
+
+        function writeWindowsLine(terminalId, text, color) {
+            const outBox = document.getElementById(`terminal-${terminalId}-output`);
+            if (!outBox) return;
+            const line = document.createElement("div");
+            line.style.color = color;
+            line.style.marginTop = "4px";
+            line.style.whiteSpace = "pre-wrap";
+            line.textContent = text;
+            outBox.appendChild(line);
+            outBox.scrollTop = outBox.scrollHeight;
+        }
+
+        // ==========================================
+        // CYBER SECURITY BASICS INTERACTIVE ENGINE
+        // ==========================================
+        function switchBasicsPanel(code) {
+            switchPanel(`basics-${code}`);
+            document.querySelectorAll('.basics-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-basics-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        function verifyBasicsCiaT1() {
+            const val = document.getElementById('basics-cia-t1-input').value.trim().toLowerCase();
+            const out = document.getElementById('basics-cia-t1-output');
+            out.style.display = "block";
+            if (val === "availability" || val === "availability breach") {
+                out.style.color = "#10b981";
+                out.innerHTML = `✓ Correct! Denying access is an Availability breach. +50 XP and +10 Coins awarded!<br><span style="color:#06b6d4;">Moving to the next lesson...</span>`;
+                setTimeout(() => switchBasicsPanel('social'), 2000);
+            } else {
+                out.style.color = "var(--accent-red)";
+                out.innerHTML = `✗ Incorrect. Clue: The attack aims to make the server unavailable.`;
+            }
+        }
+
+        function verifyBasicsSocialT1() {
+            const val = document.getElementById('basics-social-t1-input').value.trim().toLowerCase();
+            const out = document.getElementById('basics-social-t1-output');
+            out.style.display = "block";
+            if (val === "phishing") {
+                out.style.color = "#10b981";
+                out.innerHTML = `✓ Correct! Mismatched sending domains (netflix-billing-sec.com) are indicators of phishing. +50 XP!<br><span style="color:#06b6d4;">Moving to the next lesson...</span>`;
+                setTimeout(() => switchBasicsPanel('networking'), 2000);
+            } else {
+                out.style.color = "var(--accent-red)";
+                out.innerHTML = `✗ Incorrect. Clue: Look at the sending domain name closely.`;
+            }
+        }
+
+        function verifyBasicsNetworkingT1() {
+            const val = document.getElementById('basics-networking-t1-input').value.trim();
+            const out = document.getElementById('basics-networking-t1-output');
+            out.style.display = "block";
+            if (val === "443") {
+                out.style.color = "#10b981";
+                out.innerHTML = `✓ Correct! HTTPS secure traffic runs on port 443 by default. +50 XP!<br><span style="color:#06b6d4;">Moving to the next lesson...</span>`;
+                setTimeout(() => switchBasicsPanel('malware'), 2000);
+            } else {
+                out.style.color = "var(--accent-red)";
+                out.innerHTML = `✗ Incorrect. Port ${val} is not secure web traffic (HTTPS defaults to 443).`;
+            }
+        }
+
+        function verifyBasicsMalwareT1() {
+            const val = document.getElementById('basics-malware-t1-input').value.trim().toLowerCase();
+            const out = document.getElementById('basics-malware-t1-output');
+            out.style.display = "block";
+            if (val === "ransomware") {
+                out.style.color = "#10b981";
+                out.innerHTML = `✓ Correct! Ransomware encrypts devices to demand ransom payments. +50 XP!<br><span style="color:#06b6d4;">Moving to the next lesson...</span>`;
+                setTimeout(() => switchBasicsPanel('defense'), 2000);
+            } else {
+                out.style.color = "var(--accent-red)";
+                out.innerHTML = `✗ Incorrect. Trojan or Worms do not hold files hostaged for ransom checks.`;
+            }
+        }
+
+        function verifyBasicsDefenseT1() {
+            const val = document.getElementById('basics-defense-t1-input').value.trim().toLowerCase();
+            const out = document.getElementById('basics-defense-t1-output');
+            out.style.display = "block";
+            if (val === "antivirus" || val === "av") {
+                out.style.color = "#10b981";
+                out.innerHTML = `✓ Correct! Antivirus tools secure systems locally at the Endpoint layer. +50 XP!<br><span style="color:#eab308; font-weight:bold;">🎉 Congratulations! You completed the Cyber Security Basics course!</span>`;
+            } else {
+                out.style.color = "var(--accent-red)";
+                out.innerHTML = `✗ Incorrect. CCTV is physical security, and VPN operates at the network layer.`;
+            }
+        }
+
+        // ==========================================
         // OWASP TOP 10 INTERACTIVE COURSE ENGINE
         // ==========================================
         let owaspUnlocked = {
@@ -6368,7 +8008,6 @@ SHA-1:    ${sha1Hex}
                 out.innerHTML = `<span style="color:var(--accent-red);">✗ This IP address exhibits legitimate session access patterns.</span>`;
             }
         }
-
         function verifyOwaspA10T1() {
             const val = document.getElementById('owasp-a10-t1-input').value.trim();
             const out = document.getElementById('owasp-a10-t1-output');
@@ -6421,6 +8060,7 @@ SHA-1:    ${sha1Hex}
 
         injectBackToHubButtons();
         updateOwaspSidebar();
+        updateBanditSidebar();
         toggleAuthMode('login'); // Ensure auth overlay button and fields are initialized!
     </script>
 </body>
