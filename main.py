@@ -277,6 +277,9 @@ async def signup(req: SignUpRequest, request: Request):
     email_clean = req.email.strip().lower()
     client_ip = request.client.host
     
+    if not re.match(r"^[a-z0-9_]{3,20}$", username_clean):
+        raise HTTPException(status_code=400, detail="Username must be alphanumeric, between 3 and 20 characters, and can only include underscores.")
+        
     if "@" not in email_clean or "." not in email_clean:
         raise HTTPException(status_code=400, detail="Registration requires a valid email address.")
         

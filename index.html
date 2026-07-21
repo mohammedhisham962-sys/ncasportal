@@ -2520,6 +2520,16 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
         let voicePitch = 1.0;
         let activePersona = 'defensive';
 
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            return text.toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         // Load saved Gemini settings from local storage
         let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
         document.getElementById('gemini-api-key').value = geminiApiKey;
@@ -2593,33 +2603,54 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                     errorDiv.style.display = 'block';
                     return;
                 }
+                if (!/^[a-zA-Z0-9_]{3,20}$/.test(user)) {
+                    errorDiv.textContent = "Username must be alphanumeric, between 3 and 20 characters, and can only include underscores.";
+                    errorDiv.style.display = 'block';
+                    return;
+                }
                 
                 try {
-                    // CLOUD SYNC SIMULATION: Store securely in local cloud cache
-                    let students = JSON.parse(localStorage.getItem('cloud_students') || '{}');
-                    if(students[user]) {
-                         errorDiv.textContent = "Username already registered.";
-                         errorDiv.style.display = 'block';
-                         return;
+                    let backendSuccess = false;
+                    let backendErrorMsg = "";
+                    
+                    try {
+                        const response = await fetch('/api/signup', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: email, username: user, password: pass })
+                        });
+                        if (response.ok) {
+                            backendSuccess = true;
+                        } else {
+                            const errData = await response.json();
+                            backendErrorMsg = errData.detail || "Signup failed.";
+                        }
+                    } catch (netErr) {
+                        console.warn("Backend signup offline, falling back to local cloud cache:", netErr);
                     }
-                    students[user] = { password: pass, email: email };
-                    localStorage.setItem('cloud_students', JSON.stringify(students));
-                    
-                    const response = { ok: true, headers: new Headers() };
-                    
-                    // checkResponseStatus(response);
-                    
-                    let data = {role: window.activeUserRole || 'student'};
-                    
-                    
-                    if (response.ok) {
-                        successDiv.textContent = "Account created. You can now sign in.";
+
+                    if (backendSuccess) {
+                        successDiv.textContent = "Account created on server. You can now sign in.";
                         successDiv.style.display = 'block';
                         toggleAuthMode('login');
                         document.getElementById('auth-user').value = user;
                         document.getElementById('auth-pass').value = '';
+                    } else if (backendErrorMsg) {
+                        throw new Error(backendErrorMsg);
                     } else {
-                        throw new Error(data.detail || "Signup failed.");
+                        // Offline local fallback
+                        let students = JSON.parse(localStorage.getItem('cloud_students') || '{}');
+                        if (students[user]) {
+                             throw new Error("Username already registered in offline cache.");
+                        }
+                        students[user] = { password: pass, email: email };
+                        localStorage.setItem('cloud_students', JSON.stringify(students));
+                        
+                        successDiv.textContent = "Account created (Offline Mode). You can now sign in.";
+                        successDiv.style.display = 'block';
+                        toggleAuthMode('login');
+                        document.getElementById('auth-user').value = user;
+                        document.getElementById('auth-pass').value = '';
                     }
                 } catch(e) {
                     errorDiv.textContent = e.message;
@@ -2627,42 +2658,52 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                 }
             } else {
                 try {
-                    let students = JSON.parse(localStorage.getItem('cloud_students') || '{}');
-                    let authStatus = false;
-                    let role = 'student';
-                    
-                    // Admin check
-                    if (user === 'reiz' && pass === 'heavenofreiz') {
-                        authStatus = true;
-                        role = 'admin';
-                    } else if (students[user] && students[user].password === pass) {
-                        authStatus = true;
-                    }
-                    
-                    if (!authStatus) {
-                        errorDiv.textContent = "Invalid credentials. Try again.";
-                        errorDiv.style.display = 'block';
-                        return;
+                    let loginSuccess = false;
+                    let loggedRole = 'student';
+                    let loggedUser = user;
+                    let backendErrorMsg = "";
+
+                    // Try backend login first
+                    try {
+                        const response = await fetch('/api/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username: user, password: pass })
+                        });
+                        if (response.ok) {
+                            const data = await response.json();
+                            loginSuccess = true;
+                            loggedRole = data.role;
+                            loggedUser = data.username;
+                        } else {
+                            const errData = await response.json();
+                            backendErrorMsg = errData.detail || "Invalid credentials.";
+                        }
+                    } catch (netErr) {
+                        console.warn("Backend login offline, falling back to local cloud cache:", netErr);
                     }
 
-                    const response = { ok: true, headers: new Headers() };
-                    const data = { role: role, username: user };
-                    // Mocking the checkResponseStatus function logic bypassing it
-                    window.activeUserRole = role;
-                    window.activeUserName = user;
-                    
-                    
-                    // checkResponseStatus(response);
-                    
-                    let data = {role: window.activeUserRole || 'student'};
-                    
-                    
-                    if (response.ok) {
-                        currentRole = data.role;
-                        currentUsername = data.username;
+                    if (!loginSuccess && !backendErrorMsg) {
+                        // Offline check
+                        let students = JSON.parse(localStorage.getItem('cloud_students') || '{}');
+                        if (user === 'reiz' && pass === 'heavenofreiz') {
+                            loginSuccess = true;
+                            loggedRole = 'admin';
+                        } else if (students[user] && students[user].password === pass) {
+                            loginSuccess = true;
+                            loggedRole = 'student';
+                        }
+                    }
+
+                    if (loginSuccess) {
+                        currentRole = loggedRole;
+                        currentUsername = loggedUser;
                         
                         document.getElementById('user-name-lbl').textContent = currentUsername;
                         document.getElementById('user-role-lbl').textContent = currentRole;
+                        document.getElementById('top-user-name-lbl').textContent = currentUsername;
+                        document.getElementById('top-user-role-lbl').textContent = currentRole;
+                        
                         document.getElementById('auth-overlay').style.display = 'none';
                         
                         // Set menu items
@@ -2727,7 +2768,7 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                         auditProtocol();
                         startBanCheckPoller();
                     } else {
-                        throw new Error(data.detail || "Invalid credentials.");
+                        throw new Error(backendErrorMsg || "Invalid credentials.");
                     }
                 } catch(e) {
                     errorDiv.textContent = e.message;
@@ -3376,12 +3417,12 @@ ${osmLink}
                     
                     card.innerHTML = `
                         <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-panel); padding-bottom:6px; margin-bottom:10px;">
-                            <span style="font-weight:bold; color:var(--accent-red); font-size:0.95rem;">${post.title}</span>
-                            <span style="font-size:0.7rem; color:#64748b;">${post.timestamp}</span>
+                            <span style="font-weight:bold; color:var(--accent-red); font-size:0.95rem;">${escapeHtml(post.title)}</span>
+                            <span style="font-size:0.7rem; color:#64748b;">${escapeHtml(post.timestamp)}</span>
                         </div>
-                        <p style="font-size:0.85rem; color:var(--text-main); margin-bottom:8px;">${post.content}</p>
+                        <p style="font-size:0.85rem; color:var(--text-main); margin-bottom:8px;">${escapeHtml(post.content)}</p>
                         <div style="font-size:0.7rem; color:var(--text-muted); text-align:right;">
-                            Published by: <b>${post.author}</b>
+                            Published by: <b>${escapeHtml(post.author)}</b>
                         </div>
                     `;
                     container.appendChild(card);
@@ -3424,29 +3465,57 @@ ${osmLink}
             body.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Loading students registry...</td></tr>';
             
             try {
-                const response = await fetch(`/api/admin/users?role=${currentRole}&username=${currentUsername}`);
-                const data = await response.json();
+                let users = [];
+                let backendSuccess = false;
+                try {
+                    const response = await fetch(`/api/admin/users?role=${currentRole}&username=${currentUsername}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        users = data.users;
+                        backendSuccess = true;
+                    }
+                } catch (netErr) {
+                    console.warn("Backend offline, loading student management from local cloud cache:", netErr);
+                }
+
+                if (!backendSuccess) {
+                    // Offline fallback: load from localStorage
+                    let students = JSON.parse(localStorage.getItem('cloud_students') || '{}');
+                    let banned = JSON.parse(localStorage.getItem('cloud_banned_students') || '[]');
+                    for (const name in students) {
+                        users.push({
+                            username: name,
+                            role: 'student',
+                            status: banned.includes(name) ? 'Suspended / Banned' : 'Active'
+                        });
+                    }
+                }
+
                 body.innerHTML = '';
+                if (users.length === 0) {
+                    body.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">No student accounts found.</td></tr>';
+                    return;
+                }
                 
-                data.users.forEach(user => {
+                users.forEach(user => {
                     const tr = document.createElement('tr');
                     
                     let actionButtons = "";
                     if(user.role === 'student') {
                         if(user.status === 'Active') {
-                            actionButtons += `<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="adminBanUser('${user.username}')">Suspend 🚫</button> `;
+                            actionButtons += `<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="adminBanUser('${escapeHtml(user.username)}')">Suspend 🚫</button> `;
                         } else {
-                            actionButtons += `<button class="btn" style="padding:4px 8px; font-size:0.75rem; background-color:#10b981;" onclick="adminUnbanUser('${user.username}')">Activate 🟢</button> `;
+                            actionButtons += `<button class="btn" style="padding:4px 8px; font-size:0.75rem; background-color:#10b981;" onclick="adminUnbanUser('${escapeHtml(user.username)}')">Activate 🟢</button> `;
                         }
-                        actionButtons += `<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="adminDeleteUser('${user.username}')">Delete 🗑️</button>`;
+                        actionButtons += `<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" onclick="adminDeleteUser('${escapeHtml(user.username)}')">Delete 🗑️</button>`;
                     } else {
                         actionButtons = `<span style="color:var(--text-muted); font-size:0.75rem;">Faculty Managed via Limit Settings</span>`;
                     }
                     
                     tr.innerHTML = `
-                        <td><b>${user.username}</b></td>
-                        <td>${user.role.toUpperCase()}</td>
-                        <td><span style="font-weight:700; color:${user.status === 'Active' ? '#10b981' : 'var(--accent-red)'};">${user.status}</span></td>
+                        <td><b>${escapeHtml(user.username)}</b></td>
+                        <td>${escapeHtml(user.role.toUpperCase())}</td>
+                        <td><span style="font-weight:700; color:${user.status === 'Active' ? '#10b981' : 'var(--accent-red)'};">${escapeHtml(user.status)}</span></td>
                         <td>${actionButtons}</td>
                     `;
                     body.appendChild(tr);
@@ -3459,13 +3528,27 @@ ${osmLink}
         async function adminBanUser(name) {
             if(!confirm(`Are you sure you want to suspend access for student: ${name}?`)) return;
             try {
-                const response = await fetch(`/api/admin/user/ban?target_user=${name}&role=${currentRole}&username=${currentUsername}`, {
-                    method: 'POST'
-                });
-                if(response.ok) {
-                    loadStudentListForManagement();
-                    loadAdminMetrics();
+                let backendSuccess = false;
+                try {
+                    const response = await fetch(`/api/admin/user/ban?target_user=${name}&role=${currentRole}&username=${currentUsername}`, {
+                        method: 'POST'
+                    });
+                    if (response.ok) {
+                        backendSuccess = true;
+                    }
+                } catch(netErr) {
+                    console.warn("Backend offline, suspending student in local cloud cache.");
                 }
+
+                if (!backendSuccess) {
+                    let banned = JSON.parse(localStorage.getItem('cloud_banned_students') || '[]');
+                    if (!banned.includes(name)) {
+                        banned.push(name);
+                        localStorage.setItem('cloud_banned_students', JSON.stringify(banned));
+                    }
+                }
+                loadStudentListForManagement();
+                loadAdminMetrics();
             } catch(e) {
                 console.error(e);
             }
@@ -3473,13 +3556,25 @@ ${osmLink}
 
         async function adminUnbanUser(name) {
             try {
-                const response = await fetch(`/api/admin/user/unban?target_user=${name}&role=${currentRole}&username=${currentUsername}`, {
-                    method: 'POST'
-                });
-                if(response.ok) {
-                    loadStudentListForManagement();
-                    loadAdminMetrics();
+                let backendSuccess = false;
+                try {
+                    const response = await fetch(`/api/admin/user/unban?target_user=${name}&role=${currentRole}&username=${currentUsername}`, {
+                        method: 'POST'
+                    });
+                    if (response.ok) {
+                        backendSuccess = true;
+                    }
+                } catch(netErr) {
+                    console.warn("Backend offline, activating student in local cloud cache.");
                 }
+
+                if (!backendSuccess) {
+                    let banned = JSON.parse(localStorage.getItem('cloud_banned_students') || '[]');
+                    banned = banned.filter(item => item !== name);
+                    localStorage.setItem('cloud_banned_students', JSON.stringify(banned));
+                }
+                loadStudentListForManagement();
+                loadAdminMetrics();
             } catch(e) {
                 console.error(e);
             }
@@ -3488,13 +3583,29 @@ ${osmLink}
         async function adminDeleteUser(name) {
             if(!confirm(`Delete student credentials for: ${name}? This action is permanent.`)) return;
             try {
-                const response = await fetch(`/api/admin/user?target_user=${name}&role=${currentRole}&username=${currentUsername}`, {
-                    method: 'DELETE'
-                });
-                if(response.ok) {
-                    loadStudentListForManagement();
-                    loadAdminMetrics();
+                let backendSuccess = false;
+                try {
+                    const response = await fetch(`/api/admin/user?target_user=${name}&role=${currentRole}&username=${currentUsername}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        backendSuccess = true;
+                    }
+                } catch(netErr) {
+                    console.warn("Backend offline, deleting student from local cloud cache.");
                 }
+
+                if (!backendSuccess) {
+                    let students = JSON.parse(localStorage.getItem('cloud_students') || '{}');
+                    delete students[name];
+                    localStorage.setItem('cloud_students', JSON.stringify(students));
+                    
+                    let banned = JSON.parse(localStorage.getItem('cloud_banned_students') || '[]');
+                    banned = banned.filter(item => item !== name);
+                    localStorage.setItem('cloud_banned_students', JSON.stringify(banned));
+                }
+                loadStudentListForManagement();
+                loadAdminMetrics();
             } catch(e) {
                 console.error(e);
             }
@@ -3641,19 +3752,19 @@ ${osmLink}
                         tr.innerHTML = `
                             <td>${inc.id}</td>
                             <td>
-                                <b>${inc.title}</b><br>
-                                <span style="font-size:0.8rem;color:var(--text-muted);">${inc.description}</span>
+                                <b>${escapeHtml(inc.title)}</b><br>
+                                <span style="font-size:0.8rem;color:var(--text-muted);">${escapeHtml(inc.description)}</span>
                                 ${mediaHtml}
                             </td>
-                            <td>${inc.reporter}</td>
-                            <td style="color:${inc.status === 'Resolved' ? '#10b981' : 'var(--accent-amber)'}">${inc.status}</td>
+                            <td>${escapeHtml(inc.reporter)}</td>
+                            <td style="color:${inc.status === 'Resolved' ? '#10b981' : 'var(--accent-amber)'}">${escapeHtml(inc.status)}</td>
                             <td>
                                 ${inc.status === 'Pending' ? `
                                     <div style="display:flex;gap:8px;">
                                         <input type="text" id="sol-${inc.id}" class="input-text" style="padding:6px 12px;font-size:0.8rem;" placeholder="Input solution...">
                                         <button class="btn" style="padding:6px 12px;font-size:0.8rem;" onclick="submitIncidentSolution(${inc.id})">Solve</button>
                                     </div>
-                                ` : `<span style="font-size:0.85rem;color:var(--text-muted);">${inc.solution}</span>`}
+                                ` : `<span style="font-size:0.85rem;color:var(--text-muted);">${escapeHtml(inc.solution)}</span>`}
                             </td>
                         `;
                         tbody.appendChild(tr);
@@ -3669,9 +3780,9 @@ ${osmLink}
                         const tr = document.createElement('tr');
                         tr.innerHTML = `
                             <td>${inc.id}</td>
-                            <td><b>${inc.title}</b><br><span style="font-size:0.8rem;color:var(--text-muted);">${inc.description}</span></td>
-                            <td style="color:${inc.status === 'Resolved' ? '#10b981' : 'var(--accent-amber)'}">${inc.status}</td>
-                            <td>${inc.solution || '<i style="color:var(--text-muted);">Awaiting response...</i>'}</td>
+                            <td><b>${escapeHtml(inc.title)}</b><br><span style="font-size:0.8rem;color:var(--text-muted);">${escapeHtml(inc.description)}</span></td>
+                            <td style="color:${inc.status === 'Resolved' ? '#10b981' : 'var(--accent-amber)'}">${escapeHtml(inc.status)}</td>
+                            <td>${inc.solution ? escapeHtml(inc.solution) : '<i style="color:var(--text-muted);">Awaiting response...</i>'}</td>
                         `;
                         tbody.appendChild(tr);
                     });
@@ -4570,6 +4681,16 @@ SHA-1:    ${sha1Hex}
             if (banPollerInterval) clearInterval(banPollerInterval);
             banPollerInterval = setInterval(async () => {
                 if (!currentUsername) return;
+                
+                // Offline/Local ban enforcement check
+                let banned = JSON.parse(localStorage.getItem('cloud_banned_students') || '[]');
+                if (currentRole === 'student' && banned.includes(currentUsername)) {
+                    document.getElementById('ban-overlay').style.display = 'flex';
+                    document.body.innerHTML = document.getElementById('ban-overlay').outerHTML;
+                    clearInterval(banPollerInterval);
+                    return;
+                }
+
                 try {
                     const response = await fetch(`/api/auth/status?username=${currentUsername}&role=${currentRole}`);
                     checkResponseStatus(response);
@@ -4758,7 +4879,8 @@ SHA-1:    ${sha1Hex}
 
             // Formatting helper function to convert markdown into our specialized volcanic theme elements
             function applySpecializedFormatting(rawText) {
-                return rawText
+                let escaped = escapeHtml(rawText);
+                return escaped
                     .replace(/\*\*(.*?)\*\*/g, '<b style="color:#f97316;">$1</b>') // Orange bold key concepts
                     .replace(/### (.*?)\n/g, '<h4 style="color:#ef4444; border-bottom: 1px solid rgba(239,68,68,0.25); padding-bottom:4px; margin-top:12px; font-weight:700;">$1</h4>') // Volcano titles
                     .replace(/`(.*?)`/g, '<code style="background:rgba(239,68,68,0.1); color:#f87171; padding: 2px 6px; border-radius:4px; font-family:\'JetBrains Mono\', monospace; font-size:0.85rem; border:1px solid rgba(239,68,68,0.15);">$1</code>') // Volcanic code
