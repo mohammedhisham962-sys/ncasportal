@@ -2032,6 +2032,21 @@
                             <br>• Click 📷 to <b style="color:#f97316;">upload an image or screenshot</b> for multimodal AI analysis!
                             <br><br><i>To hear responses read aloud automatically, toggle the 'Voice Output' switch in the AI control panel on the right.</i>
                         </div>
+                        
+                        <!-- Setup Assistant Card if Gemini key is missing -->
+                        <div id="gemini-missing-alert-card" style="background: rgba(249, 115, 22, 0.05); border: 1px solid rgba(249, 115, 22, 0.2); padding: 16px; border-radius: 8px; margin: 12px 0 16px 0; font-family: inherit;">
+                            <h4 style="margin: 0 0 6px 0; color: #f97316; font-size: 0.95rem; font-weight: 700;">🌐 Enable Real-World Gemini LLM (100% Free)</h4>
+                            <p style="margin: 0 0 12px 0; font-size: 0.82rem; color: #94a3b8; line-height: 1.4;">
+                                Natasha is running in basic offline fallback mode. To activate the full, original **Google Gemini 1.5 LLM** (supporting all custom questions and multiple languages for free), simply activate a free key:
+                            </p>
+                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                <input type="password" id="direct-gemini-key" placeholder="Paste free AI Studio key (AIzaSy...)" style="flex: 1; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--border-panel); background: #070b13; color: #ffffff; font-size: 0.8rem; outline: none;">
+                                <button onclick="saveDirectGeminiKey()" style="background: #f97316; color: #ffffff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 0.8rem; transition: background 0.2s;">Activate</button>
+                            </div>
+                            <div style="font-size: 0.72rem; color: #64748b; line-height: 1.3;">
+                                🔑 Get your free permanent key in 30 seconds (no credit card required) at <a href="https://aistudio.google.com/" target="_blank" style="color: #f97316; text-decoration: underline; font-weight: 600;">Google AI Studio</a>.
+                            </div>
+                        </div>
                     </div>
                     <div id="chat-image-preview-container" style="display: none; background: #020617; border-top: 1px solid #1f2937; padding: 8px 18px; align-items: center; justify-content: space-between; position: absolute; bottom: 65px; left: 0; right: 0; z-index: 10;">
                         <span id="chat-image-preview-name" style="font-size: 0.85rem; font-weight: 700; color: var(--accent-red);">No image selected</span>
@@ -2539,6 +2554,13 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
         // Load saved Gemini settings from local storage
         let geminiApiKey = localStorage.getItem('gemini_api_key') || '';
         document.getElementById('gemini-api-key').value = geminiApiKey;
+        if (geminiApiKey) {
+            // Hide setup assistant card if key is already active
+            setTimeout(() => {
+                const card = document.getElementById('gemini-missing-alert-card');
+                if (card) card.style.display = 'none';
+            }, 100);
+        }
 
         function toggleGeminiSettings() {
             const modal = document.getElementById('gemini-settings-modal');
@@ -2559,6 +2581,8 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                 });
                 if (response.ok) {
                     alert("Gemini 1.5 API Key saved successfully to server and browser! Real-world AI Mode active for all users.");
+                    const card = document.getElementById('gemini-missing-alert-card');
+                    if (card) card.style.display = 'none';
                 } else {
                     const err = await response.json();
                     alert("Saved to browser local storage. Server save note: " + (err.detail || "failed to save to server."));
@@ -2566,14 +2590,46 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             } catch(e) {
                 console.warn("Failed to contact server to save API Key:", e);
                 alert("Gemini 1.5 API Key saved successfully to browser local storage! Real-world AI Mode active for this device.");
+                const card = document.getElementById('gemini-missing-alert-card');
+                if (card) card.style.display = 'none';
             }
             toggleGeminiSettings();
+        }
+
+        async function saveDirectGeminiKey() {
+            const keyVal = document.getElementById('direct-gemini-key').value.trim();
+            if (!keyVal) return alert("Please enter a valid API Key.");
+            localStorage.setItem('gemini_api_key', keyVal);
+            geminiApiKey = keyVal;
+            document.getElementById('gemini-api-key').value = keyVal;
+            
+            try {
+                const response = await fetch('/api/save_config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gemini_api_key: keyVal })
+                });
+                if (response.ok) {
+                    alert("Gemini 1.5 API Key saved successfully to server and browser! Real-world AI Mode active for all users.");
+                    const card = document.getElementById('gemini-missing-alert-card');
+                    if (card) card.style.display = 'none';
+                } else {
+                    const err = await response.json();
+                    alert("Saved to browser local storage. Server save note: " + (err.detail || "failed to save to server."));
+                }
+            } catch(e) {
+                console.warn("Failed to contact server to save API Key:", e);
+                alert("Gemini 1.5 API Key saved successfully to browser local storage! Real-world AI Mode active for this device.");
+                const card = document.getElementById('gemini-missing-alert-card');
+                if (card) card.style.display = 'none';
+            }
         }
 
         async function clearGeminiKey() {
             localStorage.removeItem('gemini_api_key');
             geminiApiKey = '';
             document.getElementById('gemini-api-key').value = '';
+            document.getElementById('direct-gemini-key').value = '';
             
             try {
                 await fetch('/api/save_config', {
@@ -2584,6 +2640,8 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             } catch(e) {
                 console.warn("Failed to contact server to clear API Key:", e);
             }
+            const card = document.getElementById('gemini-missing-alert-card');
+            if (card) card.style.display = 'block';
             alert("API Key cleared. AI Agent running in local fallback simulation mode.");
             toggleGeminiSettings();
         }
