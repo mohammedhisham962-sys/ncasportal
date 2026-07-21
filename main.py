@@ -1505,14 +1505,6 @@ async def get_speedtest_payload():
     payload = b"\x00" * (1024 * 1024 * 5)
     return StreamingResponse(io.BytesIO(payload), media_type="application/octet-stream")
 
-@app.get("/api/materials/{file_name}")
-async def get_material_file(file_name: str):
-    safe_name = re.sub(r"[^a-zA-Z0-9_]", "", file_name)
-    file_path = os.path.join("materials", f"{safe_name}.md")
-    if os.path.exists(file_path):
-        with open(file_path, "r", encoding="utf-8") as f:
-            return {"content": f.read()}
-    raise HTTPException(status_code=404, detail="Material not found.")
 
 @app.get("/api/health")
 async def get_health():

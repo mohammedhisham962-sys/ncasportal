@@ -316,6 +316,13 @@
             margin-top: 2px;
         }
 
+        .nav-sub-list .nav-item.locked {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+            color: var(--text-muted) !important;
+        }
+
         .accordion-arrow {
             font-size: 0.7rem;
             transition: transform 0.3s;
@@ -1166,20 +1173,26 @@
                 <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('cve-news-feed')">📰 CVE & News</li>
             </ul>
 
-            <li class="nav-category-header" onclick="toggleSidebarAccordion('cyberlab')">🧪 CyberLab Hub <span class="accordion-arrow">▲</span></li>
-            <ul class="nav-sub-list" id="sub-cyberlab">
-                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('cyberlab-dashboard')">📊 CyberLab Dashboard</li>
-                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('cyberlab-paths')">🗺️ Guided Paths</li>
-                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('cyberlab-labs')">🖥️ Virtual Labs</li>
-                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('cyberlab-ctf')">🚩 CTF Scoreboard</li>
-                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('cyberlab-quizzes')">❓ Practical Quizzes</li>
-                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('cyberlab-aitutor')">🤖 CyberLab AI Tutor</li>
-                <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('cyberlab-certificates')">📜 Certificate Vault</li>
+
+
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('owasp')">🔥 OWASP Top 10 <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-owasp">
+                <li class="nav-item owasp-item" id="nav-owasp-a01" onclick="switchOwaspPanel('a01')">🔓 A01: Broken Access</li>
+                <li class="nav-item owasp-item locked" id="nav-owasp-a02" onclick="switchOwaspPanel('a02')">🔒 A02: Crypto Failures</li>
+                <li class="nav-item owasp-item locked" id="nav-owasp-a03" onclick="switchOwaspPanel('a03')">🔒 A03: Injection</li>
+                <li class="nav-item owasp-item locked" id="nav-owasp-a04" onclick="switchOwaspPanel('a04')">🔒 A04: Insecure Design</li>
+                <li class="nav-item owasp-item locked" id="nav-owasp-a05" onclick="switchOwaspPanel('a05')">🔒 A05: Security Misconfig</li>
+                <li class="nav-item owasp-item locked" id="nav-owasp-a06" onclick="switchOwaspPanel('a06')">🔒 A06: Outdated Components</li>
+                <li class="nav-item owasp-item locked" id="nav-owasp-a07" onclick="switchOwaspPanel('a07')">🔒 A07: Auth Failures</li>
+                <li class="nav-item owasp-item locked" id="nav-owasp-a08" onclick="switchOwaspPanel('a08')">🔒 A08: Integrity Failures</li>
+                <li class="nav-item owasp-item locked" id="nav-owasp-a09" onclick="switchOwaspPanel('a09')">🔒 A09: Logging Failures</li>
+                <li class="nav-item owasp-item locked" id="nav-owasp-a10" onclick="switchOwaspPanel('a10')">🔒 A10: SSRF Target</li>
             </ul>
 
             <li class="nav-category-header" onclick="toggleSidebarAccordion('control')">🏫 Academic Control Hub <span class="accordion-arrow">▲</span></li>
             <ul class="nav-sub-list" id="sub-control">
                 <li class="nav-item" data-roles="admin,faculty,student" onclick="switchPanel('academic-rules-center')">📣 Rules & Bulletins</li>
+                <li class="nav-item" data-roles="admin,faculty" onclick="switchPanel('academic-dashboard')">📊 Academic Dashboard</li>
                 <li class="nav-item" data-roles="admin" onclick="switchPanel('student-user-management')">🎓 Student Mgmt</li>
                 <li class="nav-item" data-roles="admin" onclick="switchPanel('faculty-mgmt')">👨‍🏫 Faculty Mgmt</li>
                 <li class="nav-item" data-roles="admin" onclick="switchPanel('incident-console')">🚨 Incident Console</li>
@@ -1396,52 +1409,16 @@
 
         <!-- CYBERLAB HUB LANDING PANEL -->
         <div id="panel-hub-cyberlab" class="panel">
-            <h2 class="panel-title">🧪 CyberLab Academy & CTF Hub</h2>
+            <h2 class="panel-title">🧪 CyberLab Academy Portal</h2>
             <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 24px; max-width: 800px;">
-                Welcome to the student hands-on sandbox environment. Here you can execute vulnerability testing, complete learning paths, solve CTF challenges, and earn verified academic certificates.
+                Welcome to the student hands-on sandbox environment. Here you can execute vulnerability testing, complete learning paths, solve challenges, and earn verified academic certificates.
             </p>
 
             <div class="hub-grid">
-                <div class="hub-card" onclick="switchPanel('cyberlab-dashboard')">
-                    <div class="hub-card-icon">📊</div>
-                    <div class="hub-card-title">CyberLab Dashboard</div>
-                    <div class="hub-card-desc">Track your student metrics: XP, Level status, Coins, and weekly missions milestones.</div>
-                </div>
-
-                <div class="hub-card" onclick="switchPanel('cyberlab-paths')">
-                    <div class="hub-card-icon">🗺️</div>
-                    <div class="hub-card-title">Guided Paths</div>
-                    <div class="hub-card-desc">Access learning material manuals, cryptography tutorials, and step-by-step security courses.</div>
-                </div>
-
-                <div class="hub-card" onclick="switchPanel('cyberlab-labs')">
-                    <div class="hub-card-icon">🖥️</div>
-                    <div class="hub-card-title">Virtual Sandboxes</div>
-                    <div class="hub-card-desc">Launch multiple split-screen terminals for Kali Linux, Ubuntu, and target containers.</div>
-                </div>
-
-                <div class="hub-card" onclick="switchPanel('cyberlab-ctf')">
-                    <div class="hub-card-icon">🚩</div>
-                    <div class="hub-card-title">CTF Arena</div>
-                    <div class="hub-card-desc">Find flags, check the live scoreboard rankings, and solve offensive security challenges.</div>
-                </div>
-
-                <div class="hub-card" onclick="switchPanel('cyberlab-quizzes')">
-                    <div class="hub-card-icon">❓</div>
-                    <div class="hub-card-title">Practical Quizzes</div>
-                    <div class="hub-card-desc">Test your understanding with instant feedback questions, MCQs, and fill-in-the-blank logs.</div>
-                </div>
-
-                <div class="hub-card" onclick="switchPanel('cyberlab-aitutor')">
-                    <div class="hub-card-icon">🤖</div>
-                    <div class="hub-card-title">AI Study Tutor</div>
-                    <div class="hub-card-desc">Ask your personal AI doubt assistant for hints, guidance, and career pathways.</div>
-                </div>
-
-                <div class="hub-card" onclick="switchPanel('cyberlab-certificates')">
-                    <div class="hub-card-icon">📜</div>
-                    <div class="hub-card-title">Certificates Vault</div>
-                    <div class="hub-card-desc">Print and export your verified NCAS completion credentials with official serial checks.</div>
+                <div class="hub-card" onclick="switchOwaspPanel('a01')">
+                    <div class="hub-card-icon">🔥</div>
+                    <div class="hub-card-title">OWASP Top 10 Course</div>
+                    <div class="hub-card-desc">Audit and exploit the 10 most critical web application security risks sequentially.</div>
                 </div>
             </div>
         </div>
@@ -1602,6 +1579,11 @@
                     <div class="hub-card-icon">📣</div>
                     <div class="hub-card-title">Academic Advisories & Rules</div>
                     <div class="hub-card-desc">View institutional rules, advisory bulletins, and announcements published by faculty.</div>
+                </div>
+                <div class="hub-card" data-roles="admin,faculty" onclick="switchPanel('academic-dashboard')">
+                    <div class="hub-card-icon">📊</div>
+                    <div class="hub-card-title">Academic Dashboard</div>
+                    <div class="hub-card-desc">Review student gamification metrics (XP, Streaks, Leaderboard) and configure users, courses, labs, and permissions.</div>
                 </div>
                 <div class="hub-card" data-roles="admin" onclick="switchPanel('student-user-management')">
                     <div class="hub-card-icon">🎓</div>
@@ -2196,297 +2178,6 @@
             </div>
         </div>
 
-
-        <!-- CYBERLAB DASHBOARD -->
-        <div id="panel-cyberlab-dashboard" class="panel">
-            <h2 class="panel-title">📊 CyberLab Student Command Center</h2>
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <div class="metric-value" id="cyberlab-xp">1,850 XP</div>
-                    <div class="metric-label">Experience Points</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">🪙 420 Coins</div>
-                    <div class="metric-label">Virtual Coins Earned</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">🔥 Lvl 12</div>
-                    <div class="metric-label">Daily Streak Level</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value" id="cyberlab-badge-count">🛡️ 3 Badges</div>
-                    <div class="metric-label">Achievements Unlocked</div>
-                </div>
-            </div>
-
-            <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px; margin-top:24px;">
-                <div class="result-block">
-                    <div class="result-header">🎯 Active Weekly Missions</div>
-                    <div style="display:flex; flex-direction:column; gap:12px; margin-top:12px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:12px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
-                            <div>
-                                <div style="font-weight:700; color:#fff;">🛡️ Linux Basics Sandbox</div>
-                                <div style="font-size:0.8rem; color:var(--text-muted);">Explore directories and solve the root escalation.</div>
-                            </div>
-                            <span class="badge" style="background:#10b981; color:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem;">PASSED (+200 XP)</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.02); padding:12px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
-                            <div>
-                                <div style="font-weight:700; color:#fff;">🔓 OWASP injection target</div>
-                                <div style="font-size:0.8rem; color:var(--text-muted);">Perform SQLi bypass using quote strings.</div>
-                            </div>
-                            <span class="badge" style="background:#f59e0b; color:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem;">IN PROGRESS</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="result-block">
-                    <div class="result-header">Recent Activity Log</div>
-                    <div style="font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:var(--text-muted); display:flex; flex-direction:column; gap:8px; margin-top:12px;">
-                        <div>• Passed cryptography Decrypt target [1hr ago]</div>
-                        <div>• Reached 7-day streak milestone [5hr ago]</div>
-                        <div>• Registered into CTF Solo Arena [12hr ago]</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CYBERLAB LEARNING PATHS -->
-        <div id="panel-cyberlab-paths" class="panel">
-            <h2 class="panel-title">🗺️ Guided Security Paths</h2>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:20px;">
-                <!-- Beginner Paths -->
-                <div class="result-block">
-                    <div class="result-header">Beginner Path (Basics)</div>
-                    <div style="display:flex; flex-direction:column; gap:10px; margin-top:12px;">
-                        <button class="btn btn-secondary" style="text-align:left; justify-content:flex-start; width:100%;" onclick="loadStudyMaterial('basics_cryptography')">📖 Read Cryptography Basics Lab Guide</button>
-                        <button class="btn btn-secondary" style="text-align:left; justify-content:flex-start; width:100%;" onclick="loadStudyMaterial('owasp_sqli')">📖 Read SQL Injection Lab Guide</button>
-                        <button class="btn btn-secondary" style="text-align:left; justify-content:flex-start; width:100%;" onclick="loadStudyMaterial('linux_priv_esc')">📖 Read Linux Privilege Escalation Guide</button>
-                    </div>
-                </div>
-
-                <!-- Material Viewer Pane -->
-                <div class="result-block" style="background:#020617; border-color:rgba(59,130,246,0.25);">
-                    <div class="result-header">📖 Active Study Material</div>
-                    <div id="study-material-viewer" style="height:250px; overflow-y:auto; font-size:0.85rem; line-height:1.5; color:#cbd5e1; margin-top:12px;">
-                        Select a study guide from the learning path on the left to start reading the hands-on lab manual.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CYBERLAB VIRTUAL LABS -->
-        <div id="panel-cyberlab-labs" class="panel">
-            <h2 class="panel-title">🖥️ Virtual Sandbox Terminals</h2>
-            
-            <div style="display: grid; grid-template-columns: 1.2fr 2.5fr; gap: 24px; margin-top: 20px;">
-                <!-- Lab selector & flags input -->
-                <div>
-                    <div class="result-block" style="margin-bottom: 20px;">
-                        <div class="result-header">Configure Target Sandbox</div>
-                        <div style="margin-top:12px;">
-                            <label style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">ACTIVE SYSTEM TARGET</label>
-                            <select id="cyberlab-active-target" class="input-text" style="width:100%; display:block; height:40px; padding: 6px 12px; margin-top: 6px;" onchange="changeCyberLabTarget()">
-                                <option value="basics">Kali Linux Sandbox (Basics)</option>
-                                <option value="web">Ubuntu Docker (OWASP target)</option>
-                                <option value="linux">Metasploitable OS (PrivEsc target)</option>
-                            </select>
-                        </div>
-                        <div style="display:flex; gap:8px; margin-top:15px;">
-                            <button class="btn btn-secondary" style="flex:1;" onclick="resetCyberLabTerminal()">Reset Lab 🔄</button>
-                            <button class="btn" style="flex:1;" onclick="cyberLabWalkthrough()">Walkthrough 📖</button>
-                        </div>
-                    </div>
-
-                    <div class="result-block">
-                        <div class="result-header">Submit Target Flag</div>
-                        <p style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;">Locate the flag details in target files and paste below:</p>
-                        <div style="display:flex; gap:8px; margin-top:12px;">
-                            <input type="text" id="cyberlab-flag-input" class="input-text" placeholder="e.g. NCAS{flag_content}" style="flex:1;">
-                            <button class="btn" onclick="submitCyberLabFlag()">Submit</button>
-                        </div>
-                        <div id="cyberlab-flag-feedback" style="margin-top:10px; font-weight:700; font-size:0.85rem; display:none;"></div>
-                    </div>
-                </div>
-
-                <!-- Browser Terminal Simulator -->
-                <div class="result-block" style="padding:16px; background:#020617; border-color:rgba(59,130,246,0.3); display:flex; flex-direction:column;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px; margin-bottom:10px;">
-                        <div style="display:flex; gap:10px;">
-                            <button class="btn" style="padding:4px 8px; font-size:0.75rem; background:#3b82f6;" id="term-tab-1" onclick="switchTermTab(1)">Terminal 1 (Kali)</button>
-                            <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" id="term-tab-2" onclick="switchTermTab(2)">Terminal 2 (Ubuntu)</button>
-                        </div>
-                        <div style="display:flex; gap:6px;">
-                            <span style="display:inline-block; width:12px; height:12px; background:#10b981; border-radius:50%;"></span>
-                            <span style="font-size:0.75rem; color:var(--text-muted);">ONLINE [30:00]</span>
-                        </div>
-                    </div>
-
-                    <div style="flex:1; display:flex; gap:16px; height:350px;">
-                        <!-- File Explorer -->
-                        <div style="width:130px; border-right:1px solid rgba(255,255,255,0.08); padding-right:10px; font-family:'JetBrains Mono', monospace; font-size:0.75rem; color:#a1a1aa;">
-                            <div style="color:#64748b; font-weight:700; margin-bottom:8px;">📁 Explorer</div>
-                            <div style="color:#3b82f6; cursor:pointer;" onclick="pasteToTerminal('ls -l')">📁 home/</div>
-                            <div style="color:#3b82f6; cursor:pointer; margin-left:10px;" onclick="pasteToTerminal('cat secret.txt')">📄 secret.txt</div>
-                            <div style="color:#3b82f6; cursor:pointer; margin-left:10px;" onclick="pasteToTerminal('cat hint.txt')">📄 hint.txt</div>
-                        </div>
-
-                        <!-- Terminal CLI -->
-                        <div style="flex:1; display:flex; flex-direction:column; background:#000; padding:12px; border-radius:6px; font-family:'JetBrains Mono', monospace; font-size:0.85rem; color:#10b981; overflow-y:auto;" id="cyberlab-terminal-output">
-                            <div>Secure Web Terminal initialized. Type 'help' to review commands.</div>
-                            <div>student-hacker@kali:~$</div>
-                        </div>
-                    </div>
-
-                    <div style="display:flex; gap:10px; margin-top:12px;">
-                        <span style="font-family:'JetBrains Mono', monospace; align-self:center; color:#3b82f6;">$</span>
-                        <input type="text" id="cyberlab-terminal-input" class="input-text" placeholder="Type terminal command here..." style="flex:1; background:#000; color:#10b981; font-family:'JetBrains Mono', monospace;" onkeypress="if(event.key === 'Enter') handleCyberLabCommand()">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CYBERLAB CTF ARENA -->
-        <div id="panel-cyberlab-ctf" class="panel">
-            <h2 class="panel-title">🚩 Capture The Flag Platforms</h2>
-            <div style="display:grid; grid-template-columns: 2fr 1.2fr; gap:24px; margin-top:20px;">
-                <div class="result-block">
-                    <div class="result-header">OSINT & Cryptography Challenges</div>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:15px;">
-                        <div style="background:rgba(255,255,255,0.02); padding:16px; border:1px solid rgba(255,255,255,0.06); border-radius:8px;">
-                            <span style="color:#a855f7; font-size:0.75rem; font-weight:700;">CRYPTOGRAPHY</span>
-                            <h4 style="color:#fff; margin:5px 0;">AES Decryption Key</h4>
-                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Recover the decryption key hidden inside the steganography target files.</p>
-                            <button class="btn btn-secondary" style="padding:6px 12px; font-size:0.75rem;" onclick="switchPanel('cyberlab-labs')">Deploy Target VM</button>
-                        </div>
-                        <div style="background:rgba(255,255,255,0.02); padding:16px; border:1px solid rgba(255,255,255,0.06); border-radius:8px;">
-                            <span style="color:#06b6d4; font-size:0.75rem; font-weight:700;">OSINT</span>
-                            <h4 style="color:#fff; margin:5px 0;">Domain WHOIS Check</h4>
-                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Trace domain lookup contacts registry to find the CTF code parameters.</p>
-                            <button class="btn btn-secondary" style="padding:6px 12px; font-size:0.75rem;" onclick="switchPanel('domain-intel')">Load WHOIS tool</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="result-block">
-                    <div class="result-header">CTF Live Leaderboard</div>
-                    <table class="table-results" style="width:100%; margin-top:12px; font-size:0.8rem;">
-                        <thead>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Name</th>
-                                <th>XP</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>🥇 1</td>
-                                <td>Buffer_Bypass</td>
-                                <td>3,400</td>
-                            </tr>
-                            <tr>
-                                <td>🥈 2</td>
-                                <td>Cyber_Cadet</td>
-                                <td>2,950</td>
-                            </tr>
-                            <tr style="background:rgba(59,130,246,0.15);">
-                                <td><b>12</b></td>
-                                <td><b>You (Solo)</b></td>
-                                <td><b>1,850</b></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- CYBERLAB PRACTICAL QUIZZES -->
-        <div id="panel-cyberlab-quizzes" class="panel">
-            <h2 class="panel-title">❓ Hands-on Quizzes</h2>
-            
-            <div style="max-width:800px; margin:0 auto; margin-top:20px;">
-                <div class="result-block" style="padding:24px;">
-                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:var(--text-muted); margin-bottom:10px;">
-                        <span>Question 1 of 5</span>
-                        <span id="quiz-timer">Timer: 30s</span>
-                    </div>
-                    <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:3px; margin-bottom:20px; overflow:hidden;">
-                        <div style="height:100%; width:20%; background:#3b82f6;"></div>
-                    </div>
-
-                    <h3 style="color:#fff; font-weight:700; margin-bottom:20px;" id="cyberlab-quiz-question">Which SQL operator is injected to trick login checks into evaluating query logic as always true?</h3>
-                    
-                    <div style="display:flex; flex-direction:column; gap:12px;" id="cyberlab-quiz-options">
-                        <button class="btn btn-secondary" style="text-align:left; justify-content:flex-start; padding:12px;" onclick="answerCyberLabQuiz(false, this)">A) AND 1=0</button>
-                        <button class="btn btn-secondary" style="text-align:left; justify-content:flex-start; padding:12px;" onclick="answerCyberLabQuiz(true, this)">B) OR 1=1</button>
-                        <button class="btn btn-secondary" style="text-align:left; justify-content:flex-start; padding:12px;" onclick="answerCyberLabQuiz(false, this)">C) UNION SELECT password</button>
-                    </div>
-
-                    <div id="cyberlab-quiz-feedback" style="margin-top:20px; font-weight:700; display:none;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CYBERLAB AI STUDY TUTOR -->
-        <div id="panel-cyberlab-aitutor" class="panel">
-            <h2 class="panel-title">🤖 CyberLab AI study tutor</h2>
-            <div style="display:grid; grid-template-columns:1fr 2fr; gap:24px; margin-top:20px;">
-                <div class="result-block">
-                    <div class="result-header">Ask AI study questions</div>
-                    <div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
-                        <button class="btn btn-secondary" style="text-align:left; justify-content:flex-start;" onclick="askTutorConcept('Explain SQL injection')">💡 Explain SQL Injection</button>
-                        <button class="btn btn-secondary" style="text-align:left; justify-content:flex-start;" onclick="askTutorConcept('What is privilege escalation?')">💡 What is Privilege Escalation?</button>
-                        <button class="btn btn-secondary" style="text-align:left; justify-content:flex-start;" onclick="askTutorConcept('Give hints for Decrypt lab')">💡 Hints for Cryptography Lab</button>
-                    </div>
-                </div>
-
-                <div class="result-block" style="display:flex; flex-direction:column; background:#020617; border-color:rgba(59,130,246,0.25);">
-                    <div class="result-header">Tutor conversation</div>
-                    <div id="tutor-dialog-box" style="flex:1; height:250px; overflow-y:auto; padding:10px; font-size:0.85rem; color:#cbd5e1; margin-top:10px;">
-                        Welcome back! I am your CyberLab AI Tutor. Click any of the topics on the left or type a custom security doubt in the console.
-                    </div>
-                    <div style="display:flex; gap:8px; margin-top:10px;">
-                        <input type="text" id="tutor-user-input" class="input-text" placeholder="Type cybersecurity doubt..." style="flex:1; background:#000; color:#fff;" onkeypress="if(event.key==='Enter') sendTutorQuestion()">
-                        <button class="btn" onclick="sendTutorQuestion()">Ask Tutor</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CYBERLAB CERTIFICATE VAULT -->
-        <div id="panel-cyberlab-certificates" class="panel">
-            <h2 class="panel-title">📜 Verified Certificate Vault</h2>
-            <div style="display:grid; grid-template-columns:1.2fr 1fr; gap:24px; margin-top:20px;">
-                <div class="result-block" style="text-align:center; padding:30px;">
-                    <h3 style="color:#fff; margin-bottom:10px;">NCAS Cyber Defense Certificate</h3>
-                    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Earned after completing all beginner-level laboratories.</p>
-
-                    <div style="border: 4px double #06b6d4; padding: 24px; background: #070b13; text-align: center; position: relative;" id="cyberlab-cert-print">
-                        <div style="font-size: 0.7rem; color: #06b6d4; text-transform: uppercase; letter-spacing: 2px;">NCAS CyberLab Academy</div>
-                        <h4 style="color: #fff; font-size: 1.15rem; margin: 12px 0; font-family: serif;">CERTIFICATE OF COMPLETION</h4>
-                        <div style="font-size: 0.75rem; color: var(--text-muted);">This certifies that the candidate:</div>
-                        <div style="font-size: 1.25rem; font-weight: 700; color: #06b6d4; margin: 10px 0; text-decoration: underline;" id="cyberlab-cert-student-name">Security Student</div>
-                        <div style="font-size: 0.72rem; color: var(--text-muted); line-height: 1.3;">has successfully audited and solved all sandbox terminals, SQL injections, and network packet capture targets.</div>
-                        <div style="margin-top: 20px; display: flex; justify-content: space-between; font-size: 0.65rem; color: #64748b;">
-                            <div>ID: NCAS-LAB-2026-X11</div>
-                            <div>VERIFIED: OK (QR CODE ACTIVE)</div>
-                        </div>
-                    </div>
-
-                    <button class="btn" style="margin-top:20px;" onclick="printCyberLabCert()">Print / Save PDF 📄</button>
-                </div>
-
-                <div class="result-block">
-                    <div class="result-header">Certification Rules</div>
-                    <p style="font-size:0.85rem; line-height:1.5; color:var(--text-muted); margin-top:10px;">
-                        - Certificates are issued only to students who solve all active lab targets.<br>
-                        - Flags must be validated client-side or sent to server registries.<br>
-                        - Verification QR link logs certificate ID serial registry records.
-                    </p>
-                </div>
-            </div>
-        </div>
-
         <!-- 12. QUIZZES -->
         <div id="panel-quiz" class="panel">
             <h2 class="panel-title">Defensive Quizzes Arena</h2>
@@ -2829,6 +2520,107 @@
             </div>
         </div>
 
+        <!-- ACADEMIC DASHBOARD PANEL (ADMIN & FACULTY VIEW) -->
+        <div id="panel-academic-dashboard" class="panel">
+            <h2 class="panel-title">📊 Institutional Academic Dashboard</h2>
+            <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 24px;">
+                Review student gamification metrics, track active leaderboards, and manage course setups, labs, quizzes, and role permissions.
+            </p>
+
+            <!-- GAMIFICATION OVERVIEW BLOCK (For Faculty & Admins) -->
+            <h3 style="color: #fff; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; margin-bottom: 16px; margin-top: 24px;">🎯 Student Gamification Analytics</h3>
+            <div class="stats-grid" style="margin-bottom: 25px;">
+                <div class="stat-card">
+                    <span class="stat-num" id="acad-stats-avgxp" style="color: #3b82f6;">1,420 XP</span>
+                    <span class="stat-label">Average Student XP</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num" id="acad-stats-avgstreak" style="color: #eab308;">8 Days</span>
+                    <span class="stat-label">Average Daily Streak</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-num" id="acad-stats-totalbadges" style="color: #a855f7;">42 Badges</span>
+                    <span class="stat-label">Achievements Unlocked</span>
+                </div>
+            </div>
+
+            <!-- Weekly Missions, Monthly Challenges & Leaderboard -->
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; margin-bottom: 30px;">
+                <div class="result-block">
+                    <div class="result-header">🎯 Active Missions & Monthly Challenges</div>
+                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#fff; font-weight:700;">
+                                <span>Weekly Mission: Linux Privilege Escalation</span>
+                                <span>65% Done</span>
+                            </div>
+                            <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:3px; margin-top:5px; overflow:hidden;">
+                                <div style="height:100%; width:65%; background:#3b82f6;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#fff; font-weight:700;">
+                                <span>Weekly Mission: MD5 Cryptography Target</span>
+                                <span>80% Done</span>
+                            </div>
+                            <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:3px; margin-top:5px; overflow:hidden;">
+                                <div style="height:100%; width:80%; background:#10b981;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#fff; font-weight:700;">
+                                <span>Monthly Challenge: OWASP Top 10 Audit Mastery</span>
+                                <span>42% Done</span>
+                            </div>
+                            <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:3px; margin-top:5px; overflow:hidden;">
+                                <div style="height:100%; width:42%; background:#a855f7;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-block">
+                    <div class="result-header">🏆 Active Student Leaderboard</div>
+                    <table class="table-results" style="width:100%; margin-top:12px; font-size:0.85rem;">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Student</th>
+                                <th>XP</th>
+                                <th>Streak</th>
+                                <th>Coins</th>
+                            </tr>
+                        </thead>
+                        <tbody id="acad-leaderboard-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ADMINISTRATIVE MANAGEMENT WORKSPACE (Tabs) -->
+            <h3 style="color: #fff; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; margin-bottom: 16px; margin-top: 30px;">⚙️ Admin Settings & Control Console</h3>
+            <div id="admin-only-alert" style="display:none; padding: 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); border-radius: 8px; color: var(--accent-red); font-weight: 700; font-size: 0.9rem; margin-bottom: 15px;">
+                ⚠️ Faculty View: Read-Only. Only Administrators can modify administrative settings below.
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 8px;">
+                <button class="btn" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-users" onclick="switchAcadTab('users')">Users</button>
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-courses" onclick="switchAcadTab('courses')">Courses</button>
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-labs" onclick="switchAcadTab('labs')">Labs</button>
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-quizzes" onclick="switchAcadTab('quizzes')">Quizzes</button>
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-certs" onclick="switchAcadTab('certs')">Certificates</button>
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-reports" onclick="switchAcadTab('reports')">Reports</button>
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-analytics" onclick="switchAcadTab('analytics')">Analytics</button>
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-roles" onclick="switchAcadTab('roles')">Roles & Perms</button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="result-block" id="acad-tab-content-container" style="background: rgba(255,255,255,0.02); border-color: rgba(59,130,246,0.15);">
+                <!-- Content injected dynamically by JS -->
+            </div>
+        </div>
+
         <!-- STUDENT USER MANAGEMENT (ADMIN VIEW) -->
         <div id="panel-student-user-management" class="panel">
             <h2 class="panel-title">Institutional Student Accounts & Security Controls</h2>
@@ -2851,6 +2643,411 @@
                             <!-- Populated dynamically -->
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- OWASP TOP 10 PANELS -->
+        
+        <!-- A01: Broken Access Control -->
+        <div id="panel-owasp-a01" class="panel">
+            <h2 class="panel-title">🔥 A01: Broken Access Control</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Vulnerability Description</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Broken Access Control</b> occurs when an application fails to properly enforce user authorization. Attackers exploit these flaws to access unauthorized data, modify files, or escalate privileges.<br><br>
+                    <b>Common Examples:</b><br>
+                    • Direct Object References (IDOR): Modifying parameter IDs in URLs (e.g. changing <code>/profile?id=102</code> to <code>/profile?id=100</code>).<br>
+                    • Path Traversal: Passing path patterns (e.g. <code>../../etc/passwd</code>) to view sensitive files.<br>
+                    • Privilege Bypass: Modifying cookie tokens or roles directly in the browser.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Hands-on Lab: Access Control Bypass</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <!-- Task 1 -->
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Insecure Direct Object Reference (IDOR)</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Change the user ID parameter in the mock address bar to view the Administrator profile details and get the flag.</p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px; background:#000; padding:8px; border-radius:4px;">
+                            <span style="color:#64748b; font-family:monospace; align-self:center;">http://cyber.shield/profile?id=</span>
+                            <input type="text" id="owasp-a01-t1-input" class="input-text" value="102" style="max-width:80px; background:#111; color:#fff; font-family:monospace; padding:4px;">
+                            <button class="btn" style="padding:4px 12px; font-size:0.75rem;" onclick="verifyOwaspA01T1()">Go</button>
+                        </div>
+                        <div id="owasp-a01-t1-output" style="font-size:0.8rem; font-family:monospace; color:#3b82f6; display:none;"></div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 2: Path Traversal</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Submit a relative traversal path payload (e.g. <code>../../etc/passwd</code>) to read the secret user credentials file.</p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="owasp-a01-t2-input" class="input-text" placeholder="e.g. file.txt" style="flex:1;">
+                            <button class="btn" onclick="verifyOwaspA01T2()">Read File</button>
+                        </div>
+                        <div id="owasp-a01-t2-output" style="font-size:0.8rem; font-family:monospace; color:#3b82f6; display:none;"></div>
+                    </div>
+
+                    <!-- Submit Flag -->
+                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); text-align:center;">
+                        <h4 style="color:#fff; margin-bottom:5px;">🔓 Complete A01 Challenges</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Solve the tasks above to earn the main completion flag. Paste it below to unlock A02.</p>
+                        <div style="display:flex; gap:10px; justify-content:center;">
+                            <input type="text" id="owasp-a01-flag" class="input-text" placeholder="NCAS{...}" style="max-width:260px;">
+                            <button class="btn" onclick="solveOwaspVulnerability('a01')">Validate & Unlock Next</button>
+                        </div>
+                        <div id="owasp-a01-feedback" style="margin-top:10px; font-weight:700; font-size:0.85rem; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A02: Cryptographic Failures -->
+        <div id="panel-owasp-a02" class="panel">
+            <h2 class="panel-title">🔥 A02: Cryptographic Failures</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Vulnerability Description</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Cryptographic Failures</b> (previously Sensitive Data Exposure) occurs when sensitive information is transmitted or stored in plaintext, or protected using weak algorithms.<br><br>
+                    <b>Common Examples:</b><br>
+                    • Weak hashing: Storing passwords using MD5 or SHA1 instead of bcrypt or Argon2.<br>
+                    • Hardcoded secrets: Placing private encryption keys inside front-end scripts.<br>
+                    • Unencrypted channels: Sending data via HTTP or FTP.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Hands-on Lab: Hash Cracking</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Weak Hashing Algorithm Check</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Decrypt this MD5 password hash: <code>098f6bcd4621d373cade4e832627b4f6</code>. Enter the cracked plaintext to reveal the flag.</p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="owasp-a02-t1-input" class="input-text" placeholder="Cracked password" style="flex:1;">
+                            <button class="btn" onclick="verifyOwaspA02T1()">Verify</button>
+                        </div>
+                        <div id="owasp-a02-t1-output" style="font-size:0.8rem; font-family:monospace; color:#3b82f6; display:none;"></div>
+                    </div>
+
+                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); text-align:center;">
+                        <h4 style="color:#fff; margin-bottom:5px;">🔓 Complete A02 Challenges</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Paste the flag below to unlock A03.</p>
+                        <div style="display:flex; gap:10px; justify-content:center;">
+                            <input type="text" id="owasp-a02-flag" class="input-text" placeholder="NCAS{...}" style="max-width:260px;">
+                            <button class="btn" onclick="solveOwaspVulnerability('a02')">Validate & Unlock Next</button>
+                        </div>
+                        <div id="owasp-a02-feedback" style="margin-top:10px; font-weight:700; font-size:0.85rem; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A03: Injection -->
+        <div id="panel-owasp-a03" class="panel">
+            <h2 class="panel-title">🔥 A03: Injection</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Vulnerability Description</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Injection</b> occurs when user-supplied input is directly interpreted and executed by a backend engine. 
+                    This includes SQL Injection, OS Command Injection, and XML Injection.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Hands-on Lab: SQL Injection Bypass</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: SQL Authentication Bypass</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Enter an SQL injection payload (e.g. <code>' OR 1=1 --</code>) in the login field to bypass verification.</p>
+                        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:10px; max-width:320px;">
+                            <input type="text" id="owasp-a03-t1-user" class="input-text" placeholder="Username">
+                            <input type="password" id="owasp-a03-t1-pass" class="input-text" placeholder="Password">
+                            <button class="btn" onclick="verifyOwaspA03T1()">Login</button>
+                        </div>
+                        <div id="owasp-a03-t1-output" style="font-size:0.8rem; font-family:monospace; color:#3b82f6; display:none;"></div>
+                    </div>
+
+                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); text-align:center;">
+                        <h4 style="color:#fff; margin-bottom:5px;">🔓 Complete A03 Challenges</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Paste the flag below to unlock A04.</p>
+                        <div style="display:flex; gap:10px; justify-content:center;">
+                            <input type="text" id="owasp-a03-flag" class="input-text" placeholder="NCAS{...}" style="max-width:260px;">
+                            <button class="btn" onclick="solveOwaspVulnerability('a03')">Validate & Unlock Next</button>
+                        </div>
+                        <div id="owasp-a03-feedback" style="margin-top:10px; font-weight:700; font-size:0.85rem; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A04: Insecure Design -->
+        <div id="panel-owasp-a04" class="panel">
+            <h2 class="panel-title">🔥 A04: Insecure Design</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Vulnerability Description</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Insecure Design</b> focuses on flaws related to design and architecture rather than implementation errors. 
+                    Security must be integrated from the beginning (Security by Design).
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Hands-on Lab: MFA Route Bypass</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: URL Route Modification</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Bypass the MFA authentication page by directly editing the URL endpoint from <code>/mfa-check</code> to <code>/dashboard</code> in the browser input address bar simulator.</p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px; background:#000; padding:8px; border-radius:4px;">
+                            <span style="color:#64748b; font-family:monospace; align-self:center;">http://bank.sec/</span>
+                            <input type="text" id="owasp-a04-t1-input" class="input-text" value="mfa-check" style="max-width:180px; background:#111; color:#fff; font-family:monospace; padding:4px;">
+                            <button class="btn" style="padding:4px 12px; font-size:0.75rem;" onclick="verifyOwaspA04T1()">Navigate</button>
+                        </div>
+                        <div id="owasp-a04-t1-output" style="font-size:0.8rem; font-family:monospace; color:#3b82f6; display:none;"></div>
+                    </div>
+
+                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); text-align:center;">
+                        <h4 style="color:#fff; margin-bottom:5px;">🔓 Complete A04 Challenges</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Paste the flag below to unlock A05.</p>
+                        <div style="display:flex; gap:10px; justify-content:center;">
+                            <input type="text" id="owasp-a04-flag" class="input-text" placeholder="NCAS{...}" style="max-width:260px;">
+                            <button class="btn" onclick="solveOwaspVulnerability('a04')">Validate & Unlock Next</button>
+                        </div>
+                        <div id="owasp-a04-feedback" style="margin-top:10px; font-weight:700; font-size:0.85rem; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A05: Security Misconfiguration -->
+        <div id="panel-owasp-a05" class="panel">
+            <h2 class="panel-title">🔥 A05: Security Misconfiguration</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Vulnerability Description</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Security Misconfiguration</b> occurs when default configurations are kept, directory listing is left enabled, or verbose error codes are displayed, leaking critical service footprints.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Hands-on Lab: Exposed Directory Indexes</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Index Traversal</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Audit the server index for unlinked files. Navigate to the exposed directory <code>/backup/</code> in the browser simulator to retrieve the configuration backup flag.</p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px; background:#000; padding:8px; border-radius:4px;">
+                            <span style="color:#64748b; font-family:monospace; align-self:center;">http://target.host/</span>
+                            <input type="text" id="owasp-a05-t1-input" class="input-text" value="" placeholder="e.g. /" style="max-width:180px; background:#111; color:#fff; font-family:monospace; padding:4px;">
+                            <button class="btn" style="padding:4px 12px; font-size:0.75rem;" onclick="verifyOwaspA05T1()">Request</button>
+                        </div>
+                        <div id="owasp-a05-t1-output" style="font-size:0.8rem; font-family:monospace; color:#3b82f6; display:none;"></div>
+                    </div>
+
+                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); text-align:center;">
+                        <h4 style="color:#fff; margin-bottom:5px;">🔓 Complete A05 Challenges</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Paste the flag below to unlock A06.</p>
+                        <div style="display:flex; gap:10px; justify-content:center;">
+                            <input type="text" id="owasp-a05-flag" class="input-text" placeholder="NCAS{...}" style="max-width:260px;">
+                            <button class="btn" onclick="solveOwaspVulnerability('a05')">Validate & Unlock Next</button>
+                        </div>
+                        <div id="owasp-a05-feedback" style="margin-top:10px; font-weight:700; font-size:0.85rem; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A06: Vulnerable and Outdated Components -->
+        <div id="panel-owasp-a06" class="panel">
+            <h2 class="panel-title">🔥 A06: Vulnerable and Outdated Components</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Vulnerability Description</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Vulnerable and Outdated Components</b> occurs when an application relies on a library, package, or framework with known vulnerabilities (CVEs) that could compromise system integrity.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Hands-on Lab: Dependency Audits</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Log4j CVE Target Scan</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Identify the vulnerable version of the library <code>org.apache.logging.log4j:log4j-core</code> in this list of dependencies. Submit the outdated version code (e.g. <code>2.14.0</code>) to get the flag.</p>
+                        <div style="font-family:monospace; font-size:0.75rem; color:#a1a1aa; background:#000; padding:10px; border-radius:4px; margin-bottom:10px; line-height:1.4;">
+                            • log4j-api: 2.17.1<br>
+                            • log4j-core: 2.14.0 (VULNERABLE CONFIG)<br>
+                            • spring-core: 5.3.9
+                        </div>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="owasp-a06-t1-input" class="input-text" placeholder="Outdated version" style="flex:1;">
+                            <button class="btn" onclick="verifyOwaspA06T1()">Audit Version</button>
+                        </div>
+                        <div id="owasp-a06-t1-output" style="font-size:0.8rem; font-family:monospace; color:#3b82f6; display:none;"></div>
+                    </div>
+
+                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); text-align:center;">
+                        <h4 style="color:#fff; margin-bottom:5px;">🔓 Complete A06 Challenges</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Paste the flag below to unlock A07.</p>
+                        <div style="display:flex; gap:10px; justify-content:center;">
+                            <input type="text" id="owasp-a06-flag" class="input-text" placeholder="NCAS{...}" style="max-width:260px;">
+                            <button class="btn" onclick="solveOwaspVulnerability('a06')">Validate & Unlock Next</button>
+                        </div>
+                        <div id="owasp-a06-feedback" style="margin-top:10px; font-weight:700; font-size:0.85rem; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A07: Identification and Authentication Failures -->
+        <div id="panel-owasp-a07" class="panel">
+            <h2 class="panel-title">🔥 A07: Identification and Authentication Failures</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Vulnerability Description</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Identification and Authentication Failures</b> occurs when user identity verification checks are weak, allowing brute forcing, credential stuffing, or session hijacking.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Hands-on Lab: Brute Force Simulation</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Weak Password Crack</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Brute-force the password for username <code>admin</code>. Test these common password lists: <code>password123</code>, <code>admin@123</code>, <code>123456</code>.</p>
+                        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:10px; max-width:320px;">
+                            <input type="text" value="admin" class="input-text" disabled>
+                            <input type="password" id="owasp-a07-t1-input" class="input-text" placeholder="Test password">
+                            <button class="btn" onclick="verifyOwaspA07T1()">Attempt Brute Force</button>
+                        </div>
+                        <div id="owasp-a07-t1-output" style="font-size:0.8rem; font-family:monospace; color:#3b82f6; display:none;"></div>
+                    </div>
+
+                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); text-align:center;">
+                        <h4 style="color:#fff; margin-bottom:5px;">🔓 Complete A07 Challenges</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Paste the flag below to unlock A08.</p>
+                        <div style="display:flex; gap:10px; justify-content:center;">
+                            <input type="text" id="owasp-a07-flag" class="input-text" placeholder="NCAS{...}" style="max-width:260px;">
+                            <button class="btn" onclick="solveOwaspVulnerability('a07')">Validate & Unlock Next</button>
+                        </div>
+                        <div id="owasp-a07-feedback" style="margin-top:10px; font-weight:700; font-size:0.85rem; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A08: Software and Data Integrity Failures -->
+        <div id="panel-owasp-a08" class="panel">
+            <h2 class="panel-title">🔥 A08: Software and Data Integrity Failures</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Vulnerability Description</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Software and Data Integrity Failures</b> focus on code or critical structures that are loaded without signature/integrity verification checks (like importing malicious updates).
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Hands-on Lab: Checksum Audit</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: SHA256 Signature Verification</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Verify the integrity of a software release package. Check if the provided hash <code>a362f6b1...</code> matches the legitimate release key. Enter <code>LEGIT</code> or <code>TAMPERED</code> depending on match status to get the flag.</p>
+                        <div style="font-family:monospace; font-size:0.75rem; color:#a1a1aa; background:#000; padding:10px; border-radius:4px; margin-bottom:10px; line-height:1.4;">
+                            Expected legitim: a362f6b1b59627632612716301aa81a9<br>
+                            Actual package:  f8271bb1b59627632612716301aa992f
+                        </div>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="owasp-a08-t1-input" class="input-text" placeholder="Status" style="flex:1;">
+                            <button class="btn" onclick="verifyOwaspA08T1()">Audit Integrity</button>
+                        </div>
+                        <div id="owasp-a08-t1-output" style="font-size:0.8rem; font-family:monospace; color:#3b82f6; display:none;"></div>
+                    </div>
+
+                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); text-align:center;">
+                        <h4 style="color:#fff; margin-bottom:5px;">🔓 Complete A08 Challenges</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Paste the flag below to unlock A09.</p>
+                        <div style="display:flex; gap:10px; justify-content:center;">
+                            <input type="text" id="owasp-a08-flag" class="input-text" placeholder="NCAS{...}" style="max-width:260px;">
+                            <button class="btn" onclick="solveOwaspVulnerability('a08')">Validate & Unlock Next</button>
+                        </div>
+                        <div id="owasp-a08-feedback" style="margin-top:10px; font-weight:700; font-size:0.85rem; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A09: Security Logging and Monitoring Failures -->
+        <div id="panel-owasp-a09" class="panel">
+            <h2 class="panel-title">🔥 A09: Security Logging and Monitoring Failures</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Vulnerability Description</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Security Logging and Monitoring Failures</b> occurs when audit trails are missing or alerts are delayed, preventing active threat detection and compromise containment.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Hands-on Lab: Log Inspection</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: Log Audit for Unauthorized Attempts</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Locate the IP address of the system attempting a brute force crack in this server log dump. Input the IP (e.g. <code>192.168.1.15</code>) to get the flag.</p>
+                        <div style="font-family:monospace; font-size:0.75rem; color:#a1a1aa; background:#000; padding:10px; border-radius:4px; margin-bottom:10px; line-height:1.4; height:120px; overflow-y:auto;">
+                            [2026-07-21 23:51:00] INFO user student_cadet logged in from 10.0.2.15<br>
+                            [2026-07-21 23:51:04] WARN login failed for admin from 192.168.1.80 (Attempt 1)<br>
+                            [2026-07-21 23:51:06] WARN login failed for admin from 192.168.1.80 (Attempt 2)<br>
+                            [2026-07-21 23:51:08] WARN login failed for admin from 192.168.1.80 (Attempt 3)
+                        </div>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="owasp-a09-t1-input" class="input-text" placeholder="e.g. 127.0.0.1" style="flex:1;">
+                            <button class="btn" onclick="verifyOwaspA09T1()">Audit Logs</button>
+                        </div>
+                        <div id="owasp-a09-t1-output" style="font-size:0.8rem; font-family:monospace; color:#3b82f6; display:none;"></div>
+                    </div>
+
+                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); text-align:center;">
+                        <h4 style="color:#fff; margin-bottom:5px;">🔓 Complete A09 Challenges</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Paste the flag below to unlock A10.</p>
+                        <div style="display:flex; gap:10px; justify-content:center;">
+                            <input type="text" id="owasp-a09-flag" class="input-text" placeholder="NCAS{...}" style="max-width:260px;">
+                            <button class="btn" onclick="solveOwaspVulnerability('a09')">Validate & Unlock Next</button>
+                        </div>
+                        <div id="owasp-a09-feedback" style="margin-top:10px; font-weight:700; font-size:0.85rem; display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A10: Server-Side Request Forgery (SSRF) -->
+        <div id="panel-owasp-a10" class="panel">
+            <h2 class="panel-title">🔥 A10: Server-Side Request Forgery (SSRF)</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Vulnerability Description</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    <b>Server-Side Request Forgery (SSRF)</b> occurs when a server-side web application fetches a remote resource without validating the user-supplied destination URL.
+                </div>
+            </div>
+
+            <div class="result-block" style="border-color:rgba(59,130,246,0.3); background:#020617;">
+                <div class="result-header">🎯 Hands-on Lab: SSRF Metadata Leak</div>
+                <div style="margin-top:15px; display:flex; flex-direction:column; gap:16px;">
+                    <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <h4 style="color:#fff; margin-bottom:5px;">Task 1: AWS Metadata Lookup</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Inject the internal metadata IP URL (<code>http://169.254.169.254/latest/meta-data/</code>) into the image preview URL input box to leak AWS host credentials.</p>
+                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                            <input type="text" id="owasp-a10-t1-input" class="input-text" placeholder="http://image.host/pic.jpg" style="flex:1;">
+                            <button class="btn" onclick="verifyOwaspA10T1()">Retrieve Resource</button>
+                        </div>
+                        <div id="owasp-a10-t1-output" style="font-size:0.8rem; font-family:monospace; color:#3b82f6; display:none;"></div>
+                    </div>
+
+                    <div style="background:rgba(59,130,246,0.1); padding:15px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); text-align:center;">
+                        <h4 style="color:#fff; margin-bottom:5px;">🔓 Complete A10 Challenges</h4>
+                        <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Validate the final flag to complete the OWASP Top 10 Course!</p>
+                        <div style="display:flex; gap:10px; justify-content:center;">
+                            <input type="text" id="owasp-a10-flag" class="input-text" placeholder="NCAS{...}" style="max-width:260px;">
+                            <button class="btn" onclick="solveOwaspVulnerability('a10')">Validate & Finish Course</button>
+                        </div>
+                        <div id="owasp-a10-feedback" style="margin-top:10px; font-weight:700; font-size:0.85rem; display:none;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -3286,6 +3483,25 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                 loadStudentListForManagement();
             } else if (panelName === 'quiz') {
                 loadQuestion();
+            } else if (panelName === 'academic-dashboard') {
+                renderLeaderboard();
+                renderAcadTabContent();
+            }
+
+            // Dynamically show or hide left sidebar depending on hub context
+            const sidebar = document.querySelector('.sidebar');
+            const workspace = document.querySelector('.workspace');
+            if (sidebar && workspace) {
+                if (panelName === 'hub-cyberlab' || panelName.startsWith('owasp-')) {
+                    sidebar.style.setProperty('display', 'block', 'important');
+                    workspace.style.setProperty('margin-left', '280px', 'important');
+                    workspace.style.setProperty('width', 'calc(100% - 280px)', 'important');
+                    openSidebarAccordion('owasp');
+                } else {
+                    sidebar.style.setProperty('display', 'none', 'important');
+                    workspace.style.setProperty('margin-left', '0', 'important');
+                    workspace.style.setProperty('width', '100%', 'important');
+                }
             }
         }
 
@@ -5597,281 +5813,614 @@ SHA-1:    ${sha1Hex}
         }
         setInterval(checkConnectionStatus, 4500);
         checkConnectionStatus();
-        // ==========================================
-        // CYBERLAB HUB SYSTEM ENGINE
-        // ==========================================
-        let cyberlabActiveLab = "basics";
-        let cyberlabTermTab = 1;
-        const cyberlabTermOutput = document.getElementById('cyberlab-terminal-output');
 
-        const CYBERLAB_CONFIGS = {
-            basics: {
-                welcome: "Welcome to Kali Linux Sandbox [Terminal 1].\nFind the secret flag. Type 'help' to review commands, or use the file explorer on the left.",
-                files: {
-                    "secret.txt": "NCAS{basics_crypto_decrypted}",
-                    "hint.txt": "Use 'cat secret.txt' to view target flag details."
-                },
-                flag: "NCAS{basics_crypto_decrypted}"
-            },
-            web: {
-                welcome: "Welcome to Ubuntu Docker [Terminal 2] OWASP Sandbox.\nExecute administrative bypass query to unlock details (e.g. inject quote payload: \"' OR 1=1 --\").",
-                files: {
-                    "db_schema.sql": "TABLE admin_users (id INT, name VARCHAR, password VARCHAR)",
-                    "hint.txt": "Inject quote payloads: select * from admin_users where name = '' OR 1=1 --"
-                },
-                flag: "NCAS{sqli_bypass_flag}"
-            },
-            linux: {
-                welcome: "Welcome to Metasploitable OS [Terminal 1] Sandbox.\nAudit sudo configuration using command: 'sudo -l'.",
-                files: {
-                    "flag.txt": "NCAS{sudo_root_flag}",
-                    "kernel.log": "Linux kernel 5.4.0-77-generic"
-                },
-                flag: "NCAS{sudo_root_flag}"
+
+        // ==========================================
+        // ACADEMIC DASHBOARD LOGIC (ADMIN & FACULTY)
+        // ==========================================
+        let currentAcadTab = 'users';
+        let mockUsers = [
+            { username: "sec_tutor_admin", role: "admin", status: "Active", permissions: ["Read", "Write", "Execute"] },
+            { username: "faculty_member", role: "faculty", status: "Active", permissions: ["Read", "Write"] },
+            { username: "student_cadet", role: "student", status: "Active", permissions: ["Read"] },
+            { username: "naughty_student", role: "student", status: "Banned", permissions: [] }
+        ];
+        let mockCourses = [
+            { id: "CEH", title: "Certified Ethical Hacker (CEH)", duration: "6 Weeks", students: 45 },
+            { id: "LNX", title: "Linux Privilege Escalation Basics", duration: "3 Weeks", students: 32 },
+            { id: "NET", title: "Advanced Network Packet Audits", duration: "4 Weeks", students: 18 }
+        ];
+        let mockLabs = [
+            { id: "lab-kali", name: "Kali Sandbox Terminal 1", flag: "NCAS{basics_crypto_decrypted}", status: "ONLINE" },
+            { id: "lab-ubuntu", name: "Ubuntu Docker Web 1", flag: "NCAS{sqli_bypass_flag}", status: "ONLINE" },
+            { id: "lab-metasploit", name: "Metasploitable OS Target", flag: "NCAS{sudo_root_flag}", status: "OFFLINE" }
+        ];
+        let mockQuizQuestions = [
+            { id: 1, question: "Which SQL operator is injected to trick login checks into evaluating query logic as always true?", options: ["AND 1=0", "OR 1=1", "UNION SELECT password"], correct: 1 },
+            { id: 2, question: "What command is commonly run to audit active Sudo permissions on Linux?", options: ["sudo -l", "uname -a", "cat /etc/passwd"], correct: 0 }
+        ];
+        let mockCertificates = [
+            { id: "CERT-001", student: "student_cadet", course: "Linux Privilege Escalation Basics", date: "2026-07-20", status: "Verified" }
+        ];
+        let mockReports = [
+            { id: "REP-102", type: "Security Incident", user: "student_cadet", description: "Bypassed Web Portal SQL form checks", date: "2026-07-21" },
+            { id: "REP-101", type: "VM Alert", user: "system", description: "Docker Sandbox target initialized", date: "2026-07-21" }
+        ];
+
+        function switchAcadTab(tabName) {
+            currentAcadTab = tabName;
+            const tabs = ['users', 'courses', 'labs', 'quizzes', 'certs', 'reports', 'analytics', 'roles'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`acad-tab-${t}`);
+                if (btn) {
+                    btn.className = "btn btn-secondary";
+                }
+            });
+            const activeBtn = document.getElementById(`acad-tab-${tabName}`);
+            if (activeBtn) {
+                activeBtn.className = "btn";
             }
+            renderAcadTabContent();
+        }
+
+        function renderLeaderboard() {
+            const body = document.getElementById('acad-leaderboard-body');
+            if (!body) return;
+            body.innerHTML = `
+                <tr><td>🥇 1</td><td>student_cadet</td><td>1,850</td><td>8 Days</td><td>420</td></tr>
+                <tr><td>🥈 2</td><td>buffer_bypass</td><td>1,500</td><td>5 Days</td><td>250</td></tr>
+                <tr><td>🥉 3</td><td>kali_master</td><td>1,200</td><td>3 Days</td><td>120</td></tr>
+            `;
+        }
+
+        function renderAcadTabContent() {
+            const container = document.getElementById('acad-tab-content-container');
+            if (!container) return;
+            const alertBox = document.getElementById('admin-only-alert');
+            const isAdmin = (currentUserRole === 'admin');
+            if (alertBox) {
+                alertBox.style.display = isAdmin ? 'none' : 'block';
+            }
+            let html = "";
+            if (currentAcadTab === 'users') {
+                html = `
+                    <div class="result-header">👥 Registered Users Directory</div>
+                    <table class="table-results" style="width:100%; margin-top:15px; font-size:0.85rem;">
+                        <thead>
+                            <tr><th>Username</th><th>Role</th><th>Status</th><th>Permissions</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            ${mockUsers.map(u => `
+                                <tr>
+                                    <td><b>${u.username}</b></td>
+                                    <td><span style="color:#06b6d4;">${u.role}</span></td>
+                                    <td><span style="color:${u.status === 'Active' ? '#10b981' : 'var(--accent-red)'}; font-weight:700;">${u.status}</span></td>
+                                    <td>${u.permissions.join(', ') || 'None'}</td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" ${!isAdmin ? 'disabled' : ''} onclick="toggleUserStatus('${u.username}')">${u.status === 'Active' ? 'Ban' : 'Unban'}</button>
+                                        <button class="btn" style="padding:4px 8px; font-size:0.75rem; background:#3b82f6;" ${!isAdmin ? 'disabled' : ''} onclick="promptEditPerms('${u.username}')">Edit Perms</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <div style="margin-top:15px; display:flex; gap:10px;">
+                        <input type="text" id="new-user-name" class="input-text" placeholder="Username" style="max-width:180px;" ${!isAdmin ? 'disabled' : ''}>
+                        <select id="new-user-role" class="input-text" style="max-width:150px; height:42px;" ${!isAdmin ? 'disabled' : ''}>
+                            <option value="student">Student</option>
+                            <option value="faculty">Faculty</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <button class="btn" ${!isAdmin ? 'disabled' : ''} onclick="addNewUser()">Add User</button>
+                    </div>
+                `;
+            } else if (currentAcadTab === 'courses') {
+                html = `
+                    <div class="result-header">📚 Mock Course Syllabus Manager</div>
+                    <table class="table-results" style="width:100%; margin-top:15px; font-size:0.85rem;">
+                        <thead>
+                            <tr><th>Code</th><th>Course Title</th><th>Duration</th><th>Enrolled Students</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            ${mockCourses.map(c => `
+                                <tr>
+                                    <td><code>${c.id}</code></td>
+                                    <td><b>${c.title}</b></td>
+                                    <td>${c.duration}</td>
+                                    <td>${c.students} Students</td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" ${!isAdmin ? 'disabled' : ''} onclick="deleteCourse('${c.id}')">Delete</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <div style="margin-top:15px; display:flex; gap:10px;">
+                        <input type="text" id="new-course-id" class="input-text" placeholder="ID (e.g. CEH)" style="max-width:100px;" ${!isAdmin ? 'disabled' : ''}>
+                        <input type="text" id="new-course-title" class="input-text" placeholder="Course Title" style="flex:1;" ${!isAdmin ? 'disabled' : ''}>
+                        <input type="text" id="new-course-duration" class="input-text" placeholder="Duration (e.g. 5 Weeks)" style="max-width:150px;" ${!isAdmin ? 'disabled' : ''}>
+                        <button class="btn" ${!isAdmin ? 'disabled' : ''} onclick="addNewCourse()">Create Course</button>
+                    </div>
+                `;
+            } else if (currentAcadTab === 'labs') {
+                html = `
+                    <div class="result-header">🖥️ Active Laboratory Sandboxes</div>
+                    <table class="table-results" style="width:100%; margin-top:15px; font-size:0.85rem;">
+                        <thead>
+                            <tr><th>ID</th><th>Lab Name</th><th>Active Flag Required</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            ${mockLabs.map(l => `
+                                <tr>
+                                    <td><code>${l.id}</code></td>
+                                    <td><b>${l.name}</b></td>
+                                    <td><code>${l.flag}</code></td>
+                                    <td><span style="color:${l.status === 'ONLINE' ? '#10b981' : 'var(--accent-red)'}; font-weight:700;">${l.status}</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" ${!isAdmin ? 'disabled' : ''} onclick="toggleLabStatus('${l.id}')">Toggle Status</button>
+                                        <button class="btn" style="padding:4px 8px; font-size:0.75rem; background:#3b82f6;" ${!isAdmin ? 'disabled' : ''} onclick="changeLabFlag('${l.id}')">Change Flag</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (currentAcadTab === 'quizzes') {
+                html = `
+                    <div class="result-header">❓ Practical Quizzes Panel</div>
+                    <table class="table-results" style="width:100%; margin-top:15px; font-size:0.85rem;">
+                        <thead>
+                            <tr><th>ID</th><th>Question</th><th>Options</th><th>Correct Option Index</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            ${mockQuizQuestions.map(q => `
+                                <tr>
+                                    <td>#${q.id}</td>
+                                    <td><b>${q.question}</b></td>
+                                    <td>${q.options.join(' | ')}</td>
+                                    <td>Option #${q.correct + 1}</td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem;" ${!isAdmin ? 'disabled' : ''} onclick="deleteQuizQuestion(${q.id})">Delete</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <div style="margin-top:15px; display:flex; flex-direction:column; gap:10px;">
+                        <input type="text" id="new-quiz-question" class="input-text" placeholder="Type new question here..." ${!isAdmin ? 'disabled' : ''}>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="new-quiz-opt0" class="input-text" placeholder="Option A" ${!isAdmin ? 'disabled' : ''}>
+                            <input type="text" id="new-quiz-opt1" class="input-text" placeholder="Option B" ${!isAdmin ? 'disabled' : ''}>
+                            <input type="text" id="new-quiz-opt2" class="input-text" placeholder="Option C" ${!isAdmin ? 'disabled' : ''}>
+                            <select id="new-quiz-correct" class="input-text" style="max-width:150px; height:42px;" ${!isAdmin ? 'disabled' : ''}>
+                                <option value="0">A is Correct</option>
+                                <option value="1">B is Correct</option>
+                                <option value="2">C is Correct</option>
+                            </select>
+                        </div>
+                        <button class="btn" style="align-self:flex-start;" ${!isAdmin ? 'disabled' : ''} onclick="addQuizQuestion()">Add Question</button>
+                    </div>
+                `;
+            } else if (currentAcadTab === 'certs') {
+                html = `
+                    <div class="result-header">📜 Verified Completion Credentials</div>
+                    <table class="table-results" style="width:100%; margin-top:15px; font-size:0.85rem;">
+                        <thead>
+                            <tr><th>Serial ID</th><th>Student</th><th>Course</th><th>Date Issued</th><th>Status</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody>
+                            ${mockCertificates.map(c => `
+                                <tr>
+                                    <td><code>${c.id}</code></td>
+                                    <td><b>${c.student}</b></td>
+                                    <td>${c.course}</td>
+                                    <td>${c.date}</td>
+                                    <td><span style="color:#10b981; font-weight:700;">${c.status}</span></td>
+                                    <td>
+                                        <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.75rem; color:var(--accent-red); border-color:var(--accent-red);" ${!isAdmin ? 'disabled' : ''} onclick="revokeCertificate('${c.id}')">Revoke</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else if (currentAcadTab === 'reports') {
+                html = `
+                    <div class="result-header">📋 Incident Threat Reports & Audits</div>
+                    <table class="table-results" style="width:100%; margin-top:15px; font-size:0.85rem;">
+                        <thead>
+                            <tr><th>ID</th><th>Type</th><th>Trigger User</th><th>Incident Log</th><th>Date</th></tr>
+                        </thead>
+                        <tbody>
+                            ${mockReports.map(r => `
+                                <tr>
+                                    <td><code>${r.id}</code></td>
+                                    <td><span class="badge" style="background:#eab308;">${r.type}</span></td>
+                                    <td><b>${r.user}</b></td>
+                                    <td>${r.description}</td>
+                                    <td>${r.date}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <button class="btn" style="margin-top:15px;" onclick="window.print()">Export PDF Summary Report 📄</button>
+                `;
+            } else if (currentAcadTab === 'analytics') {
+                html = `
+                    <div class="result-header">📊 Global Performance Metrics & Analytics</div>
+                    <div style="display:flex; flex-direction:column; gap:15px; margin-top:15px;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#fff; font-weight:700;">
+                                <span>Global XP Accumulation rate</span>
+                                <span>85% (High Participation)</span>
+                            </div>
+                            <div style="height:8px; background:rgba(255,255,255,0.08); border-radius:4px; margin-top:5px; overflow:hidden;">
+                                <div style="height:100%; width:85%; background:#3b82f6;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#fff; font-weight:700;">
+                                <span>Daily Active Streak Retention</span>
+                                <span>70% (Engaged Users)</span>
+                            </div>
+                            <div style="height:8px; background:rgba(255,255,255,0.08); border-radius:4px; margin-top:5px; overflow:hidden;">
+                                <div style="height:100%; width:70%; background:#10b981;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.85rem; color:#fff; font-weight:700;">
+                                <span>Average Quiz Log Success Rate</span>
+                                <span>74% (Passed checks)</span>
+                            </div>
+                            <div style="height:8px; background:rgba(255,255,255,0.08); border-radius:4px; margin-top:5px; overflow:hidden;">
+                                <div style="height:100%; width:74%; background:#a855f7;"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (currentAcadTab === 'roles') {
+                html = `
+                    <div class="result-header">🔐 Role & Access Permission Matrix</div>
+                    <p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">Toggle default permissions globally for each system role:</p>
+                    <table class="table-results" style="width:100%; margin-top:15px; font-size:0.85rem;">
+                        <thead>
+                            <tr><th>System Role</th><th>Can Read Audit Files</th><th>Can Write Announcements</th><th>Can Launch Virtual Sandbox CLI</th><th>Can Revoke Credentials</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>Admin</b></td>
+                                <td>✅ Yes</td>
+                                <td>✅ Yes</td>
+                                <td>✅ Yes</td>
+                                <td>✅ Yes</td>
+                            </tr>
+                            <tr>
+                                <td><b>Faculty</b></td>
+                                <td>✅ Yes</td>
+                                <td>✅ Yes</td>
+                                <td>✅ Yes</td>
+                                <td>❌ No</td>
+                            </tr>
+                            <tr>
+                                <td><b>Student</b></td>
+                                <td>✅ Yes</td>
+                                <td>❌ No</td>
+                                <td>✅ Yes</td>
+                                <td>❌ No</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function toggleUserStatus(username) {
+            const user = mockUsers.find(u => u.username === username);
+            if (user) {
+                user.status = (user.status === 'Active' ? 'Banned' : 'Active');
+                renderAcadTabContent();
+            }
+        }
+        function promptEditPerms(username) {
+            const user = mockUsers.find(u => u.username === username);
+            if (user) {
+                const perms = prompt(`Edit permissions for ${username} (comma-separated):`, user.permissions.join(', '));
+                if (perms !== null) {
+                    user.permissions = perms.split(',').map(p => p.trim()).filter(Boolean);
+                    renderAcadTabContent();
+                }
+            }
+        }
+        function addNewUser() {
+            const name = document.getElementById('new-user-name').value.trim();
+            const role = document.getElementById('new-user-role').value;
+            if (!name) return;
+            mockUsers.push({
+                username: name,
+                role: role,
+                status: "Active",
+                permissions: role === 'admin' ? ["Read", "Write", "Execute"] : (role === 'faculty' ? ["Read", "Write"] : ["Read"])
+            });
+            document.getElementById('new-user-name').value = "";
+            renderAcadTabContent();
+        }
+        function deleteCourse(id) {
+            mockCourses = mockCourses.filter(c => c.id !== id);
+            renderAcadTabContent();
+        }
+        function addNewCourse() {
+            const id = document.getElementById('new-course-id').value.trim();
+            const title = document.getElementById('new-course-title').value.trim();
+            const duration = document.getElementById('new-course-duration').value.trim();
+            if (!id || !title) return;
+            mockCourses.push({ id, title, duration: duration || "4 Weeks", students: 0 });
+            renderAcadTabContent();
+        }
+        function toggleLabStatus(id) {
+            const lab = mockLabs.find(l => l.id === id);
+            if (lab) {
+                lab.status = (lab.status === 'ONLINE' ? 'OFFLINE' : 'ONLINE');
+                renderAcadTabContent();
+            }
+        }
+        function changeLabFlag(id) {
+            const lab = mockLabs.find(l => l.id === id);
+            if (lab) {
+                const newFlag = prompt(`Enter new flag value for ${lab.name}:`, lab.flag);
+                if (newFlag) {
+                    lab.flag = newFlag;
+                    renderAcadTabContent();
+                }
+            }
+        }
+        function deleteQuizQuestion(id) {
+            mockQuizQuestions = mockQuizQuestions.filter(q => q.id !== id);
+            renderAcadTabContent();
+        }
+        function addQuizQuestion() {
+            const qText = document.getElementById('new-quiz-question').value.trim();
+            const opt0 = document.getElementById('new-quiz-opt0').value.trim();
+            const opt1 = document.getElementById('new-quiz-opt1').value.trim();
+            const opt2 = document.getElementById('new-quiz-opt2').value.trim();
+            const correct = parseInt(document.getElementById('new-quiz-correct').value);
+            if (!qText || !opt0 || !opt1 || !opt2) return;
+            const nextId = mockQuizQuestions.length > 0 ? Math.max(...mockQuizQuestions.map(q => q.id)) + 1 : 1;
+            mockQuizQuestions.push({ id: nextId, question: qText, options: [opt0, opt1, opt2], correct });
+            renderAcadTabContent();
+        }
+        function revokeCertificate(id) {
+            mockCertificates = mockCertificates.filter(c => c.id !== id);
+            renderAcadTabContent();
+        }
+
+        // ==========================================
+        // OWASP TOP 10 INTERACTIVE COURSE ENGINE
+        // ==========================================
+        let owaspUnlocked = {
+            a01: true,
+            a02: false,
+            a03: false,
+            a04: false,
+            a05: false,
+            a06: false,
+            a07: false,
+            a08: false,
+            a09: false,
+            a10: false
         };
 
-        async function loadStudyMaterial(fileName) {
-            const viewer = document.getElementById('study-material-viewer');
-            if (!viewer) return;
-            viewer.innerHTML = "<div>Loading study guide file...</div>";
-            try {
-                const response = await fetch(`/api/materials/${fileName}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    
-                    // Simple Markdown parser
-                    let html = data.content
-                        .replace(/^# (.*$)/gim, '<h3 style="color:#3b82f6; font-weight:800; margin-bottom:10px;">$1</h3>')
-                        .replace(/^## (.*$)/gim, '<h4 style="color:#fff; margin-top:15px; margin-bottom:5px;">$1</h4>')
-                        .replace(/^\- (.*$)/gim, '<li style="margin-left:15px; color:#cbd5e1;">$1</li>')
-                        .replace(/`(.*?)`/gim, '<code style="background:rgba(255,255,255,0.08); padding:2px 6px; border-radius:4px; font-family:monospace; color:#3b82f6;">$1</code>')
-                        .replace(/\n/g, "<br>");
-                    
-                    viewer.innerHTML = `<div style="text-align:left;">${html}</div>`;
-                } else {
-                    viewer.innerHTML = `<div style="color:var(--accent-red);">Failed to retrieve material details.</div>`;
-                }
-            } catch (err) {
-                viewer.innerHTML = `<div style="color:var(--accent-red);">System connection error. File offline.</div>`;
+        try {
+            const saved = localStorage.getItem('owasp_unlocked_status');
+            if (saved) {
+                owaspUnlocked = JSON.parse(saved);
             }
-        }
+        } catch(e) {}
 
-        function changeCyberLabTarget() {
-            cyberlabActiveLab = document.getElementById('cyberlab-active-target').value;
-            resetCyberLabTerminal();
-        }
-
-        function resetCyberLabTerminal() {
-            if (!cyberlabTermOutput) return;
-            const config = CYBERLAB_CONFIGS[cyberlabActiveLab];
-            cyberlabTermOutput.innerHTML = `<div>${config.welcome}</div><div>student-hacker@kali:~$</div>`;
-            document.getElementById('cyberlab-flag-input').value = "";
-            document.getElementById('cyberlab-flag-feedback').style.display = "none";
-        }
-
-        function cyberLabWalkthrough() {
-            const config = CYBERLAB_CONFIGS[cyberlabActiveLab];
-            alert(`CyberLab Solution walkthrough:\nActive Flag value is: ${config.flag}`);
-        }
-
-        function submitCyberLabFlag() {
-            const val = document.getElementById('cyberlab-flag-input').value.trim();
-            const config = CYBERLAB_CONFIGS[cyberlabActiveLab];
-            const feedback = document.getElementById('cyberlab-flag-feedback');
-            
-            if (val === config.flag) {
-                feedback.style.color = "#10b981";
-                feedback.textContent = "✓ CORRECT FLAG! +200 XP and +50 Coins awarded.";
-                feedback.style.display = "block";
-
-                // Update UI XP
-                let currentXp = parseInt(document.getElementById('cyberlab-xp').textContent.replace(/,/g, "")) || 0;
-                currentXp += 200;
-                document.getElementById('cyberlab-xp').textContent = currentXp.toLocaleString() + " XP";
-            } else {
-                feedback.style.color = "var(--accent-red)";
-                feedback.textContent = "✗ INVALID FLAG. Try inspecting active file directories.";
-                feedback.style.display = "block";
-            }
-        }
-
-        function switchTermTab(tabNum) {
-            cyberlabTermTab = tabNum;
-            const tab1 = document.getElementById('term-tab-1');
-            const tab2 = document.getElementById('term-tab-2');
-            if (tabNum === 1) {
-                tab1.className = "btn";
-                tab1.style.background = "#3b82f6";
-                tab2.className = "btn btn-secondary";
-                tab2.style.background = "none";
-            } else {
-                tab2.className = "btn";
-                tab2.style.background = "#3b82f6";
-                tab1.className = "btn btn-secondary";
-                tab1.style.background = "none";
-            }
-            if (cyberlabTermOutput) {
-                cyberlabTermOutput.innerHTML += `<div>Switched terminal viewport context to T${tabNum} session.</div><div>student-hacker@kali:~$</div>`;
-            }
-        }
-
-        function pasteToTerminal(cmd) {
-            const input = document.getElementById('cyberlab-terminal-input');
-            if (input) {
-                input.value = cmd;
-                handleCyberLabCommand();
-            }
-        }
-
-        function handleCyberLabCommand() {
-            const input = document.getElementById('cyberlab-terminal-input');
-            if (!input || !cyberlabTermOutput) return;
-            const cmd = input.value.trim();
-            if (!cmd) return;
-
-            // Append cmd log
-            const log = document.createElement('div');
-            log.style.color = "#3b82f6";
-            log.textContent = `student-hacker@kali:~$ ${cmd}`;
-            cyberlabTermOutput.appendChild(log);
-
-            const reply = document.createElement('div');
-            reply.style.marginTop = "3px";
-            reply.style.marginBottom = "8px";
-
-            const parts = cmd.toLowerCase().split(/\s+/);
-            const action = parts[0];
-            const target = parts[1] || "";
-
-            const config = CYBERLAB_CONFIGS[cyberlabActiveLab];
-
-            if (action === "help") {
-                reply.innerHTML = "Commands list:<br>• <b>ls</b> - List sandbox files<br>• <b>cat [file]</b> - View file data<br>• <b>whoami</b> - Print identity<br>• <b>clear</b> - Clear terminal logs";
-            } else if (action === "clear") {
-                cyberlabTermOutput.innerHTML = "<div>student-hacker@kali:~$</div>";
-                input.value = "";
-                return;
-            } else if (action === "whoami") {
-                reply.textContent = currentUsername || "student-hacker";
-            } else if (action === "ls") {
-                reply.innerHTML = Object.keys(config.files).map(f => `<span style="color:#3b82f6;">${f}</span>`).join(" &nbsp; ");
-            } else if (action === "cat") {
-                if (!target) {
-                    reply.textContent = "Usage: cat [filename]";
-                } else if (config.files[target]) {
-                    reply.textContent = config.files[target];
-                } else {
-                    reply.textContent = `cat: ${target}: File not found.`;
-                }
-            } else if (cmd.includes("' or 1=1") || cmd.includes('" or 1=1') || cmd.includes("or 1=1 --")) {
-                if (cyberlabActiveLab === "web") {
-                    reply.innerHTML = `<b style="color:#10b981;">BYPASS SUCCESSFUL! Flag: NCAS{sqli_bypass_flag}</b>`;
-                } else {
-                    reply.textContent = "SQL parsing error: active machine database does not support parameters.";
-                }
-            } else if (cmd === "sudo -l") {
-                if (cyberlabActiveLab === "linux") {
-                    reply.innerHTML = `student-hacker NOPASSWD: /usr/bin/cat /root/flag.txt<br>Run "cat flag.txt" to read root flag.`;
-                } else {
-                    reply.textContent = "Sudo rights verification failed: credentials missing.";
-                }
-            } else {
-                reply.textContent = `bash: ${action}: command not found. Type 'help' for details.`;
-            }
-
-            cyberlabTermOutput.appendChild(reply);
-            cyberlabTermOutput.scrollTop = cyberlabTermOutput.scrollHeight;
-            input.value = "";
-        }
-
-        function answerCyberLabQuiz(isCorrect, element) {
-            const feedback = document.getElementById('cyberlab-quiz-feedback');
-            if (!feedback) return;
-            
-            document.querySelectorAll('#cyberlab-quiz-options button').forEach(b => {
-                b.disabled = true;
-            });
-
-            if (isCorrect) {
-                element.style.borderColor = "#10b981";
-                element.style.background = "rgba(16,185,129,0.15)";
-                feedback.style.color = "#10b981";
-                feedback.textContent = "Correct answer! +50 XP and +10 Coins.";
-            } else {
-                element.style.borderColor = "var(--accent-red)";
-                element.style.background = "rgba(239,68,68,0.15)";
-                feedback.style.color = "var(--accent-red)";
-                feedback.textContent = "Incorrect. Correct option: B) OR 1=1";
-            }
-            feedback.style.display = "block";
-        }
-
-        async function askTutorConcept(concept) {
-            const input = document.getElementById('tutor-user-input');
-            if (input) {
-                input.value = concept;
-                sendTutorQuestion();
-            }
-        }
-
-        async function sendTutorQuestion() {
-            const input = document.getElementById('tutor-user-input');
-            const dialog = document.getElementById('tutor-dialog-box');
-            if (!input || !dialog) return;
-
-            const doubt = input.value.trim();
-            if (!doubt) return;
-
-            // Log question
-            dialog.innerHTML += `<div style="color:#3b82f6; margin-top:10px;"><b>You:</b> ${doubt}</div>`;
-            dialog.innerHTML += `<div style="color:#10b981; margin-top:5px;" id="tutor-temp-loading"><b>AI Tutor:</b> Thinking...</div>`;
-            dialog.scrollTop = dialog.scrollHeight;
-            input.value = "";
-
-            try {
-                // Query system API directly
-                const api_url = geminiApiKey ? 
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}` :
-                    `https://text.pollinations.ai/User: ${encodeURIComponent(doubt)}`;
-
-                const response = await fetch(api_url, geminiApiKey ? {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: `Answer cybersecurity student doubt concisely: ${doubt}` }] }] })
-                } : {});
-
-                let answer = "I am currently experiencing connection constraints. Please query my backend offline.";
-                if (response.ok) {
-                    if (geminiApiKey) {
-                        const data = await response.json();
-                        answer = data.candidates[0].content.parts[0].text;
+        function updateOwaspSidebar() {
+            for (let i = 1; i <= 10; i++) {
+                const code = `a${String(i).padStart(2, '0')}`;
+                const el = document.getElementById(`nav-owasp-${code}`);
+                if (el) {
+                    if (owaspUnlocked[code]) {
+                        el.classList.remove('locked');
+                        el.innerHTML = `🔓 A${String(i).padStart(2, '0')}: ${getOwaspShortName(code)}`;
                     } else {
-                        answer = await response.text();
+                        el.classList.add('locked');
+                        el.innerHTML = `🔒 A${String(i).padStart(2, '0')}: ${getOwaspShortName(code)}`;
                     }
                 }
-
-                const loading = document.getElementById('tutor-temp-loading');
-                if (loading) loading.remove();
-
-                dialog.innerHTML += `<div style="color:#a855f7; margin-top:10px;"><b>AI Tutor:</b> ${answer}</div>`;
-            } catch (err) {
-                const loading = document.getElementById('tutor-temp-loading');
-                if (loading) loading.remove();
-                dialog.innerHTML += `<div style="color:var(--accent-red); margin-top:10px;"><b>AI Tutor:</b> Failed to contact learning models.</div>`;
             }
-            dialog.scrollTop = dialog.scrollHeight;
         }
 
-        function printCyberLabCert() {
-            const nameEl = document.getElementById('cyberlab-cert-student-name');
-            if (nameEl && currentUsername) {
-                nameEl.textContent = currentUsername.toUpperCase();
+        function getOwaspShortName(code) {
+            const names = {
+                a01: "Broken Access",
+                a02: "Crypto Failures",
+                a03: "Injection",
+                a04: "Insecure Design",
+                a05: "Security Misconfig",
+                a06: "Outdated Components",
+                a07: "Auth Failures",
+                a08: "Integrity Failures",
+                a09: "Logging Failures",
+                a10: "SSRF Target"
+            };
+            return names[code] || "";
+        }
+
+        function switchOwaspPanel(code) {
+            if (!owaspUnlocked[code]) {
+                alert("This vulnerability is currently locked! Please complete the previous vulnerabilities first.");
+                return;
             }
-            window.print();
+            switchPanel(`owasp-${code}`);
+            document.querySelectorAll('.owasp-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-owasp-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        function verifyOwaspA01T1() {
+            const val = document.getElementById('owasp-a01-t1-input').value.trim();
+            const out = document.getElementById('owasp-a01-t1-output');
+            out.style.display = "block";
+            if (val === "100") {
+                out.innerHTML = `<span style="color:#10b981;">✓ Success! Administrator Profile Loaded.<br><b>Flag Found:</b> NCAS{idor_admin_priv_bypass}</span>`;
+            } else {
+                out.innerHTML = `<span style="color:var(--accent-red);">✗ Access Denied for User ID ${val}. Profile not found.</span>`;
+            }
+        }
+        function verifyOwaspA01T2() {
+            const val = document.getElementById('owasp-a01-t2-input').value.trim();
+            const out = document.getElementById('owasp-a01-t2-output');
+            out.style.display = "block";
+            if (val === "../../etc/passwd" || val === "../../../etc/passwd") {
+                out.innerHTML = `<span style="color:#10b981;">✓ Success! Reading system credentials...<br><b>Flag Found:</b> NCAS{path_traversal_etc_passwd}</span>`;
+            } else {
+                out.innerHTML = `<span style="color:var(--accent-red);">✗ Error: File '${val}' not found or permission denied.</span>`;
+            }
+        }
+
+        function verifyOwaspA02T1() {
+            const val = document.getElementById('owasp-a02-t1-input').value.trim().toLowerCase();
+            const out = document.getElementById('owasp-a02-t1-output');
+            out.style.display = "block";
+            if (val === "test") {
+                out.innerHTML = `<span style="color:#10b981;">✓ Correct! Hash decrypted successfully.<br><b>Flag Found:</b> NCAS{md5_cracked_weak_hashing}</span>`;
+            } else {
+                out.innerHTML = `<span style="color:var(--accent-red);">✗ Mismatch. Provided plaintext does not produce hash.</span>`;
+            }
+        }
+
+        function verifyOwaspA03T1() {
+            const user = document.getElementById('owasp-a03-t1-user').value.trim();
+            const out = document.getElementById('owasp-a03-t1-output');
+            out.style.display = "block";
+            if (user.includes("' or 1=1") || user.includes('" or 1=1') || user.includes("or 1=1 --")) {
+                out.innerHTML = `<span style="color:#10b981;">✓ Authentication Bypass Successful! Logged in as administrator.<br><b>Flag Found:</b> NCAS{sqli_auth_bypass_success}</span>`;
+            } else {
+                out.innerHTML = `<span style="color:var(--accent-red);">✗ Invalid credentials. database query returned empty set.</span>`;
+            }
+        }
+
+        function verifyOwaspA04T1() {
+            const val = document.getElementById('owasp-a04-t1-input').value.trim().toLowerCase();
+            const out = document.getElementById('owasp-a04-t1-output');
+            out.style.display = "block";
+            if (val === "dashboard" || val === "/dashboard") {
+                out.innerHTML = `<span style="color:#10b981;">✓ Redirecting to Account Dashboard (MFA Bypassed!).<br><b>Flag Found:</b> NCAS{mfa_route_bypass_design}</span>`;
+            } else {
+                out.innerHTML = `<span style="color:var(--accent-red);">✗ Navigation Error: Endpoint '${val}' does not bypass MFA logic.</span>`;
+            }
+        }
+
+        function verifyOwaspA05T1() {
+            const val = document.getElementById('owasp-a05-t1-input').value.trim().toLowerCase();
+            const out = document.getElementById('owasp-a05-t1-output');
+            out.style.display = "block";
+            if (val === "/backup" || val === "/backup/" || val === "backup") {
+                out.innerHTML = `<span style="color:#10b981;">✓ Directory listing loaded: database_backup.sql found.<br><b>Flag Found:</b> NCAS{exposed_backup_directory_index}</span>`;
+            } else {
+                out.innerHTML = `<span style="color:var(--accent-red);">✗ 404: directory listing disabled for path '${val}'.</span>`;
+            }
+        }
+
+        function verifyOwaspA06T1() {
+            const val = document.getElementById('owasp-a06-t1-input').value.trim();
+            const out = document.getElementById('owasp-a06-t1-output');
+            out.style.display = "block";
+            if (val === "2.14.0") {
+                out.innerHTML = `<span style="color:#10b981;">✓ Match! Log4j 2.14.0 is vulnerable to CVE-2021-44228.<br><b>Flag Found:</b> NCAS{outdated_log4j_vulnerability}</span>`;
+            } else {
+                out.innerHTML = `<span style="color:var(--accent-red);">✗ Audited version is clean. Choose another dependency.</span>`;
+            }
+        }
+
+        function verifyOwaspA07T1() {
+            const val = document.getElementById('owasp-a07-t1-input').value.trim();
+            const out = document.getElementById('owasp-a07-t1-output');
+            out.style.display = "block";
+            if (val === "admin@123") {
+                out.innerHTML = `<span style="color:#10b981;">✓ Login Success! Account compromised.<br><b>Flag Found:</b> NCAS{admin_brute_force_cracked}</span>`;
+            } else {
+                out.innerHTML = `<span style="color:var(--accent-red);">✗ Authentication check failed for password '${val}'.</span>`;
+            }
+        }
+
+        function verifyOwaspA08T1() {
+            const val = document.getElementById('owasp-a08-t1-input').value.trim().toUpperCase();
+            const out = document.getElementById('owasp-a08-t1-output');
+            out.style.display = "block";
+            if (val === "TAMPERED") {
+                out.innerHTML = `<span style="color:#10b981;">✓ Correct! Hash signatures mismatch (Package was tampered).<br><b>Flag Found:</b> NCAS{unverified_checksum_integrity_fail}</span>`;
+            } else {
+                out.innerHTML = `<span style="color:var(--accent-red);">✗ Incorrect assessment. Match expected and actual signatures closely.</span>`;
+            }
+        }
+
+        function verifyOwaspA09T1() {
+            const val = document.getElementById('owasp-a09-t1-input').value.trim();
+            const out = document.getElementById('owasp-a09-t1-output');
+            out.style.display = "block";
+            if (val === "192.168.1.80") {
+                out.innerHTML = `<span style="color:#10b981;">✓ Match! Suspicious attacker footprint discovered.<br><b>Flag Found:</b> NCAS{logging_alert_latencies_discovered}</span>`;
+            } else {
+                out.innerHTML = `<span style="color:var(--accent-red);">✗ This IP address exhibits legitimate session access patterns.</span>`;
+            }
+        }
+
+        function verifyOwaspA10T1() {
+            const val = document.getElementById('owasp-a10-t1-input').value.trim();
+            const out = document.getElementById('owasp-a10-t1-output');
+            out.style.display = "block";
+            if (val === "http://169.254.169.254/latest/meta-data/" || val === "http://169.254.169.254/latest/meta-data") {
+                out.innerHTML = `<span style="color:#10b981;">✓ SSRF Exploit Success! Leaking AWS Metadata...<br><b>Flag Found:</b> NCAS{ssrf_metadata_leakage}</span>`;
+            } else {
+                out.innerHTML = `<span style="color:var(--accent-red);">✗ Remote request to '${val}' returned standard 200 OK. No internal assets exposed.</span>`;
+            }
+        }
+
+        const OWASP_FLAGS = {
+            a01: "NCAS{idor_admin_priv_bypass}",
+            a02: "NCAS{md5_cracked_weak_hashing}",
+            a03: "NCAS{sqli_auth_bypass_success}",
+            a04: "NCAS{mfa_route_bypass_design}",
+            a05: "NCAS{exposed_backup_directory_index}",
+            a06: "NCAS{outdated_log4j_vulnerability}",
+            a07: "NCAS{admin_brute_force_cracked}",
+            a08: "NCAS{unverified_checksum_integrity_fail}",
+            a09: "NCAS{logging_alert_latencies_discovered}",
+            a10: "NCAS{ssrf_metadata_leakage}"
+        };
+
+        function solveOwaspVulnerability(code) {
+            const val = document.getElementById(`owasp-${code}-flag`).value.trim();
+            const feedback = document.getElementById(`owasp-${code}-feedback`);
+            if (!feedback) return;
+            feedback.style.display = "block";
+            if (val === OWASP_FLAGS[code]) {
+                feedback.style.color = "#10b981";
+                feedback.innerHTML = "✓ CORRECT FLAG! Earned +200 XP.";
+                const num = parseInt(code.replace('a', ''));
+                if (num < 10) {
+                    const nextCode = `a${String(num + 1).padStart(2, '0')}`;
+                    owaspUnlocked[nextCode] = true;
+                    try {
+                        localStorage.setItem('owasp_unlocked_status', JSON.stringify(owaspUnlocked));
+                    } catch(e) {}
+                    updateOwaspSidebar();
+                    feedback.innerHTML += `<br><span style="color:#06b6d4;">Next vulnerability unlocked: ${getOwaspShortName(nextCode)}!</span>`;
+                } else {
+                    feedback.innerHTML += `<br><span style="color:#eab308;">🎉 Congratulations! You solved all OWASP Top 10 vulnerabilities!</span>`;
+                }
+            } else {
+                feedback.style.color = "var(--accent-red)";
+                feedback.textContent = "✗ INVALID FLAG. Solve all tasks to recover the correct flag.";
+            }
         }
 
         injectBackToHubButtons();
+        updateOwaspSidebar();
         toggleAuthMode('login'); // Ensure auth overlay button and fields are initialized!
     </script>
 </body>
