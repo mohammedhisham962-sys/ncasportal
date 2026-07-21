@@ -10,8 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Camera Scanner Library -->
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-    <!-- Puter.js keyless AI client -->
-    <script src="https://js.puter.com/v2/"></script>
     <style>
         :root {
             --bg-dark: #f8fafc;
@@ -2547,19 +2545,45 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             modal.style.display = modal.style.display === 'none' ? 'block' : 'none';
         }
 
-        function saveGeminiKey() {
+        async function saveGeminiKey() {
             const keyVal = document.getElementById('gemini-api-key').value.trim();
             if (!keyVal) return alert("Please enter a valid API Key.");
             localStorage.setItem('gemini_api_key', keyVal);
             geminiApiKey = keyVal;
-            alert("Gemini 1.5 API Key saved successfully! Real-world AI Mode active.");
+            
+            try {
+                const response = await fetch('/api/save_config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gemini_api_key: keyVal })
+                });
+                if (response.ok) {
+                    alert("Gemini 1.5 API Key saved successfully to server and browser! Real-world AI Mode active for all users.");
+                } else {
+                    const err = await response.json();
+                    alert("Saved to browser local storage. Server save note: " + (err.detail || "failed to save to server."));
+                }
+            } catch(e) {
+                console.warn("Failed to contact server to save API Key:", e);
+                alert("Gemini 1.5 API Key saved successfully to browser local storage! Real-world AI Mode active for this device.");
+            }
             toggleGeminiSettings();
         }
 
-        function clearGeminiKey() {
+        async function clearGeminiKey() {
             localStorage.removeItem('gemini_api_key');
             geminiApiKey = '';
             document.getElementById('gemini-api-key').value = '';
+            
+            try {
+                await fetch('/api/save_config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gemini_api_key: '' })
+                });
+            } catch(e) {
+                console.warn("Failed to contact server to clear API Key:", e);
+            }
             alert("API Key cleared. AI Agent running in local fallback simulation mode.");
             toggleGeminiSettings();
         }
@@ -5015,25 +5039,6 @@ SHA-1:    ${sha1Hex}
                     speakText(offlineReply);
                 }
             } else {
-                // Hit Puter.js client-side SDK first if online (Free, Keyless, Fast GPT models)
-                if (navigator.onLine && typeof puter !== 'undefined') {
-                    try {
-                        const promptText = `${activeSystemInstructions}\n\nUser Question: ${userMsg}`;
-                        const reply = await puter.ai.chat(promptText);
-                        
-                        CHAT_CACHE[cacheKey] = reply; // Cache response
-
-                        let formatted = applySpecializedFormatting(reply);
-                        const safeSpeechContent = reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
-                        assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
-                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-                        speakText(reply);
-                        return;
-                    } catch(e) {
-                        console.warn("Puter.js direct query failed, trying local backend /api/chat...", e);
-                    }
-                }
-
                 // Hit local backend chat proxy
                 try {
                     const response = await fetch('/api/chat', {

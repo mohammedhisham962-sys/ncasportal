@@ -27,6 +27,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Load Gemini API Key from config.json on startup
+try:
+    if os.path.exists("config.json"):
+        with open("config.json", "r", encoding="utf-8") as f:
+            config = json.load(f)
+            if config.get("GEMINI_API_KEY"):
+                os.environ["GEMINI_API_KEY"] = config["GEMINI_API_KEY"]
+except Exception as e:
+    print(f"Failed to load config.json on startup: {e}")
+
 # SMTP Email Alert Configurations
 SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
@@ -1549,17 +1559,77 @@ def generate_offline_reply(user_msg: str) -> str:
         f"2. **Log Monitoring**: Enable detailed audit logs on local endpoints to detect anomalies.\n"
         f"3. **Network Isolation**: Segment internal assets using VLANs and local firewall zones to contain lateral movement."
     )
+# Save API key to config.json
+class ConfigSaveRequest(BaseModel):
+    gemini_api_key: str
 
-# Chat assistant (Free Backend LLM + Local Heuristics Generative Routing)
+@app.post("/api/save_config")
+async def save_config(request: ConfigSaveRequest):
+    key = request.gemini_api_key.strip()
+    if key and not key.startswith("AIzaSy"):
+        raise HTTPException(status_code=400, detail="Invalid Google API Key format.")
+    try:
+        if not key:
+            if os.path.exists("config.json"):
+                with open("config.json", "w", encoding="utf-8") as f:
+                    json.dump({"GEMINI_API_KEY": ""}, f)
+            os.environ.pop("GEMINI_API_KEY", None)
+            return {"status": "success", "message": "API Key cleared from server."}
+        else:
+            with open("config.json", "w", encoding="utf-8") as f:
+                json.dump({"GEMINI_API_KEY": key}, f)
+            os.environ["GEMINI_API_KEY"] = key
+            return {"status": "success", "message": "API Key saved to server successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save configuration: {str(e)}")
+
+async def query_gemini_api(user_msg: str, api_key: str) -> Optional[str]:
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    headers = {"Content-Type": "application/json"}
+    body = {
+        "contents": [
+            {
+                "parts": [
+                    {"text": "You are Natasha, an AI cybersecurity assistant.\n\nUser Question: " + user_msg}
+                ]
+            }
+        ]
+    }
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(body).encode("utf-8"),
+        headers=headers,
+        method="POST"
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=12) as response:
+            res_data = json.loads(response.read().decode("utf-8"))
+            return res_data["candidates"][0]["content"]["parts"][0]["text"]
+    except Exception as e:
+        print(f"[GEMINI BACKEND ERROR]: {e}")
+        return None
+
+# Chat assistant (Backend Gemini API + Heuristics Fallback)
 @app.post("/api/chat")
 async def chat_assistant(request: ChatRequest):
     user_msg = request.message.strip()
     
-    # 1. Query the Free Backend LLM (Pollinations AI)
-    llm_reply = await query_free_llm(user_msg)
-    if llm_reply:
-        return {"reply": llm_reply, "offline": False}
-        
+    # 1. Try backend-configured Gemini API Key first
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        try:
+            if os.path.exists("config.json"):
+                with open("config.json", "r", encoding="utf-8") as f:
+                    config = json.load(f)
+                    api_key = config.get("GEMINI_API_KEY")
+        except Exception:
+            pass
+            
+    if api_key:
+        gemini_reply = await query_gemini_api(user_msg, api_key)
+        if gemini_reply:
+            return {"reply": gemini_reply, "offline": False}
+
     # 2. Heuristics fallback database (Generates active responses offline)
     reply = generate_offline_reply(user_msg)
     return {"reply": reply, "offline": True}
