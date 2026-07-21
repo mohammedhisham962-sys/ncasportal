@@ -1549,15 +1549,16 @@ def generate_offline_reply(user_msg: str) -> str:
         
     # Extract main topic words to generate customized advice
     words = [w.strip("?,.!") for w in user_msg.split() if len(w) > 4]
-    keyword = words[0] if words else "Security Operation"
+    keyword = words[0] if words else "Security Operations"
     
     return (
-        f"### Offline AI Diagnostic Core - Active Security Analysis\n\n"
-        f"The **Aegis Local Core** has processed your query regarding: `{keyword}`.\n\n"
-        f"**Defensive Recommendations**:\n"
-        f"1. **Access Controls**: Restrict raw system access to this resource and enforce role-based authentication (RBAC).\n"
-        f"2. **Log Monitoring**: Enable detailed audit logs on local endpoints to detect anomalies.\n"
-        f"3. **Network Isolation**: Segment internal assets using VLANs and local firewall zones to contain lateral movement."
+        f"### 🛡️ Natasha AI Core - Security Diagnostic & Threat Analysis\n\n"
+        f"I have analyzed your query regarding **{keyword}**.\n\n"
+        f"**Key Defensive Recommendations**:\n"
+        f"1. **Access Controls & Least Privilege**: Restrict administrative system privileges and enforce strict role-based access control (RBAC) across all endpoints.\n"
+        f"2. **Continuous Monitoring & Audit Logging**: Enable real-time event monitoring and audit logs on local endpoints to detect anomalies instantly.\n"
+        f"3. **Network Isolation & Segmentation**: Segment internal network assets using VLANs, firewalls, and micro-segmentation to prevent lateral threat movement.\n"
+        f"4. **System Hardening & Patch Management**: Keep all operating systems, software packages, and security solutions updated with the latest patches."
     )
 # Save API key to config.json
 class ConfigSaveRequest(BaseModel):

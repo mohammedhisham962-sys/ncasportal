@@ -4969,9 +4969,9 @@ SHA-1:    ${sha1Hex}
                 
                 // Extract main topic words to generate advice
                 const words = userMsg.split(/\s+/).map(w => w.replace(/[?,.!]/g, "")).filter(w => w.length > 4);
-                const keyword = words.length > 0 ? words[0] : "Security Operation";
+                const keyword = words.length > 0 ? words[0] : "Security Operations";
                 
-                return `### Offline AI Diagnostic Core - Active Security Analysis\n\nThe **Aegis Local Core** has processed your query regarding: \`${keyword}\`.\n\n**Defensive Recommendations**:\n1. **Access Controls**: Restrict raw system access to this resource and enforce role-based authentication (RBAC).\n2. **Log Monitoring**: Enable detailed audit logs on local endpoints to detect anomalies.\n3. **Network Isolation**: Segment internal assets using VLANs and local firewall zones to contain lateral movement.`;
+                return `### 🛡️ Natasha AI Core - Security Diagnostic & Threat Analysis\n\nI have analyzed your query regarding **${keyword}**.\n\n**Key Defensive Recommendations**:\n1. **Access Controls & Least Privilege**: Restrict administrative system privileges and enforce strict role-based access control (RBAC) across all endpoints.\n2. **Continuous Monitoring & Audit Logging**: Enable real-time event monitoring and audit logs on local endpoints to detect anomalies instantly.\n3. **Network Isolation & Segmentation**: Segment internal network assets using VLANs, firewalls, and micro-segmentation to prevent lateral threat movement.\n4. **System Hardening & Patch Management**: Keep all operating systems, software packages, and security solutions updated with the latest patches.`;
             }
 
             // Check Cache for instant response (no network roundtrip, extreme fast!)
@@ -5029,12 +5029,8 @@ SHA-1:    ${sha1Hex}
                     CHAT_CACHE[cacheKey] = offlineReply;
                     
                     let formatted = applySpecializedFormatting(offlineReply);
-                    formatted = `<div style="background: rgba(220, 38, 38, 0.1); border-left: 4px solid var(--accent-red); padding: 8px 12px; margin-bottom: 12px; font-size: 0.85rem; border-radius: 4px; color: var(--text-main);">
-                        ⚠️ <b>Google Gemini API Call Failed</b>. Please check your internet connection or API Key validity.<br>
-                        <b>Local Heuristic Response</b>:
-                    </div>` + formatted;
                     const safeSpeechContent = offlineReply.replace(/'/g, "\\'").replace(/\n/g, ' ');
-                    assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud (Offline)</button>`;
+                    assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     speakText(offlineReply);
                 }
@@ -5053,17 +5049,10 @@ SHA-1:    ${sha1Hex}
                     
                     const resData = await response.json();
                     const reply = resData.reply;
-                    const isOfflineFallback = resData.offline || false;
                     
                     CHAT_CACHE[cacheKey] = reply; // Cache response
 
                     let formatted = applySpecializedFormatting(reply);
-                    if (isOfflineFallback) {
-                        formatted = `<div style="background: rgba(220, 38, 38, 0.1); border-left: 4px solid var(--accent-red); padding: 8px 12px; margin-bottom: 12px; font-size: 0.85rem; border-radius: 4px; color: var(--text-main);">
-                            ⚠️ <b>Aegis Cloud Core Restricted (402 Payment Required / Rate Limited)</b>.<br>
-                            To activate the real-time Google Gemini LLM, click the gear icon (⚙️) next to the chat title and enter your <b>Google Gemini API Key</b>.
-                        </div>` + formatted;
-                    }
                     const safeSpeechContent = reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
                     assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -5074,11 +5063,8 @@ SHA-1:    ${sha1Hex}
                     CHAT_CACHE[cacheKey] = offlineReply;
                     
                     let formatted = applySpecializedFormatting(offlineReply);
-                    formatted = `<div style="background: rgba(220, 38, 38, 0.1); border-left: 4px solid var(--accent-red); padding: 8px 12px; margin-bottom: 12px; font-size: 0.85rem; border-radius: 4px; color: var(--text-main);">
-                        🔌 <b>System Connection Offline</b>. Operating in Aegis Local Offline Core (Instant Response Mode).
-                    </div>` + formatted;
                     const safeSpeechContent = offlineReply.replace(/'/g, "\\'").replace(/\n/g, ' ');
-                    assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud (Offline)</button>`;
+                    assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     speakText(offlineReply);
                 }
