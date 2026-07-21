@@ -4956,8 +4956,7 @@ User: ${userMsg}`);
                     CHAT_CACHE[cacheKey] = responseText; // Cache response
 
                     let formatted = applySpecializedFormatting(responseText);
-                    const safeSpeechContent = responseText.replace(/'/g, "\'").replace(/
-/g, ' ');
+                    const safeSpeechContent = responseText.replace(/'/g, "\\'").replace(/\n/g, ' ');
                     assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     speakText(responseText);
