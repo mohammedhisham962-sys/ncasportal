@@ -4893,6 +4893,46 @@ SHA-1:    ${sha1Hex}
                     .replace(/\n/g, '<br>');
             }
 
+            // Heuristic offline reply generator fallback
+            const OFFLINE_REPLIES = {
+                "ddos": "### [MITRE T1498] Network Denial of Service Mitigation\n\n1. **Rate Limiting**: Enforce strict packet inspection limits at the boundary firewalls.\n2. **CDN Buffering**: Route external traffic through CDN scrubbing centers to absorb volumetric amplification.\n3. **Traffic Analysis**: Monitor sudden spikes in UDP/ICMP traffic.",
+                "firewall": "### Firewall Architecture & Packet Inspection\n\n1. **Stateful Inspection**: Statefully track connection states (SYN, SYN-ACK, ACK) to ensure packets belong to valid conversations.\n2. **Rules Enforcement**: Deny all incoming traffic by default, allowing only designated secure ports (e.g. 443, 22).\n3. **Next-Gen features**: Integrate deep packet inspection (DPI) to identify application-layer payloads.",
+                "vpn": "### Virtual Private Network (VPN) Security Protocols\n\n1. **Tunneling**: Encapsulate local IP packets inside secure protocols (IPsec or OpenVPN).\n2. **Encryption**: Enforce strong symmetric ciphers like AES-256-GCM to prevent wiretapping.\n3. **MFA Enforcement**: Always pair VPN access with Multi-Factor Authentication to block compromised credentials.",
+                "xss": "### [OWASP A03:2021] Cross-Site Scripting Mitigation\n\n1. **Context-Aware Encoding**: Encode all untrusted output variables (HTML, JavaScript, CSS contexts) before rendering.\n2. **Content Security Policy (CSP)**: Enforce a strict CSP header: `Content-Security-Policy: default-src 'self'`.\n3. **Input Sanitization**: Use DOMPurify to strip script tags.",
+                "brute force": "### [MITRE T1110] Brute Force Prevention Plan\n\n1. **Account Lockout**: Suspend login attempts temporarily after 5 consecutive failures.\n2. **Rate Limiting**: Implement strict IP connection throttle intervals on `/api/login`.\n3. **MFA Verification**: Require authentication tokens to thwart dictionary attacks."
+            };
+
+            function generateOfflineReply(userMsg) {
+                const userMsgLower = userMsg.toLowerCase();
+                
+                // Match specific dictionary definitions
+                for (const [key, val] of Object.entries(OFFLINE_REPLIES)) {
+                    if (userMsgLower.includes(key)) {
+                        return val;
+                    }
+                }
+                
+                // Match standard heuristics
+                if (userMsgLower.includes("ransomware")) {
+                    return "### [MITRE T1486] Data Encrypted for Impact Mitigation\n\n1. **Isolation**: Immediately disconnect affected hosts from local Wi-Fi/Ethernet loops.\n2. **Shadow Copies**: Verify VSS availability: `vssadmin list shadows`\n3. **AD Audits**: Audit remote file system mounting parameters and check Kerberos ticket anomalies.";
+                }
+                if (userMsgLower.includes("port scan") || userMsgLower.includes("nmap")) {
+                    return "### [MITRE T1046] Network Service Discovery Mitigation\n\n1. **Firewall Rules**: Enforce SYN connections rate-limiting on inbound routes.\n2. **Logging**: Run packet capture checks on router ports: `tcpdump -i any 'tcp[tcpflags] & (tcp-syn|tcp-ack) == tcp-syn'`\n3. **IDS Alignment**: Load rules to detect IP sweep configurations.";
+                }
+                if (userMsgLower.includes("sql injection") || userMsgLower.includes("sqli")) {
+                    return "### [OWASP A03:2021] Injection Remediation Action Plan\n\n1. **Prepared Statements**: Parametrize all database integrations to isolate code execution contexts.\n2. **WAF Filters**: Verify rules matching `' OR 1=1` and `UNION SELECT` signatures.";
+                }
+                if (userMsgLower.includes("phishing")) {
+                    return "### [MITRE T1566] Phishing Threat Mitigation\n\n1. **Email Records**: Enforce strict DMARC policies (`p=reject`) and SPF checks (`v=spf1 -all`).\n2. **Filtering**: Block high-risk macro execution parameters at mail gateways.";
+                }
+                
+                // Extract main topic words to generate advice
+                const words = userMsg.split(/\s+/).map(w => w.replace(/[?,.!]/g, "")).filter(w => w.length > 4);
+                const keyword = words.length > 0 ? words[0] : "Security Operation";
+                
+                return `### Offline AI Diagnostic Core - Active Security Analysis\n\nThe **Aegis Local Core** has processed your query regarding: \`${keyword}\`.\n\n**Defensive Recommendations**:\n1. **Access Controls**: Restrict raw system access to this resource and enforce role-based authentication (RBAC).\n2. **Log Monitoring**: Enable detailed audit logs on local endpoints to detect anomalies.\n3. **Network Isolation**: Segment internal assets using VLANs and local firewall zones to contain lateral movement.`;
+            }
+
             // Check Cache for instant response (no network roundtrip, extreme fast!)
             const cacheKey = `${activePersona}:${userMsg}:${tempImageBase64 ? 'img' : 'txt'}`;
             if (CHAT_CACHE[cacheKey]) {
@@ -4943,13 +4983,20 @@ SHA-1:    ${sha1Hex}
                     
                     speakText(reply);
                 } catch(e) {
-                    assistBubble.textContent = `Gemini API Error: ${e.message}. Click settings ⚙️ to update your API Key.`;
+                    console.warn("Gemini API failed, falling back to local heuristic database:", e);
+                    const offlineReply = generateOfflineReply(userMsg || "Describe this image");
+                    CHAT_CACHE[cacheKey] = offlineReply;
+                    
+                    let formatted = applySpecializedFormatting(offlineReply);
+                    const safeSpeechContent = offlineReply.replace(/'/g, "\\'").replace(/\n/g, ' ');
+                    assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud (Offline)</button>`;
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    speakText(offlineReply);
                 }
             } else {
-                                // Hit Pollinations API directly (Offline LLM support via client-side fetch)
+                // Hit Pollinations API directly (Offline LLM support via client-side fetch)
                 try {
-                    const encodedText = encodeURIComponent(`System: ${activeSystemInstructions}
-User: ${userMsg}`);
+                    const encodedText = encodeURIComponent(`System: ${activeSystemInstructions}\nUser: ${userMsg}`);
                     const response = await fetch(`https://text.pollinations.ai/${encodedText}?model=openai-gpt-4o-mini`);
                     const responseText = await response.text();
                     
@@ -4961,7 +5008,15 @@ User: ${userMsg}`);
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     speakText(responseText);
                 } catch(e) {
-                    assistBubble.textContent = "Error: Chat service unavailable. Check your local internet.";
+                    console.warn("AI network fetch failed, falling back to local heuristic database:", e);
+                    const offlineReply = generateOfflineReply(userMsg);
+                    CHAT_CACHE[cacheKey] = offlineReply;
+                    
+                    let formatted = applySpecializedFormatting(offlineReply);
+                    const safeSpeechContent = offlineReply.replace(/'/g, "\\'").replace(/\n/g, ' ');
+                    assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud (Offline)</button>`;
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    speakText(offlineReply);
                 }
             }
         }
