@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- Camera Scanner Library -->
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+    <!-- Puter.js keyless AI client -->
+    <script src="https://js.puter.com/v2/"></script>
     <style>
         :root {
             --bg-dark: #f8fafc;
@@ -4905,6 +4907,21 @@ SHA-1:    ${sha1Hex}
             function generateOfflineReply(userMsg) {
                 const userMsgLower = userMsg.toLowerCase();
                 
+                // Match Malayalam language request
+                if (userMsgLower.includes("malayalam") || userMsgLower.includes("മലയാളം")) {
+                    return "### 🌐 നടാഷ മലയാളം സുരക്ഷാ കോർ (Natasha Malayalam Security Core)\n\nതീർച്ചയായും, എനിക്ക് മലയാളത്തിൽ സംസാരിക്കാൻ കഴിയും! ഞാൻ **നടാഷ**, നിങ്ങളുടെ സൈബർ സുരക്ഷാ സഹായിയാണ്. \n\n**പ്രധാന നിർദ്ദേശങ്ങൾ (Key Recommendations)**:\n1. **ശക്തമായ രഹസ്യവാക്കുകൾ (Strong Passwords)**: എല്ലാ അക്കൗണ്ടുകൾക്കും വ്യത്യസ്തമായ പാസ്‌വേഡുകൾ ഉപയോഗിക്കുക, ഒപ്പം 2-ഘട്ട സുരക്ഷ (2FA) ആക്റ്റീവ് ചെയ്യുക.\n2. **സംശയാസ്പദമായ ലിങ്കുകൾ (Phishing Links)**: അപരിചിതമായ ഇമെയിലുകളോ സന്ദേശങ്ങളോ വഴിയുള്ള ലിങ്കുകളിൽ ക്ലിക്ക് ചെയ്യാതിരിക്കുക.\n3. **സോഫ്റ്റ്‌വെയർ അപ്‌ഡേറ്റുകൾ (Software Updates)**: നിങ്ങളുടെ സിസ്റ്റങ്ങളും ആപ്ലിക്കേഷനുകളും എപ്പോഴും പുതിയ പതിപ്പിലേക്ക് അപ്‌ഡേറ്റ് ചെയ്യുക.\n\nനിങ്ങൾക്ക് ആവശ്യമായ സുരക്ഷാ ചോദ്യം ചോദിക്കുക, ഞാൻ സഹായിക്കാം!";
+                }
+
+                // Match greetings
+                if (userMsgLower.includes("hello") || userMsgLower.includes("hi ") || userMsgLower === "hi" || userMsgLower.includes("hey")) {
+                    return "### 🛡️ NCAS Aegis System Core Active\n\nHello! I am **Natasha**, your advanced AI Security Assistant. How can I help protect your institutional network and digital assets today?";
+                }
+
+                // Match thanks
+                if (userMsgLower.includes("thank you") || userMsgLower.includes("thanks")) {
+                    return "### 🤝 Aegis Assistance Complete\n\nYou're very welcome! Security is a shared responsibility. Let me know if you need any other diagnostics or auditing help.";
+                }
+                
                 // Match specific dictionary definitions
                 for (const [key, val] of Object.entries(OFFLINE_REPLIES)) {
                     if (userMsgLower.includes(key)) {
@@ -4988,12 +5005,35 @@ SHA-1:    ${sha1Hex}
                     CHAT_CACHE[cacheKey] = offlineReply;
                     
                     let formatted = applySpecializedFormatting(offlineReply);
+                    formatted = `<div style="background: rgba(220, 38, 38, 0.1); border-left: 4px solid var(--accent-red); padding: 8px 12px; margin-bottom: 12px; font-size: 0.85rem; border-radius: 4px; color: var(--text-main);">
+                        ⚠️ <b>Google Gemini API Call Failed</b>. Please check your internet connection or API Key validity.<br>
+                        <b>Local Heuristic Response</b>:
+                    </div>` + formatted;
                     const safeSpeechContent = offlineReply.replace(/'/g, "\\'").replace(/\n/g, ' ');
                     assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud (Offline)</button>`;
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                     speakText(offlineReply);
                 }
             } else {
+                // Hit Puter.js client-side SDK first if online (Free, Keyless, Fast GPT models)
+                if (navigator.onLine && typeof puter !== 'undefined') {
+                    try {
+                        const promptText = `${activeSystemInstructions}\n\nUser Question: ${userMsg}`;
+                        const reply = await puter.ai.chat(promptText);
+                        
+                        CHAT_CACHE[cacheKey] = reply; // Cache response
+
+                        let formatted = applySpecializedFormatting(reply);
+                        const safeSpeechContent = reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
+                        assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        speakText(reply);
+                        return;
+                    } catch(e) {
+                        console.warn("Puter.js direct query failed, trying local backend /api/chat...", e);
+                    }
+                }
+
                 // Hit local backend chat proxy
                 try {
                     const response = await fetch('/api/chat', {
@@ -5008,10 +5048,17 @@ SHA-1:    ${sha1Hex}
                     
                     const resData = await response.json();
                     const reply = resData.reply;
+                    const isOfflineFallback = resData.offline || false;
                     
                     CHAT_CACHE[cacheKey] = reply; // Cache response
 
                     let formatted = applySpecializedFormatting(reply);
+                    if (isOfflineFallback) {
+                        formatted = `<div style="background: rgba(220, 38, 38, 0.1); border-left: 4px solid var(--accent-red); padding: 8px 12px; margin-bottom: 12px; font-size: 0.85rem; border-radius: 4px; color: var(--text-main);">
+                            ⚠️ <b>Aegis Cloud Core Restricted (402 Payment Required / Rate Limited)</b>.<br>
+                            To activate the real-time Google Gemini LLM, click the gear icon (⚙️) next to the chat title and enter your <b>Google Gemini API Key</b>.
+                        </div>` + formatted;
+                    }
                     const safeSpeechContent = reply.replace(/'/g, "\\'").replace(/\n/g, ' ');
                     assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud</button>`;
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -5022,6 +5069,9 @@ SHA-1:    ${sha1Hex}
                     CHAT_CACHE[cacheKey] = offlineReply;
                     
                     let formatted = applySpecializedFormatting(offlineReply);
+                    formatted = `<div style="background: rgba(220, 38, 38, 0.1); border-left: 4px solid var(--accent-red); padding: 8px 12px; margin-bottom: 12px; font-size: 0.85rem; border-radius: 4px; color: var(--text-main);">
+                        🔌 <b>System Connection Offline</b>. Operating in Aegis Local Offline Core (Instant Response Mode).
+                    </div>` + formatted;
                     const safeSpeechContent = offlineReply.replace(/'/g, "\\'").replace(/\n/g, ' ');
                     assistBubble.innerHTML = formatted + `<button onclick="speakText('${safeSpeechContent}', true)" style="background:none; border:none; color:var(--accent-red); cursor:pointer; font-size:0.85rem; margin-top:8px; display:block; font-weight:700;">🔊 Read Aloud (Offline)</button>`;
                     messagesContainer.scrollTop = messagesContainer.scrollHeight;

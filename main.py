@@ -1510,6 +1510,18 @@ OFFLINE_REPLIES = {
 def generate_offline_reply(user_msg: str) -> str:
     user_msg_lower = user_msg.lower()
     
+    # Match Malayalam language request
+    if "malayalam" in user_msg_lower or "മലയാളം" in user_msg_lower:
+        return "### 🌐 നടാഷ മലയാളം സുരക്ഷാ കോർ (Natasha Malayalam Security Core)\n\nതീർച്ചയായും, എനിക്ക് മലയാളത്തിൽ സംസാരിക്കാൻ കഴിയും! ഞാൻ **നടാഷ**, നിങ്ങളുടെ സൈബർ സുരക്ഷാ സഹായിയാണ്. \n\n**പ്രധാന നിർദ്ദേശങ്ങൾ (Key Recommendations)**:\n1. **ശക്തമായ രഹസ്യവാക്കുകൾ (Strong Passwords)**: എല്ലാ അക്കൗണ്ടുകൾക്കും വ്യത്യസ്തമായ പാസ്‌വേഡുകൾ ഉപയോഗിക്കുക, ഒപ്പം 2-ഘട്ട സുരക്ഷ (2FA) ആക്റ്റീവ് ചെയ്യുക.\n2. **സംശയാസ്പദമായ ലിങ്കുകൾ (Phishing Links)**: അപരിചിതമായ ഇമെയിലുകളോ സന്ദേശങ്ങളോ വഴിയുള്ള ലിങ്കുകളിൽ ക്ലിക്ക് ചെയ്യാതിരിക്കുക.\n3. **സോഫ്റ്റ്‌വെയർ അപ്‌ഡേറ്റുകൾ (Software Updates)**: നിങ്ങളുടെ സിസ്റ്റങ്ങളും ആപ്ലിക്കേഷനുകളും എപ്പോഴും പുതിയ പതിപ്പിലേക്ക് അപ്‌ഡേറ്റ് ചെയ്യുക.\n\nനിങ്ങൾക്ക് ആവശ്യമായ സുരക്ഷാ ചോദ്യം ചോദിക്കുക, ഞാൻ സഹായിക്കാം!"
+
+    # Match greetings
+    if "hello" in user_msg_lower or "hi " in user_msg_lower or user_msg_lower == "hi" or "hey" in user_msg_lower:
+        return "### 🛡️ NCAS Aegis System Core Active\n\nHello! I am **Natasha**, your advanced AI Security Assistant. How can I help protect your institutional network and digital assets today?"
+
+    # Match thanks
+    if "thank you" in user_msg_lower or "thanks" in user_msg_lower:
+        return "### 🤝 Aegis Assistance Complete\n\nYou're very welcome! Security is a shared responsibility. Let me know if you need any other diagnostics or auditing help."
+
     # Match specific dictionary definitions
     for key, val in OFFLINE_REPLIES.items():
         if key in user_msg_lower:
@@ -1546,11 +1558,11 @@ async def chat_assistant(request: ChatRequest):
     # 1. Query the Free Backend LLM (Pollinations AI)
     llm_reply = await query_free_llm(user_msg)
     if llm_reply:
-        return {"reply": llm_reply}
+        return {"reply": llm_reply, "offline": False}
         
     # 2. Heuristics fallback database (Generates active responses offline)
     reply = generate_offline_reply(user_msg)
-    return {"reply": reply}
+    return {"reply": reply, "offline": True}
 
 @app.get("/api/speedtest")
 async def get_speedtest_payload():
