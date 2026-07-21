@@ -188,6 +188,12 @@
             color: var(--text-muted);
             font-weight: 700;
             transition: all 0.3s;
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: inherit;
+            outline: none;
+            border-bottom: 3px solid transparent;
         }
 
         .auth-tab.active {
@@ -1091,8 +1097,8 @@
             <div class="auth-subtitle">CyberShield Systems</div>
 
             <div class="auth-tabs">
-                <div class="auth-tab active" id="tab-login" onclick="toggleAuthMode('login')">Sign In</div>
-                <div class="auth-tab" id="tab-signup" onclick="toggleAuthMode('signup')">Student Register</div>
+                <button class="auth-tab active" id="tab-login" onclick="toggleAuthMode('login')">Sign In</button>
+                <button class="auth-tab" id="tab-signup" onclick="toggleAuthMode('signup')">Student Register</button>
             </div>
 
             <div id="auth-error" style="color: var(--accent-red); font-size: 0.9rem; margin-bottom: 14px; display: none;"></div>
