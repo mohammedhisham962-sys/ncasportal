@@ -529,7 +529,7 @@ async def query_free_llm(prompt: str) -> Optional[str]:
     
     # URL encode system persona and user prompt
     encoded_text = urllib.parse.quote(f"System: {system_prompt}\nUser: {prompt}")
-    api_url = f"https://text.pollinations.ai/{encoded_text}?model=openai-gpt-4o-mini"
+    api_url = f"https://text.pollinations.ai/{encoded_text}"
     
     try:
         loop = asyncio.get_event_loop()
