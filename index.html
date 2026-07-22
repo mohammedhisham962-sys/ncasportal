@@ -1513,6 +1513,81 @@
                 Welcome to the student hands-on sandbox environment. Here you can execute vulnerability testing, complete learning paths, solve challenges, and earn verified academic certificates.
             </p>
 
+            <!-- STUDENT GAMIFICATION PROGRESS HEADER -->
+            <div style="background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 25px; backdrop-filter: blur(8px);">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px; margin-bottom: 15px;">
+                    <span style="font-size: 1.1rem; color: #fff; font-weight: 700; display: flex; align-items: center; gap: 8px;">🎯 Your Training Progress</span>
+                    <span style="font-size: 0.85rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 4px 10px; border-radius: 20px; font-weight: 600;" id="student-acad-rank">Rank: cadet_student</span>
+                </div>
+                
+                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div class="stat-card" style="padding: 12px; border-color: rgba(59, 130, 246, 0.1);">
+                        <span class="stat-num" id="student-xp-val" style="color: #3b82f6; font-size: 1.5rem;">0 XP</span>
+                        <span class="stat-label" style="font-size: 0.75rem;">Total Experience</span>
+                    </div>
+                    <div class="stat-card" style="padding: 12px; border-color: rgba(234, 179, 8, 0.1);">
+                        <span class="stat-num" id="student-coins-val" style="color: #eab308; font-size: 1.5rem;">0 Coins</span>
+                        <span class="stat-label" style="font-size: 0.75rem;">Training Coins</span>
+                    </div>
+                    <div class="stat-card" style="padding: 12px; border-color: rgba(168, 85, 247, 0.1);">
+                        <span class="stat-num" id="student-level-val" style="color: #a855f7; font-size: 1.5rem;">Lvl 1</span>
+                        <span class="stat-label" style="font-size: 0.75rem;">Current Rank</span>
+                    </div>
+                    <div class="stat-card" style="padding: 12px; border-color: rgba(249, 115, 22, 0.1);">
+                        <span class="stat-num" id="student-streak-val" style="color: #f97316; font-size: 1.5rem;">5 Days</span>
+                        <span class="stat-label" style="font-size: 0.75rem;">Daily Streak</span>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                    <!-- Missions and Challenges -->
+                    <div class="result-block" style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.05); margin-bottom: 0;">
+                        <div class="result-header" style="font-size: 0.85rem; color: #fff;">🏆 Active Training Missions</div>
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                            <div>
+                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+                                    <span>Weekly Mission: Complete Linux navigation tasks</span>
+                                    <span id="weekly-mission-progress">0%</span>
+                                </div>
+                                <div style="height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; margin-top: 4px; overflow: hidden;">
+                                    <div id="weekly-mission-bar" style="height: 100%; width: 0%; background: #3b82f6; transition: width 0.3s ease;"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+                                    <span>Monthly Challenge: Finish all 4 CyberLab Modules</span>
+                                    <span id="monthly-challenge-progress">0%</span>
+                                </div>
+                                <div style="height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; margin-top: 4px; overflow: hidden;">
+                                    <div id="monthly-challenge-bar" style="height: 100%; width: 0%; background: #10b981; transition: width 0.3s ease;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Badges & Achievements -->
+                    <div class="result-block" style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.05); margin-bottom: 0;">
+                        <div class="result-header" style="font-size: 0.85rem; color: #fff;">🏅 Unlocked Achievements & Badges</div>
+                        <div id="student-badges-container" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; font-size: 0.75rem;">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mini Leaderboard -->
+                <div class="result-block" style="background: rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.05); margin-bottom: 0; margin-top: 20px;">
+                    <div class="result-header" style="font-size: 0.85rem; color: #fff;">📈 Student Global Leaderboard</div>
+                    <table class="table-results" style="width: 100%; margin-top: 8px; font-size: 0.8rem;">
+                        <thead>
+                            <tr><th>Rank</th><th>Student Username</th><th>Total XP</th><th>Streak</th><th>Training Coins</th></tr>
+                        </thead>
+                        <tbody id="student-leaderboard-body">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <div class="hub-grid">
                 <div class="hub-card" onclick="switchOwaspPanel('a01')">
                     <div class="hub-card-icon">🔥</div>
@@ -8076,11 +8151,115 @@ SHA-1:    ${sha1Hex}
         }
 
         loadAcadState();
+        setTimeout(updateStudentGamificationDetails, 100);
+
+        function updateStudentGamificationDetails() {
+            const completedCount = cyberLabProgress.completedTasks.length;
+            const xp = completedCount * 100;
+            const coins = completedCount * 50;
+            const level = Math.floor(xp / 400) + 1;
+            const streak = "5 Days";
+
+            const xpEl = document.getElementById('student-xp-val');
+            const coinsEl = document.getElementById('student-coins-val');
+            const levelEl = document.getElementById('student-level-val');
+            const streakEl = document.getElementById('student-streak-val');
+            const rankEl = document.getElementById('student-acad-rank');
+
+            if (xpEl) xpEl.textContent = `${xp.toLocaleString()} XP`;
+            if (coinsEl) coinsEl.textContent = `${coins.toLocaleString()} Coins`;
+            if (levelEl) levelEl.textContent = `Lvl ${level}`;
+            if (streakEl) streakEl.textContent = streak;
+            if (rankEl) rankEl.textContent = `Username: ${currentUser || 'student_cadet'}`;
+
+            const didNav = cyberLabProgress.completedTasks.includes('linuxshell-nav');
+            const weeklyProgress = didNav ? 100 : 0;
+            const weeklyProgEl = document.getElementById('weekly-mission-progress');
+            const weeklyBarEl = document.getElementById('weekly-mission-bar');
+            if (weeklyProgEl) weeklyProgEl.textContent = `${weeklyProgress}%`;
+            if (weeklyBarEl) weeklyBarEl.style.width = `${weeklyProgress}%`;
+
+            const totalTasksCount = 16;
+            const monthlyProgress = Math.min(100, Math.floor((completedCount / totalTasksCount) * 100));
+            const monthlyProgEl = document.getElementById('monthly-challenge-progress');
+            const monthlyBarEl = document.getElementById('monthly-challenge-bar');
+            if (monthlyProgEl) monthlyProgEl.textContent = `${monthlyProgress}%`;
+            if (monthlyBarEl) monthlyBarEl.style.width = `${monthlyProgress}%`;
+
+            const badgesContainer = document.getElementById('student-badges-container');
+            if (badgesContainer) {
+                badgesContainer.innerHTML = "";
+                const badges = [];
+                
+                if (cyberLabProgress.completedTasks.includes('pass-dictionary') &&
+                    cyberLabProgress.completedTasks.includes('pass-brute') &&
+                    cyberLabProgress.completedTasks.includes('pass-hash') &&
+                    cyberLabProgress.completedTasks.includes('pass-stuffing')) {
+                    badges.push({ name: "Password Cracker 🔑", desc: "Completed Password Attacks" });
+                }
+                if (cyberLabProgress.completedTasks.includes('crypto-symmetric') &&
+                    cyberLabProgress.completedTasks.includes('crypto-asymmetric') &&
+                    cyberLabProgress.completedTasks.includes('crypto-hash') &&
+                    cyberLabProgress.completedTasks.includes('crypto-signature')) {
+                    badges.push({ name: "Crypto Specialist 🔒", desc: "Completed Cryptography" });
+                }
+                if (cyberLabProgress.completedTasks.includes('linuxshell-nav') &&
+                    cyberLabProgress.completedTasks.includes('linuxshell-ops') &&
+                    cyberLabProgress.completedTasks.includes('linuxshell-perm') &&
+                    cyberLabProgress.completedTasks.includes('linuxshell-triage')) {
+                    badges.push({ name: "Command Master 🐚", desc: "Completed Linux Command Shell" });
+                }
+                if (cyberLabProgress.completedTasks.includes('windows-files') &&
+                    cyberLabProgress.completedTasks.includes('windows-diag') &&
+                    cyberLabProgress.completedTasks.includes('windows-proc') &&
+                    cyberLabProgress.completedTasks.includes('windows-net')) {
+                    badges.push({ name: "Windows Auditor 🪟", desc: "Completed Windows Basics" });
+                }
+
+                if (badges.length === 0) {
+                    badgesContainer.innerHTML = `<span style="color:var(--text-muted);">No badges unlocked yet. Complete course modules to earn badges!</span>`;
+                } else {
+                    badges.forEach(b => {
+                        const badgeSpan = document.createElement('span');
+                        badgeSpan.style.background = "rgba(168, 85, 247, 0.15)";
+                        badgeSpan.style.color = "#c084fc";
+                        badgeSpan.style.border = "1px solid rgba(168, 85, 247, 0.3)";
+                        badgeSpan.style.padding = "4px 8px";
+                        badgeSpan.style.borderRadius = "4px";
+                        badgeSpan.style.fontWeight = "600";
+                        badgeSpan.title = b.desc;
+                        badgeSpan.textContent = b.name;
+                        badgesContainer.appendChild(badgeSpan);
+                    });
+                }
+            }
+
+            const studentLeaderboard = document.getElementById('student-leaderboard-body');
+            if (studentLeaderboard) {
+                const currentStudent = currentUser || 'student_cadet';
+                const rows = [
+                    { rank: 1, name: "buffer_bypass", xp: 1200, streak: "7 Days", coins: 600 },
+                    { rank: 2, name: currentStudent, xp: xp, streak: "5 Days", coins: coins },
+                    { rank: 3, name: "kali_master", xp: 200, streak: "1 Day", coins: 100 }
+                ];
+                rows.sort((a,b) => b.xp - a.xp);
+                studentLeaderboard.innerHTML = rows.map((r, idx) => `
+                    <tr style="${r.name === currentStudent ? 'background:rgba(59,130,246,0.1); font-weight:700; color:#fff;' : ''}">
+                        <td>${idx + 1}</td>
+                        <td><b>${r.name}</b> ${r.name === currentStudent ? ' (You)' : ''}</td>
+                        <td><span style="color:#3b82f6;">${r.xp.toLocaleString()} XP</span></td>
+                        <td>${r.streak}</td>
+                        <td><span style="color:#eab308;">${r.coins} Coins</span></td>
+                    </tr>
+                `).join('');
+            }
+        }
 
         function markTaskComplete(taskId, taskName) {
             if (!cyberLabProgress.completedTasks.includes(taskId)) {
                 cyberLabProgress.completedTasks.push(taskId);
                 saveAcadState();
+                updateStudentGamificationDetails();
                 checkCourseModuleCompletions();
             }
         }
