@@ -1208,6 +1208,54 @@
                 <li class="nav-item webcourse-item" id="nav-webcourse-cors" onclick="switchWebcoursePanel('cors')">🌐 CORS & Origins</li>
             </ul>
 
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('websec')">🛡️ Web App Security <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-websec">
+                <li class="nav-item websec-item" id="nav-websec-sqli" onclick="switchWebsecPanel('sqli')">🛡️ SQL Injection (SQLi)</li>
+                <li class="nav-item websec-item" id="nav-websec-xss" onclick="switchWebsecPanel('xss')">🛡️ Cross-Site Scripting (XSS)</li>
+                <li class="nav-item websec-item" id="nav-websec-csrf" onclick="switchWebsecPanel('csrf')">🛡️ Request Forgery (CSRF)</li>
+                <li class="nav-item websec-item" id="nav-websec-cmd" onclick="switchWebsecPanel('cmd')">🛡️ Command Injection</li>
+            </ul>
+
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('burp')">🟠 Burp Suite <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-burp">
+                <li class="nav-item burp-item" id="nav-burp-proxy" onclick="switchBurpPanel('proxy')">🟠 Proxy & Interception</li>
+                <li class="nav-item burp-item" id="nav-burp-intruder" onclick="switchBurpPanel('intruder')">🟠 Intruder & Brute Force</li>
+                <li class="nav-item burp-item" id="nav-burp-repeater" onclick="switchBurpPanel('repeater')">🟠 Repeater & Tampering</li>
+                <li class="nav-item burp-item" id="nav-burp-decoder" onclick="switchBurpPanel('decoder')">🟠 Decoder & Encoding</li>
+            </ul>
+
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('nmap')">🛡️ Nmap Scanner <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-nmap">
+                <li class="nav-item nmap-item" id="nav-nmap-syn" onclick="switchNmapPanel('syn')">🛡️ TCP SYN Scan (-sS)</li>
+                <li class="nav-item nmap-item" id="nav-nmap-version" onclick="switchNmapPanel('version')">🛡️ Service Detection (-sV)</li>
+                <li class="nav-item nmap-item" id="nav-nmap-os" onclick="switchNmapPanel('os')">🛡️ OS Detection (-O)</li>
+                <li class="nav-item nmap-item" id="nav-nmap-nse" onclick="switchNmapPanel('nse')">🛡️ NSE Vulnerability Scan</li>
+            </ul>
+
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('wireshark')">🦈 Wireshark Analyzer <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-wireshark">
+                <li class="nav-item wireshark-item" id="nav-wireshark-capture" onclick="switchWiresharkPanel('capture')">🦈 Capture & Filters</li>
+                <li class="nav-item wireshark-item" id="nav-wireshark-filter" onclick="switchWiresharkPanel('filter')">🦈 Display Filters</li>
+                <li class="nav-item wireshark-item" id="nav-wireshark-stream" onclick="switchWiresharkPanel('stream')">🦈 Follow TCP Stream</li>
+                <li class="nav-item wireshark-item" id="nav-wireshark-export" onclick="switchWiresharkPanel('export')">🦈 Export Objects</li>
+            </ul>
+
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('pass')">🔑 Password Attacks <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-pass">
+                <li class="nav-item pass-item" id="nav-pass-dictionary" onclick="switchPassPanel('dictionary')">🔑 Dictionary Attack</li>
+                <li class="nav-item pass-item" id="nav-pass-brute" onclick="switchPassPanel('brute')">🔑 Brute Force Attack</li>
+                <li class="nav-item pass-item" id="nav-pass-hash" onclick="switchPassPanel('hash')">🔑 Hash Cracking</li>
+                <li class="nav-item pass-item" id="nav-pass-stuffing" onclick="switchPassPanel('stuffing')">🔑 Credential Stuffing</li>
+            </ul>
+
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('crypto')">🔒 Cryptography <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-crypto">
+                <li class="nav-item crypto-item" id="nav-crypto-symmetric" onclick="switchCryptoPanel('symmetric')">🔒 Symmetric Encryption</li>
+                <li class="nav-item crypto-item" id="nav-crypto-asymmetric" onclick="switchCryptoPanel('asymmetric')">🔒 Asymmetric Handshake</li>
+                <li class="nav-item crypto-item" id="nav-crypto-hash" onclick="switchCryptoPanel('hash')">🔒 Hashing & Integrity</li>
+                <li class="nav-item crypto-item" id="nav-crypto-signature" onclick="switchCryptoPanel('signature')">🔒 Digital Signatures</li>
+            </ul>
+
             <li class="nav-category-header" onclick="toggleSidebarAccordion('linux')">🐧 Linux Bandit Levels <span class="accordion-arrow">▲</span></li>
             <ul class="nav-sub-list" id="sub-linux">
                 <li class="nav-item linux-item" id="nav-linux-lvl0" onclick="switchLinuxLevel('lvl0')">🔓 Level 0 → 1</li>
@@ -1216,6 +1264,14 @@
                 <li class="nav-item linux-item locked" id="nav-linux-lvl3" onclick="switchLinuxLevel('lvl3')">🔒 Level 3 → 4</li>
                 <li class="nav-item linux-item locked" id="nav-linux-lvl4" onclick="switchLinuxLevel('lvl4')">🔒 Level 4 → 5</li>
                 <li class="nav-item linux-item locked" id="nav-linux-lvl5" onclick="switchLinuxLevel('lvl5')">🔒 Level 5 → 6</li>
+            </ul>
+
+            <li class="nav-category-header" onclick="toggleSidebarAccordion('linuxshell')">🐚 Linux Command Shell <span class="accordion-arrow">▲</span></li>
+            <ul class="nav-sub-list" id="sub-linuxshell">
+                <li class="nav-item linuxshell-item" id="nav-linuxshell-nav" onclick="switchLinuxshellPanel('nav')">🐚 Shell Navigation</li>
+                <li class="nav-item linuxshell-item" id="nav-linuxshell-ops" onclick="switchLinuxshellPanel('ops')">🐚 File Operations</li>
+                <li class="nav-item linuxshell-item" id="nav-linuxshell-perm" onclick="switchLinuxshellPanel('perm')">🐚 Permissions & Exec</li>
+                <li class="nav-item linuxshell-item" id="nav-linuxshell-triage" onclick="switchLinuxshellPanel('triage')">🐚 System & Triage</li>
             </ul>
 
             <li class="nav-category-header" onclick="toggleSidebarAccordion('owasp')">🔥 OWASP Top 10 <span class="accordion-arrow">▲</span></li>
@@ -1487,6 +1543,41 @@
                     <div class="hub-card-icon">🕸️</div>
                     <div class="hub-card-title">Web Fundamentals</div>
                     <div class="hub-card-desc">Master client-server interactions, HTTP request methods, cookies, sessions, and web security models like CORS.</div>
+                </div>
+                <div class="hub-card" onclick="switchWebsecPanel('sqli')">
+                    <div class="hub-card-icon">🛡️</div>
+                    <div class="hub-card-title">Web Application Security</div>
+                    <div class="hub-card-desc">Practice defensive coding and hands-on exploits for OWASP Top 10 vulnerabilities (SQLi, XSS, CSRF, and Command Injection).</div>
+                </div>
+                <div class="hub-card" onclick="switchBurpPanel('proxy')">
+                    <div class="hub-card-icon">🟠</div>
+                    <div class="hub-card-title">Burp Suite</div>
+                    <div class="hub-card-desc">Master web request interception, payload modification, brute-forcing with Intruder, and Repeater replaying.</div>
+                </div>
+                <div class="hub-card" onclick="switchNmapPanel('syn')">
+                    <div class="hub-card-icon">🛡️</div>
+                    <div class="hub-card-title">Nmap Scanner</div>
+                    <div class="hub-card-desc">Conduct port scans, determine active service versions, fingerprint target OS kernels, and execute NSE vulnerability audit scripts.</div>
+                </div>
+                <div class="hub-card" onclick="switchWiresharkPanel('capture')">
+                    <div class="hub-card-icon">🦈</div>
+                    <div class="hub-card-title">Wireshark Analyzer</div>
+                    <div class="hub-card-desc">Audit real-time network packets, apply display query filters, follow TCP conversational streams, and export file attachments.</div>
+                </div>
+                <div class="hub-card" onclick="switchPassPanel('dictionary')">
+                    <div class="hub-card-icon">🔑</div>
+                    <div class="hub-card-title">Password Attacks</div>
+                    <div class="hub-card-desc">Practice dictionary credentials guessing, exhaust brute-force lock spaces, crack SHA-256 hashes, and conduct credential stuffing attacks.</div>
+                </div>
+                <div class="hub-card" onclick="switchCryptoPanel('symmetric')">
+                    <div class="hub-card-icon">🔒</div>
+                    <div class="hub-card-title">Cryptography</div>
+                    <div class="hub-card-desc">Master Caesar shift cipher decryption, simulate public/private RSA handshakes, verify SHA-256 integrity, and audit digital signatures.</div>
+                </div>
+                <div class="hub-card" onclick="switchLinuxshellPanel('nav')">
+                    <div class="hub-card-icon">🐚</div>
+                    <div class="hub-card-title">Linux Command Shell</div>
+                    <div class="hub-card-desc">Practice directory navigation, file copy/move tasks, chmod executable execution, and process kill operations inside an interactive Linux terminal.</div>
                 </div>
             </div>
         </div>
@@ -3226,6 +3317,1089 @@
             </div>
         </div>
 
+        <!-- WEB APPLICATION SECURITY PANELS -->
+        
+        <!-- SQL Injection (SQLi) -->
+        <div id="panel-websec-sqli" class="panel">
+            <h2 class="panel-title">🛡️ Web App Security: SQL Injection (SQLi)</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Understanding SQL Injection</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Happens when unsanitized user inputs are concatenated directly into SQL command strings instead of using parameterized queries.<br>
+                    • <b>Where</b>: Login authentication screens, product search searchbars, filter forms, and API route parameters.<br>
+                    • <b>How</b>: Attackers use delimiters like quotes (<code>'</code> or <code>"</code>) to escape query limits, appending tautological boolean conditions (e.g. <code>OR '1'='1</code>) to alter execution.<br>
+                    • <b>Defense</b>: Always use Prepared Statements (Parameterized Queries) to enforce data vs command separation.
+                </div>
+            </div>
+
+            <!-- Hands-on Lab -->
+            <div class="result-block" style="border-color:rgba(239,68,68,0.3); background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:var(--accent-red);">🧪 Vulnerable SQL Database Login Bypass Lab</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    Below is a login screen running this query: <br>
+                    <code style="color:#f43f5e; background:#1e1b4b; padding:2px 6px; border-radius:4px;">SELECT * FROM users WHERE username = '${username}' AND password = '${password}'</code>
+                </p>
+                
+                <div style="max-width:400px; background:#0f172a; padding:20px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); margin:15px 0;">
+                    <div style="margin-bottom:12px;">
+                        <label style="display:block; font-size:0.75rem; color:#94a3b8; margin-bottom:4px;">Username:</label>
+                        <input type="text" id="sqli-username" class="input-text" style="width:100%;" placeholder="e.g. admin">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <label style="display:block; font-size:0.75rem; color:#94a3b8; margin-bottom:4px;">Password:</label>
+                        <input type="password" id="sqli-password" class="input-text" style="width:100%;" placeholder="••••••••">
+                    </div>
+                    <button class="btn" style="width:100%; background:#ef4444;" onclick="submitSqliLab()">Authenticate Login</button>
+                </div>
+                
+                <div id="sqli-lab-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Cross-Site Scripting (XSS) -->
+        <div id="panel-websec-xss" class="panel">
+            <h2 class="panel-title">🛡️ Web App Security: Cross-Site Scripting (XSS)</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Understanding Cross-Site Scripting</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Occurs when application components dynamically render malicious client-side scripting input without sanitizing or escaping HTML characters.<br>
+                    • <b>Where</b>: Message boards, review input comments, search queries, profile handles, and custom theme layouts.<br>
+                    • <b>How</b>: Injecting javascript tags like <code>&lt;script&gt;alert('xss')&lt;/script&gt;</code> or event handler overrides like <code>&lt;img src=x onerror=alert(1)&gt;</code>.<br>
+                    • <b>Defense</b>: Implement Context-Aware Output Escaping, define a Content Security Policy (CSP), and use secure frameworks that auto-escape strings.
+                </div>
+            </div>
+
+            <!-- Hands-on Lab -->
+            <div class="result-block" style="border-color:rgba(239,68,68,0.3); background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:var(--accent-red);">🧪 Vulnerable Stored Guestbook Comment Lab</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    Submit a message containing an active HTML script tag to trigger XSS script execution in this browser sandbox session.
+                </p>
+                
+                <div style="background:#0f172a; padding:20px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); margin:15px 0;">
+                    <div style="margin-bottom:12px;">
+                        <label style="display:block; font-size:0.75rem; color:#94a3b8; margin-bottom:4px;">Leave a guestbook post:</label>
+                        <textarea id="xss-message" class="input-text" style="width:100%; height:70px; resize:none;" placeholder="Hey, nice website!"></textarea>
+                    </div>
+                    <button class="btn" style="background:#ef4444;" onclick="submitXssLab()">Post Comment</button>
+                </div>
+                
+                <div id="xss-lab-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px; margin-bottom:15px;"></div>
+                
+                <div style="background:rgba(255,255,255,0.02); padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.05);">
+                    <h4 style="color:#fff; font-size:0.85rem; margin-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px;">Guestbook Feeds:</h4>
+                    <div id="guestbook-posts" style="font-size:0.8rem; color:var(--text-muted);">
+                        <div style="padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.04);"><b>Guest1:</b> Awesome resources here!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cross-Site Request Forgery (CSRF) -->
+        <div id="panel-websec-csrf" class="panel">
+            <h2 class="panel-title">🛡️ Web App Security: Cross-Site Request Forgery (CSRF)</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Understanding Request Forgery</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Web browsers automatically include session cookies whenever they query the destination site. If a victim visits a malicious site, it can issue behind-the-scenes actions targeting the target application, exploiting the victim's active session state.<br>
+                    • <b>Where</b>: Sensitive state-changing endpoints (e.g. `/transfer-funds`, `/update-password`).<br>
+                    • <b>How</b>: Loading an invisible iframe or image tag that queries the target endpoint with parameters set by the attacker.<br>
+                    • <b>Defense</b>: Enforce anti-CSRF Tokens (unique cryptographic nonces) and apply the <code>SameSite=Strict</code> cookie configuration.
+                </div>
+            </div>
+
+            <!-- Hands-on Lab -->
+            <div class="result-block" style="border-color:rgba(239,68,68,0.3); background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:var(--accent-red);">🧪 Vulnerable Fund Transfer CSRF Sandbox</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    You are logged into <code>http://secure-bank.com</code>. Below is your current bank panel state. Underneath is a simulated hacker site. Submit a forged request to trigger CSRF state alteration.
+                </p>
+                
+                <div style="background:#0f172a; padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); margin-bottom:20px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px;">
+                        <span style="font-weight:bold; color:#06b6d4;">🏦 Secure Bank Session</span>
+                        <span style="color:#10b981;">User: Alice (Logged In)</span>
+                    </div>
+                    <div style="font-size:1.1rem; margin:10px 0;">Balance: <span id="bank-balance" style="color:#10b981; font-weight:bold;">$10,000</span></div>
+                    <div style="font-size:0.8rem; color:var(--text-muted);">Transactions:</div>
+                    <div id="bank-transactions" style="font-size:0.75rem; color:#94a3b8; margin-top:5px;">
+                        • No recent outgoing transfers.
+                    </div>
+                </div>
+
+                <div style="background:#1e1b4b; padding:15px; border-radius:8px; border:1px solid rgba(139,92,246,0.3);">
+                    <h4 style="color:#c084fc; font-size:0.85rem; margin-bottom:6px;">💀 Attacker Site Simulator (Evil.com)</h4>
+                    <p style="font-size:0.75rem; color:#cbd5e1; margin-bottom:10px;">
+                        Submit a forged URL query payload representing a hidden link query that attempts to execute an unauthorized transaction (e.g. <code>http://secure-bank.com/transfer?amount=10000&to=attacker</code>) on behalf of Alice.
+                    </p>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="csrf-payload" class="input-text" style="flex:1;" placeholder="http://secure-bank.com/transfer?amount=10000&to=attacker">
+                        <button class="btn" style="background:#8b5cf6;" onclick="submitCsrfLab()">Send Forged Request</button>
+                    </div>
+                </div>
+                
+                <div id="csrf-lab-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px; margin-top:15px;"></div>
+            </div>
+        </div>
+
+        <!-- Command Injection -->
+        <div id="panel-websec-cmd" class="panel">
+            <h2 class="panel-title">🛡️ Web App Security: Command Injection</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Understanding Command Injection</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Occurs when a web application passes unsanitized user inputs directly into a host operating system system command shell, allowing operators to run unauthorized executables.<br>
+                    • <b>Where</b>: Host ping utility widgets, file format encoders, system diagnostic tools, and server-side log viewers.<br>
+                    • <b>How</b>: Attaching shell control delimiters like semicolons (<code>;</code>), logical operators (<code>&amp;&amp;</code>, <code>||</code>), or pipes (<code>|</code>) to append additional execute instructions.<br>
+                    • <b>Defense</b>: Avoid calling system shells directly. Use robust developer libraries or sanitize input tightly using strict regex validation templates.
+                </div>
+            </div>
+
+            <!-- Hands-on Lab -->
+            <div class="result-block" style="border-color:rgba(239,68,68,0.3); background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:var(--accent-red);">🧪 Vulnerable Ping Diagnostic Utility Lab</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    The input field below pings an IP. Exploit command chaining to read the local server file <code>flag.txt</code>.
+                </p>
+                
+                <div style="background:#0f172a; padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px;">
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="cmd-ip-input" class="input-text" style="flex:1;" placeholder="127.0.0.1">
+                        <button class="btn" style="background:#ef4444;" onclick="submitCmdLab()">Run Diagnostic</button>
+                    </div>
+                </div>
+                
+                <div id="cmd-lab-output" style="font-family:monospace; font-size:0.85rem; display:none; padding:15px; border-radius:6px; background:#020617; border:1px solid rgba(255,255,255,0.05); white-space:pre-wrap;"></div>
+            </div>
+        </div>
+
+        <!-- BURP SUITE PANELS -->
+        
+        <!-- Proxy & Interception -->
+        <div id="panel-burp-proxy" class="panel">
+            <h2 class="panel-title">🟠 Burp Suite: Proxy & Interception</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Intercepting Web Requests</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: An intercepting proxy acts as a Man-in-the-Middle (MITM) between your browser and the web server. This allows security testers to inspect and alter requests before they reach the server, bypassing client-side validation logic.<br>
+                    • <b>Where</b>: Configured locally in browser network settings (typically port 8080) along with installing Burp's CA certificate to decrypt HTTPS traffic.<br>
+                    • <b>How</b>: Toggle "Intercept is on" in Burp's Proxy tab, issue requests, modify body data or request headers directly in the raw editor, then click "Forward".
+                </div>
+            </div>
+
+            <!-- Hands-on Lab -->
+            <div class="result-block" style="border-color:var(--accent-cyan); background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:#f97316;">🧪 Burp Proxy Intercept Lab: Privilege Escalation</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Alice is attempting to log in, but standard users cannot access the admin backend. Edit the intercepted request body below to change her privilege role from <code>user</code> to <code>admin</code>, then click <b>Forward Request</b>.
+                </p>
+                
+                <div style="background:#0f172a; padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); font-family:monospace; margin:15px 0;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:5px;">
+                        <span style="color:#f97316; font-weight:bold;">✉️ Raw Intercepted Request (Editable)</span>
+                        <span style="color:#10b981; font-weight:bold; animation:pulse 1.5s infinite;">● Interception Active</span>
+                    </div>
+                    <textarea id="burp-proxy-request" class="input-text" style="width:100%; height:130px; font-family:monospace; font-size:0.8rem; background:#020617; border-color:rgba(249,115,22,0.3); resize:none; line-height:1.4;">POST /login HTTP/1.1
+Host: vulnerable-shop.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 32
+
+role=user&user=alice</textarea>
+                    <button class="btn" style="margin-top:12px; background:#f97316; width:100%; font-weight:bold;" onclick="submitBurpProxyLab()">Forward Request</button>
+                </div>
+                
+                <div id="burp-proxy-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Intruder & Brute Force -->
+        <div id="panel-burp-intruder" class="panel">
+            <h2 class="panel-title">🟠 Burp Suite: Intruder & Brute Force</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Automated Parameter Fuzzing</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Manually testing multiple variables is tedious. Intruder automates request replication with variable insertions, useful for credential harvesting, parameter scanning, or brute-forcing authorization PINs.<br>
+                    • <b>Where</b>: Target parameters are marked with position markers (e.g. <code>§1234§</code>) inside the raw HTTP request layout.<br>
+                    • <b>How</b>: Load position templates, specify payload lists (e.g. dictionaries, sequential numbers), choose an attack profile (e.g. <i>Sniper</i> targets one position at a time), and start execution.
+                </div>
+            </div>
+
+            <!-- Hands-on Lab -->
+            <div class="result-block" style="border-color:var(--accent-cyan); background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:#f97316;">🧪 Burp Intruder Lab: PIN Brute-Forcing</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Alice's login is locked behind a 4-digit PIN. Click <b>Run Intruder Attack</b> to search through the PIN payload set. Review the returned HTTP response status and lengths to locate the correct login PIN, then enter it.
+                </p>
+                
+                <button class="btn" style="background:#f97316; margin-bottom:15px;" onclick="runBurpIntruderAttack()">Run Intruder Attack</button>
+                
+                <div id="burp-intruder-table" style="display:none; max-height:220px; overflow-y:auto; margin-bottom:20px; border:1px solid rgba(255,255,255,0.06); border-radius:6px;">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.75rem; text-align:left; font-family:monospace;">
+                        <thead>
+                            <tr style="background:rgba(255,255,255,0.05); color:#fff; border-bottom:1px solid rgba(255,255,255,0.1);">
+                                <th style="padding:8px;">Payload Position (§pin§)</th>
+                                <th style="padding:8px;">HTTP Status Code</th>
+                                <th style="padding:8px;">Response Byte Length</th>
+                            </tr>
+                        </thead>
+                        <tbody id="burp-intruder-tbody"></tbody>
+                    </table>
+                </div>
+
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
+                    <input type="text" id="burp-intruder-pin-input" class="input-text" style="flex:1;" placeholder="Enter cracked PIN">
+                    <button class="btn" style="background:#f97316;" onclick="verifyBurpIntruderPin()">Authenticate PIN</button>
+                </div>
+                
+                <div id="burp-intruder-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Repeater & Tampering -->
+        <div id="panel-burp-repeater" class="panel">
+            <h2 class="panel-title">🟠 Burp Suite: Repeater & Request Replaying</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Request Tampering and Replaying</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Unlike Intruder, Repeater focuses on editing and re-sending individual HTTP requests interactively. Great for testing logic flows, SQLi parameters, API values, and reviewing real-time output responses side-by-side.<br>
+                    • <b>Where</b>: Forward intercepted queries from the Proxy tab to the Repeater tab (shortcut: <code>Ctrl + R</code> / <code>Cmd + R</code>).<br>
+                    • <b>How</b>: Modify header or parameter values in the Request editor pane, click "Send", and inspect the response block parameters.
+                </div>
+            </div>
+
+            <!-- Hands-on Lab -->
+            <div class="result-block" style="border-color:var(--accent-cyan); background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:#f97316;">🧪 Burp Repeater Lab: Price Parameter Tampering</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Change the checkout purchase price in the request body from <code>price=100</code> to <code>price=0</code> (free transaction exploit), then click <b>Send Request</b> to review the server's HTTP response.
+                </p>
+                
+                <div style="display:flex; gap:15px; margin:15px 0;">
+                    <!-- Request Pane -->
+                    <div style="flex:1; background:#0f172a; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); font-family:monospace;">
+                        <div style="color:#f97316; font-weight:bold; margin-bottom:6px; font-size:0.75rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px;">Request Editor (Editable)</div>
+                        <textarea id="burp-repeater-request" class="input-text" style="width:100%; height:120px; font-family:monospace; font-size:0.75rem; background:#020617; resize:none; line-height:1.4;">POST /checkout HTTP/1.1
+Host: shop.com
+Content-Type: application/x-www-form-urlencoded
+
+item=laptop&price=100</textarea>
+                        <button class="btn" style="background:#f97316; width:100%; margin-top:8px; font-size:0.8rem;" onclick="sendBurpRepeaterRequest()">Send Request</button>
+                    </div>
+
+                    <!-- Response Pane -->
+                    <div style="flex:1; background:#0f172a; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); font-family:monospace; display:flex; flex-direction:column;">
+                        <div style="color:#10b981; font-weight:bold; margin-bottom:6px; font-size:0.75rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px;">Response Console</div>
+                        <div id="burp-repeater-response" style="flex:1; background:#020617; border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:8px; font-size:0.75rem; color:#94a3b8; white-space:pre-wrap; min-height:152px;">Response ready...</div>
+                    </div>
+                </div>
+                
+                <div id="burp-repeater-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Decoder & Encoding -->
+        <div id="panel-burp-decoder" class="panel">
+            <h2 class="panel-title">🟠 Burp Suite: Decoder & Encoding</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Transforming Request Payloads</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Data is often encoded to ensure safety during network transit (e.g. URL query escaping or Base64 binary serializations). Decoders enable quick inspection without using external tools.<br>
+                    • <b>Where</b>: Found globally in Burp's top menu tabs (Decoder panel).<br>
+                    • <b>How</b>: Paste any string, select transformations (e.g., Decode as Base64, Hex, URL, HTML), or encode payloads to audit input filters.
+                </div>
+            </div>
+
+            <!-- Hands-on Lab -->
+            <div class="result-block" style="border-color:var(--accent-cyan); background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:#f97316;">🧪 Burp Decoder Lab: Base64 session token decoding</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Decode this base64 encoded user session cookie token: <br>
+                    <code style="color:#f97316; background:#2a1b10; padding:2px 6px; border-radius:4px; font-family:monospace; font-size:0.75rem; word-break:break-all;">dXNlcj1hZG1pbjtmbGFnPU5DQVN7YnVycF9kZWNvZGVyX2Jhc2U2NF90b2tlbn0=</code>
+                </p>
+                
+                <div style="background:#0f172a; padding:15px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px;">
+                    <div style="margin-bottom:10px;">
+                        <label style="display:block; font-size:0.75rem; color:#94a3b8; margin-bottom:4px;">Input Ciphertext Payload:</label>
+                        <input type="text" id="burp-decoder-input" class="input-text" style="width:100%; font-family:monospace;" value="dXNlcj1hZG1pbjtmbGFnPU5DQVN7YnVycF9kZWNvZGVyX2Jhc2U2NF90b2tlbn0=" readonly>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <select id="burp-decoder-select" class="input-text" style="flex:1;">
+                            <option value="none">-- Select Decode Rule --</option>
+                            <option value="url">Decode as URL</option>
+                            <option value="base64">Decode as Base64</option>
+                            <option value="hex">Decode as Hex</option>
+                        </select>
+                        <button class="btn" style="background:#f97316;" onclick="applyBurpDecoder()">Decode String</button>
+                    </div>
+                </div>
+
+                <div id="burp-decoder-result-box" style="display:none; background:#020617; border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px; font-family:monospace; font-size:0.8rem; color:#10b981; white-space:pre-wrap; margin-bottom:15px;"></div>
+                
+                <div id="burp-decoder-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- NMAP SCANNER PANELS -->
+        
+        <!-- TCP SYN Scan -->
+        <div id="panel-nmap-syn" class="panel">
+            <h2 class="panel-title">🛡️ Nmap: TCP SYN Scan (Stealth Scan)</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Half-Open Port Auditing</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: TCP SYN scan (<code>-sS</code>) is a default, fast, stealthy port scanner option. It performs a half-open scan by sending a SYN packet and waiting for a response, but it never completes the TCP 3-way handshake (sending an RST instead of an ACK), meaning application logs often do not register the connection.<br>
+                    • <b>Where</b>: Executed from external security terminals to locate active open ports on a target host IP.<br>
+                    • <b>How</b>: Run <code>nmap -sS &lt;target-ip&gt;</code>. Needs root/administrator permissions to construct raw TCP packets.
+                </div>
+            </div>
+
+            <!-- Terminal Console -->
+            <div class="result-block" style="border-color:var(--accent-blue); background:#020617;">
+                <div class="result-header">💻 Interactive Nmap Scanner Terminal</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0 15px 0;">
+                    <b>Task</b>: Run a stealthy TCP SYN port scan on the local server host IP <code>192.168.1.1</code>.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; font-family:monospace; border:1px solid rgba(255,255,255,0.06);">
+                    <div id="nmap-terminal-syn-output" style="color:#10b981; min-height:100px; max-height:200px; overflow-y:auto; font-size:0.85rem; white-space:pre-wrap;">Terminal ready. Type your command.</div>
+                    <div style="display:flex; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; margin-top:10px;">
+                        <span style="color:#06b6d4; font-weight:bold; margin-right:8px;">$</span>
+                        <input type="text" id="nmap-terminal-syn-input" onkeydown="handleNmapTerminalKey(event, 'syn')" style="background:transparent; border:none; color:#fff; font-family:monospace; font-size:0.85rem; flex:1; outline:none;" placeholder="nmap ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service & Version Detection -->
+        <div id="panel-nmap-version" class="panel">
+            <h2 class="panel-title">🛡️ Nmap: Service & Version Detection</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Service Fingerprinting</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Knowing which port is open (e.g. port 80) is not enough. Auditing software security requires knowing what application and exact software version is running (e.g., Apache 2.4.41), since security updates target specific version builds.<br>
+                    • <b>Where</b>: Used to identify software versions running on open ports of servers to find outdated or vulnerable releases.<br>
+                    • <b>How</b>: Run <code>nmap -sV &lt;target-ip&gt;</code>. Nmap queries the open ports with application-layer probes and parses banner return strings.
+                </div>
+            </div>
+
+            <!-- Terminal Console -->
+            <div class="result-block" style="border-color:var(--accent-blue); background:#020617;">
+                <div class="result-header">💻 Interactive Nmap Scanner Terminal</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0 15px 0;">
+                    <b>Task</b>: Conduct a service version detection scan on the target server <code>192.168.1.1</code>.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; font-family:monospace; border:1px solid rgba(255,255,255,0.06);">
+                    <div id="nmap-terminal-version-output" style="color:#10b981; min-height:100px; max-height:200px; overflow-y:auto; font-size:0.85rem; white-space:pre-wrap;">Terminal ready. Type your command.</div>
+                    <div style="display:flex; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; margin-top:10px;">
+                        <span style="color:#06b6d4; font-weight:bold; margin-right:8px;">$</span>
+                        <input type="text" id="nmap-terminal-version-input" onkeydown="handleNmapTerminalKey(event, 'version')" style="background:transparent; border:none; color:#fff; font-family:monospace; font-size:0.85rem; flex:1; outline:none;" placeholder="nmap ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OS Detection -->
+        <div id="panel-nmap-os" class="panel">
+            <h2 class="panel-title">🛡️ Nmap: Operating System Fingerprinting</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: TCP/IP Stack OS Profiling</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Operating systems implement TCP/IP network protocol stacks with subtle variations (e.g. default TTL parameters, window sizes, options sequences). Nmap leverages these variations to fingerprint the host kernel.<br>
+                    • <b>Where</b>: Critical step during network discovery to tailor follow-up exploits target-matching the host's operating system family.<br>
+                    • <b>How</b>: Run <code>nmap -O &lt;target-ip&gt;</code>. Requires raw packet construction privileges.
+                </div>
+            </div>
+
+            <!-- Terminal Console -->
+            <div class="result-block" style="border-color:var(--accent-blue); background:#020617;">
+                <div class="result-header">💻 Interactive Nmap Scanner Terminal</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0 15px 0;">
+                    <b>Task</b>: Determine the operating system family of the host server <code>192.168.1.1</code>.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; font-family:monospace; border:1px solid rgba(255,255,255,0.06);">
+                    <div id="nmap-terminal-os-output" style="color:#10b981; min-height:100px; max-height:200px; overflow-y:auto; font-size:0.85rem; white-space:pre-wrap;">Terminal ready. Type your command.</div>
+                    <div style="display:flex; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; margin-top:10px;">
+                        <span style="color:#06b6d4; font-weight:bold; margin-right:8px;">$</span>
+                        <input type="text" id="nmap-terminal-os-input" onkeydown="handleNmapTerminalKey(event, 'os')" style="background:transparent; border:none; color:#fff; font-family:monospace; font-size:0.85rem; flex:1; outline:none;" placeholder="nmap ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NSE Vulnerability Scan -->
+        <div id="panel-nmap-nse" class="panel">
+            <h2 class="panel-title">🛡️ Nmap: Nmap Scripting Engine (NSE)</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Automated Vulnerability Probing</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Nmap includes a powerful Scripting Engine (NSE) using Lua scripts to automate security tasks like vulnerability checks, banner grabbing, and service discovery audits.<br>
+                    • <b>Where</b>: Run against targets to discover critical system misconfigurations or specific unpatched software CVE bugs.<br>
+                    • <b>How</b>: Run <code>nmap --script vuln &lt;target-ip&gt;</code> to load scripts in the vulnerability category database.
+                </div>
+            </div>
+
+            <!-- Terminal Console -->
+            <div class="result-block" style="border-color:var(--accent-blue); background:#020617;">
+                <div class="result-header">💻 Interactive Nmap Scanner Terminal</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0 15px 0;">
+                    <b>Task</b>: Run a vulnerability scanning script check against the target server <code>192.168.1.1</code>.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; font-family:monospace; border:1px solid rgba(255,255,255,0.06);">
+                    <div id="nmap-terminal-nse-output" style="color:#10b981; min-height:100px; max-height:200px; overflow-y:auto; font-size:0.85rem; white-space:pre-wrap;">Terminal ready. Type your command.</div>
+                    <div style="display:flex; align-items:center; border-top:1px solid rgba(255,255,255,0.1); padding-top:10px; margin-top:10px;">
+                        <span style="color:#06b6d4; font-weight:bold; margin-right:8px;">$</span>
+                        <input type="text" id="nmap-terminal-nse-input" onkeydown="handleNmapTerminalKey(event, 'nse')" style="background:transparent; border:none; color:#fff; font-family:monospace; font-size:0.85rem; flex:1; outline:none;" placeholder="nmap ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WIRESHARK ANALYZER PANELS -->
+        
+        <!-- Capture & Filters -->
+        <div id="panel-wireshark-capture" class="panel">
+            <h2 class="panel-title">🦈 Wireshark: Packet Capturing & Capture Filters</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Sniffing Network Interfaces</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Sniffing allows network administrators and security engineers to capture raw frames flowing across network interfaces (NICs). Placing a card in <i>Promiscuous Mode</i> prompts it to capture all traffic on the network segment, not just packets addressed to itself.<br>
+                    • <b>Where</b>: Configured locally on target interfaces (e.g., <code>eth0</code>, <code>wlan0</code>).<br>
+                    • <b>How</b>: Select a NIC interface, define a Capture Filter (e.g. <code>port 80</code> to capture only HTTP web traffic before capture starts), and click Start.
+                </div>
+            </div>
+
+            <!-- Interactive Wireshark Simulator -->
+            <div class="result-block" style="border-color:#38bdf8; background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:#0ea5e9; display:flex; justify-content:space-between; align-items:center;">
+                    <span>🦈 Wireshark Packet Sniffer Simulator (eth0)</span>
+                    <span style="font-size:0.75rem; background:#0f172a; padding:2px 8px; border-radius:4px; border:1px solid rgba(255,255,255,0.06); color:#38bdf8;">v3.6.0</span>
+                </div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Configure the sniffer to intercept unencrypted web traffic by typing <code>port 80</code> in the Capture Filter box, then click <b>Start Capture</b>. Analyze the HTTP request header packet contents.
+                </p>
+                
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px;">
+                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+                        <span style="font-size:0.8rem; color:#fff; font-weight:bold; min-width:100px;">Capture Filter:</span>
+                        <input type="text" id="wireshark-cap-filter" class="input-text" style="flex:1;" placeholder="e.g. port 80 or host 10.0.0.1">
+                        <button class="btn" style="background:#0ea5e9;" onclick="startWiresharkCapture()">Start Capture</button>
+                    </div>
+
+                    <!-- Capture Grid -->
+                    <div id="wireshark-capture-grid" style="display:none; max-height:180px; overflow-y:auto; border:1px solid rgba(255,255,255,0.1); border-radius:4px; margin-bottom:12px; font-family:monospace; font-size:0.75rem;">
+                        <table style="width:100%; border-collapse:collapse; text-align:left; color:#cbd5e1;">
+                            <thead style="background:rgba(255,255,255,0.05); color:#fff; border-bottom:1px solid rgba(255,255,255,0.1);">
+                                <tr>
+                                    <th style="padding:6px;">No.</th>
+                                    <th style="padding:6px;">Time</th>
+                                    <th style="padding:6px;">Source</th>
+                                    <th style="padding:6px;">Destination</th>
+                                    <th style="padding:6px;">Protocol</th>
+                                    <th style="padding:6px;">Info</th>
+                                </tr>
+                            </thead>
+                            <tbody id="wireshark-capture-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Packet Detail Console -->
+                    <div id="wireshark-capture-details" style="display:none; background:#020617; border:1px solid rgba(255,255,255,0.05); border-radius:6px; padding:12px; font-family:monospace; font-size:0.75rem; color:#cbd5e1;">
+                        <div style="color:#38bdf8; font-weight:bold; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:4px; margin-bottom:6px;">Packet Details tree:</div>
+                        <div style="margin-left:5px;">📁 Frame 1: 342 bytes on wire (2736 bits)</div>
+                        <div style="margin-left:5px;">📁 Ethernet II, Src: 00:0c:29:ab:cd:ef, Dst: 00:50:56:12:34:56</div>
+                        <div style="margin-left:5px;">📁 Internet Protocol Version 4, Src: 192.168.1.10, Dst: 192.168.1.1</div>
+                        <div style="margin-left:5px;">📁 Transmission Control Protocol, Src Port: 53120, Dst Port: 80, Seq: 1, Ack: 1</div>
+                        <div style="margin-left:5px; color:#10b981;">▼ Hypertext Transfer Protocol</div>
+                        <div style="margin-left:20px; color:#10b981;">• GET /login.php HTTP/1.1\r\n</div>
+                        <div style="margin-left:20px; color:#10b981;">• Host: vulnerable-shop.com\r\n</div>
+                        <div style="margin-left:20px; color:#10b981;">• Cookie: Flag=NCAS{wireshark_promiscuous_capture_flag}\r\n</div>
+                    </div>
+                </div>
+                
+                <div id="wireshark-capture-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Display Filters -->
+        <div id="panel-wireshark-filter" class="panel">
+            <h2 class="panel-title">🦈 Wireshark: Display Query Filters</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Isolating Traffic Streams</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Large captures can contain hundreds of thousands of packets. Display Filters allow you to drill down into captured frames interactively without changing the underlying capture file database.<br>
+                    • <b>Where</b>: Typed in the top green entry bar of the Wireshark application console window.<br>
+                    • <b>How</b>: Use expressions like: <br>
+                      - <code>ip.addr == 192.168.1.1</code> (match source/destination IP)<br>
+                      - <code>tcp.port == 443</code> (match source/destination TCP port)<br>
+                      - <code>dns</code> (filter to DNS protocol packets)<br>
+                      - <code>http.request.method == "POST"</code> (match POST submissions)
+                </div>
+            </div>
+
+            <!-- Interactive Wireshark Simulator -->
+            <div class="result-block" style="border-color:#38bdf8; background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:#0ea5e9;">🧪 Wireshark Display Filter Lab</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Apply a display filter to isolate <code>dns</code> packets from the captured dataset to uncover the domain request record.
+                </p>
+                
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px;">
+                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+                        <span style="font-size:0.8rem; color:#fff; font-weight:bold; min-width:100px;">Display Filter:</span>
+                        <input type="text" id="wireshark-disp-filter" class="input-text" style="flex:1; font-family:monospace; background:#020617; border-color:rgba(56,189,248,0.3);" placeholder="e.g. tcp or dns">
+                        <button class="btn" style="background:#0ea5e9;" onclick="applyWiresharkDisplayFilter()">Apply Filter</button>
+                    </div>
+
+                    <!-- Capture Grid -->
+                    <div style="max-height:180px; overflow-y:auto; border:1px solid rgba(255,255,255,0.1); border-radius:4px; font-family:monospace; font-size:0.75rem;">
+                        <table style="width:100%; border-collapse:collapse; text-align:left; color:#cbd5e1;">
+                            <thead style="background:rgba(255,255,255,0.05); color:#fff; border-bottom:1px solid rgba(255,255,255,0.1);">
+                                <tr>
+                                    <th style="padding:6px;">No.</th>
+                                    <th style="padding:6px;">Protocol</th>
+                                    <th style="padding:6px;">Source</th>
+                                    <th style="padding:6px;">Destination</th>
+                                    <th style="padding:6px;">Info</th>
+                                </tr>
+                            </thead>
+                            <tbody id="wireshark-filter-tbody">
+                                <!-- Standard list before filter -->
+                                <tr class="ws-row-arp" style="background:rgba(255,255,0,0.05); color:#cbd5e1;"><td style="padding:6px;">1</td><td style="padding:6px;">ARP</td><td style="padding:6px;">Intel_a1:b2</td><td style="padding:6px;">Broadcast</td><td style="padding:6px;">Who has 192.168.1.1? Tell 192.168.1.10</td></tr>
+                                <tr class="ws-row-tcp" style="background:rgba(0,0,255,0.05); color:#cbd5e1;"><td style="padding:6px;">2</td><td style="padding:6px;">TCP</td><td style="padding:6px;">192.168.1.10</td><td style="padding:6px;">192.168.1.1</td><td style="padding:6px;">54321 → 80 [SYN] Seq=0 Win=64240 Len=0</td></tr>
+                                <tr class="ws-row-dns" style="background:rgba(0,128,128,0.05); color:#cbd5e1;"><td style="padding:6px;">3</td><td style="padding:6px;">DNS</td><td style="padding:6px;">192.168.1.10</td><td style="padding:6px;">8.8.8.8</td><td style="padding:6px;">Standard query 0x1a4f A flag-server.local</td></tr>
+                                <tr class="ws-row-dns" style="background:rgba(0,128,128,0.05); color:#cbd5e1;"><td style="padding:6px;">4</td><td style="padding:6px;">DNS</td><td style="padding:6px;">8.8.8.8</td><td style="padding:6px;">192.168.1.10</td><td style="padding:6px;">Standard query response 0x1a4f A flag-server.local TXT=NCAS{wireshark_dns_display_filter_success}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div id="wireshark-filter-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Follow TCP Stream -->
+        <div id="panel-wireshark-stream" class="panel">
+            <h2 class="panel-title">🦈 Wireshark: Follow TCP Stream</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: TCP Stream Reassembly</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Application data is fragmented across multiple IP packets. Trying to read plain conversation from raw frames is extremely difficult. <i>Follow TCP Stream</i> reassembles sequenced TCP segments to display the conversation in ASCII plaintext.<br>
+                    • <b>Where</b>: Right-click any TCP packet in the packet list pane and select <b>Follow → TCP Stream</b>.<br>
+                    • <b>How</b>: Wireshark isolates the socket pair, orders segments by Sequence Numbers, strips headers, and renders color-coded ASCII transcripts.
+                </div>
+            </div>
+
+            <!-- Interactive Wireshark Simulator -->
+            <div class="result-block" style="border-color:#38bdf8; background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:#0ea5e9;">🧪 Wireshark Follow Stream Lab</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Right-click on packet #2 (TCP protocol) or click the button below to Follow TCP Stream and read the unencrypted form data conversation.
+                </p>
+                
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px; margin-bottom:10px;">
+                        <span style="font-size:0.85rem; color:#fff; font-family:monospace;">Packet #2 TCP Segment [Seq=101, Ack=201]</span>
+                        <button class="btn" style="background:#0ea5e9; font-size:0.75rem; padding:4px 10px;" onclick="followWiresharkTcpStream()">Follow TCP Stream</button>
+                    </div>
+
+                    <!-- Conversation Window -->
+                    <div id="wireshark-stream-console" style="display:none; background:#020617; border:1px solid rgba(255,255,255,0.05); border-radius:6px; padding:12px; font-family:monospace; font-size:0.8rem; line-height:1.4; min-height:150px; white-space:pre-wrap;"></div>
+                </div>
+                
+                <div id="wireshark-stream-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Export Objects -->
+        <div id="panel-wireshark-export" class="panel">
+            <h2 class="panel-title">🦈 Wireshark: Exporting HTTP Objects</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Extracting Files from Captures</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Attackers or malware frequently download files (e.g. zip packages, executables) over insecure HTTP protocols. Analysts extract these files from PCAP dumps to audit them for malware or reconstruct data leaks.<br>
+                    • <b>Where</b>: Located in the file menu bar options: <b>File → Export Objects → HTTP...</b>.<br>
+                    • <b>How</b>: Wireshark parses HTTP response headers, extracts the payload data streams, and offers options to save the reconstructed files to the local disk directory.
+                </div>
+            </div>
+
+            <!-- Interactive Wireshark Simulator -->
+            <div class="result-block" style="border-color:#38bdf8; background:#020617; margin-bottom: 20px;">
+                <div class="result-header" style="color:#0ea5e9;">🧪 Wireshark Export Objects Lab</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Open the export console menu list below, locate the transmitted file <code>flag.zip</code>, and click <b>Save File</b> to complete extraction.
+                </p>
+                
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px; margin-bottom:10px;">
+                        <span style="font-size:0.85rem; color:#fff; font-family:monospace;">Wireshark Export HTTP Objects Console</span>
+                    </div>
+
+                    <!-- Object Table -->
+                    <div style="border:1px solid rgba(255,255,255,0.1); border-radius:4px; font-family:monospace; font-size:0.75rem;">
+                        <table style="width:100%; border-collapse:collapse; text-align:left; color:#cbd5e1;">
+                            <thead style="background:rgba(255,255,255,0.05); color:#fff; border-bottom:1px solid rgba(255,255,255,0.1);">
+                                <tr>
+                                    <th style="padding:8px;">File Name</th>
+                                    <th style="padding:8px;">Content Type</th>
+                                    <th style="padding:8px;">Size</th>
+                                    <th style="padding:8px;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                                    <td style="padding:8px; color:#fff;">logo.png</td>
+                                    <td style="padding:8px;">image/png</td>
+                                    <td style="padding:8px;">14.2 KB</td>
+                                    <td style="padding:8px;"><button class="btn" style="font-size:0.7rem; padding:2px 8px; background:rgba(255,255,255,0.1); color:#fff;" onclick="alert('logo.png saved successfully.')">Save</button></td>
+                                </tr>
+                                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                                    <td style="padding:8px; color:#fff;">index.html</td>
+                                    <td style="padding:8px;">text/html</td>
+                                    <td style="padding:8px;">2.4 KB</td>
+                                    <td style="padding:8px;"><button class="btn" style="font-size:0.7rem; padding:2px 8px; background:rgba(255,255,255,0.1); color:#fff;" onclick="alert('index.html saved successfully.')">Save</button></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:8px; color:#fff;">flag.zip</td>
+                                    <td style="padding:8px; color:#0ea5e9;">application/zip</td>
+                                    <td style="padding:8px; color:#0ea5e9;">512 bytes</td>
+                                    <td style="padding:8px;"><button class="btn" style="font-size:0.7rem; padding:2px 8px; background:#0ea5e9; font-weight:bold;" onclick="exportWiresharkObject()">Save File</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div id="wireshark-export-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- PASSWORD ATTACKS PANELS -->
+        
+        <!-- Dictionary Attack -->
+        <div id="panel-pass-dictionary" class="panel">
+            <h2 class="panel-title">🔑 Password Attacks: Dictionary Attack</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Targeted Wordlist Guesses</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Users frequently choose easy-to-remember passwords derived from dictionary words, names, or common patterns (e.g. <code>password123</code>). Rather than attempting random combinations, dictionary attacks automate testing list files of known common passwords (like the 14-million line <code>rockyou.txt</code>).<br>
+                    • <b>Where</b>: Executed against remote login portals (SSH, HTTP forms, FTP servers) using tools like <b>Hydra</b> or <b>Medusa</b>.<br>
+                    • <b>How</b>: Load username lists and word lists, select target protocol URLs, and execute login trials sequentially.
+                </div>
+            </div>
+
+            <!-- Dictionary Attack Lab -->
+            <div class="result-block" style="border-color:var(--accent-orange); background:#020617; margin-bottom:20px;">
+                <div class="result-header" style="color:var(--accent-orange);">🔑 Dictionary Attack Simulator</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Configure the tool's password wordlist by inputting some common passwords (include <code>dragon</code>), then click <b>Run Dictionary Attack</b> to crack the target account <code>admin</code>.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px;">
+                    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+                        <span style="font-size:0.8rem; color:#fff; font-weight:bold;">Custom Wordlist (one per line):</span>
+                        <textarea id="pass-dict-wordlist" class="input-text" style="height:80px; font-family:monospace;" placeholder="admin&#10;123456&#10;password&#10;dragon&#10;shadow"></textarea>
+                    </div>
+                    <button class="btn" style="background:var(--accent-orange);" onclick="runDictionaryAttack()">Run Dictionary Attack</button>
+                    
+                    <!-- Execution Console -->
+                    <div id="pass-dict-console" style="display:none; background:#020617; border:1px solid rgba(255,255,255,0.05); border-radius:6px; padding:12px; font-family:monospace; font-size:0.75rem; color:#cbd5e1; margin-top:12px; max-height:150px; overflow-y:auto; white-space:pre-wrap;"></div>
+                </div>
+                <div id="pass-dict-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Brute Force Attack -->
+        <div id="panel-pass-brute" class="panel">
+            <h2 class="panel-title">🔑 Password Attacks: Exhaustive Brute Force</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Exhaustive Lockspace Search</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: If a password does not exist inside any wordlists, the fallback approach is to try every single character permutation (e.g. <code>a</code>, <code>b</code>... <code>aa</code>, <code>ab</code>... <code>zzzz</code>). This is mathematically guaranteed to find the correct password, but scaling complexity yields exponential time overhead.<br>
+                    • <b>Where</b>: Run locally against offline database tables, local backup zip files, or password hashes where network latency does not bottleneck speed.<br>
+                    • <b>How</b>: Define character sets (e.g., lowercase, alphanumeric), minimum/maximum password lengths, and start generation scripts.
+                </div>
+            </div>
+
+            <!-- Brute Force Lab -->
+            <div class="result-block" style="border-color:var(--accent-orange); background:#020617; margin-bottom:20px;">
+                <div class="result-header" style="color:var(--accent-orange);">🔑 Offline Brute Force Console</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Crack a 3-character lowercase lock. Click <b>Exhaust Lock Space</b> to watch combinations generate sequentially until the key <code>cat</code> is verified.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px;">
+                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:12px;">
+                        <span style="font-size:0.8rem; color:#fff; font-weight:bold; min-width:120px;">Character Set:</span>
+                        <input type="text" class="input-text" style="flex:1; background:rgba(255,255,255,0.02); color:#94a3b8;" value="a-z (lowercase alphabetical)" readonly>
+                    </div>
+                    <button class="btn" style="background:var(--accent-orange);" onclick="runBruteForceAttack()">Exhaust Lock Space</button>
+                    
+                    <!-- Progress Grid -->
+                    <div id="pass-brute-console" style="display:none; background:#020617; border:1px solid rgba(255,255,255,0.05); border-radius:6px; padding:12px; font-family:monospace; font-size:0.75rem; color:#cbd5e1; margin-top:12px; max-height:120px; overflow-y:auto; white-space:pre-wrap;"></div>
+                </div>
+                <div id="pass-brute-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Hash Cracking -->
+        <div id="panel-pass-hash" class="panel">
+            <h2 class="panel-title">🔑 Password Attacks: Hash Cracking</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Cryptographic Hash Reversal</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Secure systems store password hashes rather than plaintext strings. If an attacker dumps a backend database, they retrieve hash strings (e.g. SHA-256). To find the original password, they hash wordlist items offline and look for matches.<br>
+                    • <b>Where</b>: Performed offline using high-performance GPU hardware acceleration rigs running tools like <b>Hashcat</b> or <b>John the Ripper</b>.<br>
+                    • <b>How</b>: Define the hash algorithm type (e.g., MD5, SHA-1, SHA-256, bcrypt) and feed the target hash alongside a wordlist directory.
+                </div>
+            </div>
+
+            <!-- Hash Cracking Lab -->
+            <div class="result-block" style="border-color:var(--accent-orange); background:#020617; margin-bottom:20px;">
+                <div class="result-header" style="color:var(--accent-orange);">🔑 SHA-256 Hash Cracker Tool</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    Target SHA-256 hash to crack: <code>c2049d53c316a73c15f9b451fb2788e0e6435d8869c9b13993776e0be574ee80</code><br>
+                    <b>Task</b>: Add candidate guess words (make sure to include <code>monkey</code>) into the wordlist, then click <b>Crack Hash</b>.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px;">
+                    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+                        <span style="font-size:0.8rem; color:#fff; font-weight:bold;">Wordlist:</span>
+                        <textarea id="pass-hash-wordlist" class="input-text" style="height:80px; font-family:monospace;" placeholder="admin&#10;password&#10;monkey&#10;sunshine&#10;football"></textarea>
+                    </div>
+                    <button class="btn" style="background:var(--accent-orange);" onclick="runHashCrackAttack()">Crack Hash</button>
+                    
+                    <!-- Crack Console -->
+                    <div id="pass-hash-console" style="display:none; background:#020617; border:1px solid rgba(255,255,255,0.05); border-radius:6px; padding:12px; font-family:monospace; font-size:0.75rem; color:#cbd5e1; margin-top:12px; max-height:120px; overflow-y:auto; white-space:pre-wrap;"></div>
+                </div>
+                <div id="pass-hash-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Credential Stuffing -->
+        <div id="panel-pass-stuffing" class="panel">
+            <h2 class="panel-title">🔑 Password Attacks: Credential Stuffing</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Exploiting Password Reuse</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: When one website suffers a data breach, user email/password pairs are leaked online. Attackers compile these breaches into leak lookup databases and execute automated login scripts across entirely different platforms, exploiting the fact that users reuse credentials.<br>
+                    • <b>Where</b>: Run programmatically across multiple corporate systems, banking sites, and email services.<br>
+                    • <b>How</b>: Parse leaked credential databases, structure request automation bots, and bypass standard single-login lock blocks.
+                </div>
+            </div>
+
+            <!-- Credential Stuffing Lab -->
+            <div class="result-block" style="border-color:var(--accent-orange); background:#020617; margin-bottom:20px;">
+                <div class="result-header" style="color:var(--accent-orange);">🔑 Credential Stuffing Portal</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Below is a leaked credential database fragment. Locate the password of user <code>admin@corp.com</code>, copy it, and submit it on the Corporate Admin Portal Login form below.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px; display:flex; flex-direction:column; gap:15px;">
+                    <!-- Database Dump -->
+                    <div style="border:1px solid rgba(255,255,255,0.1); border-radius:4px; font-family:monospace; font-size:0.75rem;">
+                        <div style="background:rgba(255,255,255,0.05); padding:6px; border-bottom:1px solid rgba(255,255,255,0.1); color:#fff; font-weight:bold;">📄 Leaked Database Dump fragment (LeakSource-2026.csv)</div>
+                        <table style="width:100%; border-collapse:collapse; text-align:left; color:#cbd5e1;">
+                            <tbody>
+                                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:6px; color:#fff;">alice@mail.com</td><td style="padding:6px;">alice123!</td></tr>
+                                <tr style="border-bottom:1px solid rgba(255,255,255,0.04);"><td style="padding:6px; color:#fff;">admin@corp.com</td><td style="padding:6px; font-weight:bold; color:#f97316;">Winter2026!</td></tr>
+                                <tr><td style="padding:6px; color:#fff;">bob@gmail.com</td><td style="padding:6px;">bobsecured99</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Target Portal Login Form -->
+                    <div style="border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:12px; background:#020617; max-width:320px; margin:0 auto; width:100%;">
+                        <div style="font-weight:bold; font-size:0.8rem; text-align:center; color:#fff; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:6px; margin-bottom:10px;">🏢 Corporate Admin Portal</div>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <input type="text" class="input-text" style="font-size:0.75rem;" value="admin@corp.com" readonly>
+                            <input type="password" id="pass-stuffing-input" class="input-text" style="font-size:0.75rem;" placeholder="Enter password">
+                            <button class="btn" style="background:#f97316; font-size:0.75rem;" onclick="submitCredentialStuffing()">Login</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="pass-stuffing-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- CRYPTOGRAPHY PANELS -->
+        
+        <!-- Symmetric Encryption -->
+        <div id="panel-crypto-symmetric" class="panel">
+            <h2 class="panel-title">🔒 Cryptography: Symmetric Encryption</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Shared Secret Key</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Symmetric encryption uses the same key for both encryption and decryption. It is fast, efficient, and widely used for bulk data encryption (e.g., hard drives, database values).<br>
+                    • <b>Where</b>: Implemented in algorithms like <b>AES (Advanced Encryption Standard)</b>, DES, or historical Caesar ciphers.<br>
+                    • <b>How</b>: Caesar cipher shifts letters by a fixed key shift. AES uses blocks, rounds, and complex byte substitutions.
+                </div>
+            </div>
+
+            <!-- Caesar Shift Cipher Lab -->
+            <div class="result-block" style="border-color:#10b981; background:#020617; margin-bottom:20px;">
+                <div class="result-header" style="color:#10b981;">🔒 Caesar Cipher Decrypter Tool</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    Target Ciphertext: <code>KHOOR</code> (Shifted forward by 3)<br>
+                    <b>Task</b>: Enter the shift key offset (value <code>3</code>) to decrypt the string and retrieve the plaintext.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px; display:flex; gap:10px; align-items:center;">
+                    <span style="font-size:0.8rem; color:#fff; font-weight:bold; min-width:80px;">Shift Key:</span>
+                    <input type="number" id="crypto-caesar-key" class="input-text" style="max-width:80px;" placeholder="e.g. 1">
+                    <button class="btn" style="background:#10b981;" onclick="decryptCaesarCipher()">Decrypt</button>
+                </div>
+                <div id="crypto-caesar-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Asymmetric Handshake -->
+        <div id="panel-crypto-asymmetric" class="panel">
+            <h2 class="panel-title">🔒 Cryptography: Asymmetric RSA Handshake</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Public/Private Key Pairs</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Symmetric keys require secure distribution. Asymmetric cryptography solves this by using two keys: a Public Key (anyone can encrypt) and a Private Key (only the recipient can decrypt).<br>
+                    • <b>Where</b>: Standard protocol for <b>SSL/TLS (HTTPS)</b>, SSH keypairs, and secure email (PGP).<br>
+                    • <b>How</b>: RSA relies on the mathematical difficulty of factoring large prime numbers.
+                </div>
+            </div>
+
+            <!-- RSA Lab -->
+            <div class="result-block" style="border-color:#10b981; background:#020617; margin-bottom:20px;">
+                <div class="result-header" style="color:#10b981;">🔒 RSA Key Generation & Handshake Simulator</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Click <b>Generate Keypair</b> to create public/private keys, then click <b>Asymmetric Decrypt</b> to decipher the incoming secret payload.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px; display:flex; flex-direction:column; gap:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <button class="btn" style="background:#0ea5e9; font-size:0.75rem;" onclick="generateRsaKeys()">Generate Keypair</button>
+                        <button class="btn" style="background:#10b981; font-size:0.75rem;" onclick="decryptRsaHandshake()">Asymmetric Decrypt</button>
+                    </div>
+                    
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1;">
+                            <span style="font-size:0.7rem; color:#94a3b8; display:block; margin-bottom:4px;">🔑 Public Key:</span>
+                            <textarea id="crypto-rsa-pub" class="input-text" style="font-size:0.7rem; font-family:monospace; height:60px;" readonly placeholder="Not generated"></textarea>
+                        </div>
+                        <div style="flex:1;">
+                            <span style="font-size:0.7rem; color:#94a3b8; display:block; margin-bottom:4px;">🔑 Private Key:</span>
+                            <textarea id="crypto-rsa-priv" class="input-text" style="font-size:0.7rem; font-family:monospace; height:60px;" readonly placeholder="Not generated"></textarea>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span style="font-size:0.7rem; color:#94a3b8; display:block; margin-bottom:4px;">📦 Encrypted Ciphertext:</span>
+                        <input type="text" class="input-text" style="font-size:0.75rem; font-family:monospace;" value="0x7f2a1b9c3e5d8f6a" readonly>
+                    </div>
+                </div>
+                <div id="crypto-rsa-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Hashing & Integrity -->
+        <div id="panel-crypto-hash" class="panel">
+            <h2 class="panel-title">🔒 Cryptography: Hash Digests & Integrity</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Cryptographic Hash Functions</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Hashing takes an input of any size and produces a fixed-size unique digest. It is one-way (cannot get input from hash) and collision-resistant. It verifies data integrity.<br>
+                    • <b>Where</b>: Verifying file download integrity, password storage, blockchain blocks.<br>
+                    • <b>How</b>: Standard algorithms include <b>SHA-256</b>, SHA-512, and MD5.
+                </div>
+            </div>
+
+            <!-- Hash Integrity Lab -->
+            <div class="result-block" style="border-color:#10b981; background:#020617; margin-bottom:20px;">
+                <div class="result-header" style="color:#10b981;">🔒 SHA-256 File Checksum Verifier</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    Target SHA-256 Checksum: <code>a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3</code><br>
+                    <b>Task</b>: Calculate the hash for both files and select the one matching the integrity checksum.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px; display:flex; flex-direction:column; gap:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px;">
+                        <span style="font-size:0.8rem; color:#fff;">📁 File 1: patch_update_v1.bin</span>
+                        <button class="btn" style="font-size:0.7rem; padding:2px 8px; background:rgba(255,255,255,0.08);" onclick="calcCryptoHash(1)">Calculate Hash</button>
+                    </div>
+                    <div style="font-size:0.7rem; font-family:monospace; color:#94a3b8;" id="crypto-file1-hash">SHA-256: Click calculate</div>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:6px;">
+                        <span style="font-size:0.8rem; color:#fff;">📁 File 2: patch_update_v2.bin</span>
+                        <button class="btn" style="font-size:0.7rem; padding:2px 8px; background:rgba(255,255,255,0.08);" onclick="calcCryptoHash(2)">Calculate Hash</button>
+                    </div>
+                    <div style="font-size:0.7rem; font-family:monospace; color:#94a3b8;" id="crypto-file2-hash">SHA-256: Click calculate</div>
+
+                    <button class="btn" style="background:#10b981; font-size:0.75rem;" onclick="verifyCryptoIntegrity()">Verify Integrity</button>
+                </div>
+                <div id="crypto-hash-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- Digital Signatures -->
+        <div id="panel-crypto-signature" class="panel">
+            <h2 class="panel-title">🔒 Cryptography: Digital Signatures</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">Theory: Authenticity & Non-Repudiation</div>
+                <div class="result-body" style="line-height:1.6; font-size:0.9rem; color:var(--text-muted);">
+                    • <b>Why</b>: Digital signatures verify that a message was created by a known sender (authenticity) and was not altered in transit (integrity), providing non-repudiation.<br>
+                    • <b>Where</b>: Document signing (DocuSign), email signatures, code signing certificates.<br>
+                    • <b>How</b>: The sender hashes the message and encrypts the hash with their Private Key. The recipient decrypts the signature with the sender's Public Key and compares the hash values.
+                </div>
+            </div>
+
+            <!-- Digital Signature Lab -->
+            <div class="result-block" style="border-color:#10b981; background:#020617; margin-bottom:20px;">
+                <div class="result-header" style="color:#10b981;">🔒 Digital Signature Verification Engine</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin:10px 0;">
+                    <b>Task</b>: Verify the incoming document signature below by checking if the decrypted signature matches the computed message hash.
+                </p>
+                <div style="background:#0f172a; padding:15px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); margin-bottom:15px; display:flex; flex-direction:column; gap:10px;">
+                    <div>
+                        <span style="font-size:0.7rem; color:#94a3b8; display:block; margin-bottom:4px;">📄 Message Document Content:</span>
+                        <input type="text" class="input-text" style="font-size:0.75rem;" value="Authorize transfer of security clearance credentials." readonly>
+                    </div>
+                    <div>
+                        <span style="font-size:0.7rem; color:#94a3b8; display:block; margin-bottom:4px;">🔒 Cryptographic Signature (Hex):</span>
+                        <input type="text" class="input-text" style="font-size:0.75rem; font-family:monospace;" value="0x5b3c2d8f9a" readonly>
+                    </div>
+                    <button class="btn" style="background:#10b981; font-size:0.75rem;" onclick="verifyDigitalSignature()">Verify Signature</button>
+                </div>
+                <div id="crypto-sig-output" style="font-size:0.85rem; font-weight:700; display:none; padding:10px; border-radius:4px;"></div>
+            </div>
+        </div>
+
+        <!-- LINUX COMMAND SHELL PANELS -->
+        
+        <!-- Shell Navigation -->
+        <div id="panel-linuxshell-nav" class="panel">
+            <h2 class="panel-title">🐚 Linux Command Shell: Directory Navigation</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: File System Navigation</div>
+                <table class="table-results" style="width:100%; font-size:0.8rem; margin-top:10px;">
+                    <thead>
+                        <tr><th>Command</th><th>What & Why</th><th>How to use</th><th>Expected Terminal Output</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>pwd</code></td><td>Prints working directory path. Tells where you are.</td><td><code>pwd</code></td><td><code>/home/student</code></td></tr>
+                        <tr><td><code>ls</code></td><td>Lists directory files and folders.</td><td><code>ls</code> or <code>ls -la</code></td><td>Prints files list.</td></tr>
+                        <tr><td><code>cd</code></td><td>Changes current directory directory path.</td><td><code>cd Documents</code></td><td>Updates shell prompt path.</td></tr>
+                        <tr><td><code>mkdir</code></td><td>Creates a new empty directory path.</td><td><code>mkdir temp</code></td><td>Creates target folder.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Shell Navigation Lab -->
+            <div class="result-block" style="border-color:#10b981; background:#020617;">
+                <div class="result-header" style="color:#10b981;">🖥️ Linux Terminal (Navigation Sandbox)</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Task 1</b>: Print working directory using <code>pwd</code>, check files using <code>ls</code>, create folder <code>temp</code> using <code>mkdir temp</code>, and change directories using <code>cd temp</code>.
+                </p>
+                <div class="windows-terminal-box" style="background:#090d16; border:1px solid #1e293b; border-radius:6px; font-family:'Courier New', monospace; color:#10b981; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-linuxshellnav-output">
+                    <div>Welcome to Linux Sandbox console (Ubuntu 24.04 LTS)</div>
+                    <div>student@sandbox:~$ </div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#38bdf8; font-family:monospace; align-self:center; font-weight:700;">student@sandbox:~$</span>
+                    <input type="text" id="terminal-linuxshellnav-input" class="input-text" placeholder="Type pwd, ls, mkdir temp, cd temp..." style="flex:1; background:#090d16; border-color:#1e293b; color:#10b981; font-family:monospace;" onkeydown="handleLinuxshellKey(event, 'linuxshellnav')">
+                </div>
+            </div>
+        </div>
+
+        <!-- File Operations -->
+        <div id="panel-linuxshell-ops" class="panel">
+            <h2 class="panel-title">🐚 Linux Command Shell: File Operations</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: File Manipulation</div>
+                <table class="table-results" style="width:100%; font-size:0.8rem; margin-top:10px;">
+                    <thead>
+                        <tr><th>Command</th><th>What & Why</th><th>How to use</th><th>Expected Terminal Output</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>cat</code></td><td>Displays contents of files.</td><td><code>cat file.txt</code></td><td>Prints text contents.</td></tr>
+                        <tr><td><code>echo</code></td><td>Prints a line of text to standard output or file.</td><td><code>echo "hello" > file.txt</code></td><td>Writes output to file.</td></tr>
+                        <tr><td><code>cp</code></td><td>Copies files or directories.</td><td><code>cp src.txt dest.txt</code></td><td>Duplicates file.</td></tr>
+                        <tr><td><code>mv</code></td><td>Moves or renames files.</td><td><code>mv old.txt new.txt</code></td><td>Renames/moves file.</td></tr>
+                        <tr><td><code>rm</code></td><td>Removes/deletes files.</td><td><code>rm file.txt</code></td><td>Deletes file.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- File Operations Lab -->
+            <div class="result-block" style="border-color:#10b981; background:#020617;">
+                <div class="result-header" style="color:#10b981;">🖥️ Linux Terminal (File Operations Sandbox)</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Task 2</b>: Read <code>secrets.txt</code> using <code>cat secrets.txt</code>, and copy it to a new file <code>backup.txt</code> using <code>cp secrets.txt backup.txt</code>.
+                </p>
+                <div class="windows-terminal-box" style="background:#090d16; border:1px solid #1e293b; border-radius:6px; font-family:'Courier New', monospace; color:#10b981; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-linuxshellops-output">
+                    <div>student@sandbox:~$ </div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#38bdf8; font-family:monospace; align-self:center; font-weight:700;">student@sandbox:~$</span>
+                    <input type="text" id="terminal-linuxshellops-input" class="input-text" placeholder="Type cat secrets.txt, cp secrets.txt backup.txt..." style="flex:1; background:#090d16; border-color:#1e293b; color:#10b981; font-family:monospace;" onkeydown="handleLinuxshellKey(event, 'linuxshellops')">
+                </div>
+            </div>
+        </div>
+
+        <!-- Permissions & Exec -->
+        <div id="panel-linuxshell-perm" class="panel">
+            <h2 class="panel-title">🐚 Linux Command Shell: Permissions & Exec</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: Permissions Utilities</div>
+                <table class="table-results" style="width:100%; font-size:0.8rem; margin-top:10px;">
+                    <thead>
+                        <tr><th>Command</th><th>What & Why</th><th>How to use</th><th>Expected Terminal Output</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>chmod</code></td><td>Changes file permission bits. Adds/removes execution rights.</td><td><code>chmod +x run.sh</code></td><td>Grants execution.</td></tr>
+                        <tr><td><code>chown</code></td><td>Changes file owner and group settings.</td><td><code>chown root file.txt</code></td><td>Updates ownership.</td></tr>
+                        <tr><td><code>sudo</code></td><td>Executes a command with superuser (root) privileges.</td><td><code>sudo apt update</code></td><td>Runs with admin access.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Permissions Lab -->
+            <div class="result-block" style="border-color:#10b981; background:#020617;">
+                <div class="result-header" style="color:#10b981;">🖥️ Linux Terminal (Permissions Sandbox)</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Task 3</b>: Attempt running the script using <code>./run.sh</code> (Permission Denied!). Fix permission bits using <code>chmod +x run.sh</code>, then run <code>./run.sh</code>!
+                </p>
+                <div class="windows-terminal-box" style="background:#090d16; border:1px solid #1e293b; border-radius:6px; font-family:'Courier New', monospace; color:#10b981; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-linuxshellperm-output">
+                    <div>student@sandbox:~$ </div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#38bdf8; font-family:monospace; align-self:center; font-weight:700;">student@sandbox:~$</span>
+                    <input type="text" id="terminal-linuxshellperm-input" class="input-text" placeholder="Type ./run.sh, chmod +x run.sh, ./run.sh..." style="flex:1; background:#090d16; border-color:#1e293b; color:#10b981; font-family:monospace;" onkeydown="handleLinuxshellKey(event, 'linuxshellperm')">
+                </div>
+            </div>
+        </div>
+
+        <!-- System & Triage -->
+        <div id="panel-linuxshell-triage" class="panel">
+            <h2 class="panel-title">🐚 Linux Command Shell: System & Network Triage</h2>
+            <div class="result-block" style="margin-bottom: 20px;">
+                <div class="result-header">📖 Command Guide: Diagnostics Utilities</div>
+                <table class="table-results" style="width:100%; font-size:0.8rem; margin-top:10px;">
+                    <thead>
+                        <tr><th>Command</th><th>What & Why</th><th>How to use</th><th>Expected Terminal Output</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>ps</code></td><td>Reports snapshots of current running processes.</td><td><code>ps aux</code> or <code>ps -ef</code></td><td>Lists active PIDs.</td></tr>
+                        <tr><td><code>kill</code></td><td>Sends termination signals to processes by PID.</td><td><code>kill 9999</code> or <code>kill -9 9999</code></td><td>Stops process thread.</td></tr>
+                        <tr><td><code>ifconfig</code></td><td>Displays network configuration adapters (like Windows ipconfig).</td><td><code>ifconfig</code></td><td>Prints network IPs.</td></tr>
+                        <tr><td><code>netstat</code></td><td>Prints network connection listings and listening ports.</td><td><code>netstat -tuln</code></td><td>Lists listening ports.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Triage Lab -->
+            <div class="result-block" style="border-color:#10b981; background:#020617;">
+                <div class="result-header" style="color:#10b981;">🖥️ Linux Terminal (Triage & Processes Sandbox)</div>
+                <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">
+                    <b>Task 4</b>: Inspect active processes using <code>ps aux</code> to locate the malicious backdoor process running on PID <code>9999</code>, then kill it using <code>kill 9999</code>!
+                </p>
+                <div class="windows-terminal-box" style="background:#090d16; border:1px solid #1e293b; border-radius:6px; font-family:'Courier New', monospace; color:#10b981; padding:15px; min-height:180px; max-height:220px; overflow-y:auto; font-size:0.85rem;" id="terminal-linuxshelltriage-output">
+                    <div>student@sandbox:~$ </div>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <span style="color:#38bdf8; font-family:monospace; align-self:center; font-weight:700;">student@sandbox:~$</span>
+                    <input type="text" id="terminal-linuxshelltriage-input" class="input-text" placeholder="Type ps aux or kill 9999..." style="flex:1; background:#090d16; border-color:#1e293b; color:#10b981; font-family:monospace;" onkeydown="handleLinuxshellKey(event, 'linuxshelltriage')">
+                </div>
+            </div>
+        </div>
+
         <!-- WINDOWS BASICS PANELS -->
         
         <!-- CMD & File Basics Panel -->
@@ -4471,7 +5645,7 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             const sidebar = document.querySelector('.sidebar');
             const workspace = document.querySelector('.workspace');
             if (sidebar && workspace) {
-                if (panelName === 'hub-cyberlab' || panelName.startsWith('owasp-') || panelName.startsWith('basics-') || panelName.startsWith('linux-') || panelName.startsWith('windows-') || panelName.startsWith('netcourse-') || panelName.startsWith('webcourse-')) {
+                if (panelName === 'hub-cyberlab' || panelName.startsWith('owasp-') || panelName.startsWith('basics-') || panelName.startsWith('linux-') || panelName.startsWith('windows-') || panelName.startsWith('netcourse-') || panelName.startsWith('webcourse-') || panelName.startsWith('websec-') || panelName.startsWith('burp-') || panelName.startsWith('nmap-') || panelName.startsWith('wireshark-') || panelName.startsWith('pass-') || panelName.startsWith('crypto-') || panelName.startsWith('linuxshell-')) {
                     sidebar.style.setProperty('display', 'block', 'important');
                     workspace.style.setProperty('margin-left', '280px', 'important');
                     workspace.style.setProperty('width', 'calc(100% - 280px)', 'important');
@@ -4485,6 +5659,20 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                         openSidebarAccordion('netcourse');
                     } else if (panelName.startsWith('webcourse-')) {
                         openSidebarAccordion('webcourse');
+                    } else if (panelName.startsWith('websec-')) {
+                        openSidebarAccordion('websec');
+                    } else if (panelName.startsWith('burp-')) {
+                        openSidebarAccordion('burp');
+                    } else if (panelName.startsWith('nmap-')) {
+                        openSidebarAccordion('nmap');
+                    } else if (panelName.startsWith('wireshark-')) {
+                        openSidebarAccordion('wireshark');
+                    } else if (panelName.startsWith('pass-')) {
+                        openSidebarAccordion('pass');
+                    } else if (panelName.startsWith('crypto-')) {
+                        openSidebarAccordion('crypto');
+                    } else if (panelName.startsWith('linuxshell-')) {
+                        openSidebarAccordion('linuxshell');
                     } else {
                         openSidebarAccordion('owasp');
                     }
@@ -7552,6 +8740,729 @@ SHA-1:    ${sha1Hex}
             if (activeItem) activeItem.classList.add('active');
         }
 
+        // ==========================================
+        // WEB APPLICATION SECURITY COURSE ENGINE
+        // ==========================================
+        function switchWebsecPanel(code) {
+            switchPanel(`websec-${code}`);
+            document.querySelectorAll('.websec-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-websec-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        // ==========================================
+        // BURP SUITE COURSE ENGINE
+        // ==========================================
+        function switchBurpPanel(code) {
+            switchPanel(`burp-${code}`);
+            document.querySelectorAll('.burp-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-burp-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        // ==========================================
+        // NMAP SCANNER COURSE ENGINE
+        // ==========================================
+        function switchNmapPanel(code) {
+            switchPanel(`nmap-${code}`);
+            document.querySelectorAll('.nmap-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-nmap-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        // ==========================================
+        // WIRESHARK ANALYZER COURSE ENGINE
+        // ==========================================
+        function switchWiresharkPanel(code) {
+            switchPanel(`wireshark-${code}`);
+            document.querySelectorAll('.wireshark-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-wireshark-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        // ==========================================
+        // PASSWORD ATTACKS COURSE ENGINE
+        // ==========================================
+        function switchPassPanel(code) {
+            switchPanel(`pass-${code}`);
+            document.querySelectorAll('.pass-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-pass-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        // ==========================================
+        // CRYPTOGRAPHY COURSE ENGINE
+        // ==========================================
+        function switchCryptoPanel(code) {
+            switchPanel(`crypto-${code}`);
+            document.querySelectorAll('.crypto-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-crypto-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        function decryptCaesarCipher() {
+            const keyVal = parseInt(document.getElementById('crypto-caesar-key').value.trim());
+            const out = document.getElementById('crypto-caesar-output');
+            if (!out) return;
+            out.style.display = "block";
+
+            if (keyVal === 3) {
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ Decryption Success! Ciphertext 'KHOOR' shifts backward by 3 to: <b>HELLO</b>.<br><b>Flag:</b> NCAS{symmetric_caesar_shift_decrypted}<br><span style="color:#06b6d4;">Moving to Asymmetric Handshake...</span>`;
+                setTimeout(() => switchCryptoPanel('asymmetric'), 2000);
+            } else {
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.textContent = `✗ Mismatch Shift Offset. Try shift key value '3'.`;
+            }
+        }
+
+        function generateRsaKeys() {
+            const pub = document.getElementById('crypto-rsa-pub');
+            const priv = document.getElementById('crypto-rsa-priv');
+            if (!pub || !priv) return;
+
+            pub.value = `-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0Y3r1b...\n-----END PUBLIC KEY-----`;
+            priv.value = `-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA0Y3r1b9c3e5d8f6a3b2ac8d7e9f0...\n-----END RSA PRIVATE KEY-----`;
+        }
+
+        function decryptRsaHandshake() {
+            const pub = document.getElementById('crypto-rsa-pub').value.trim();
+            const out = document.getElementById('crypto-rsa-output');
+            if (!out) return;
+            out.style.display = "block";
+
+            if (pub.includes("BEGIN PUBLIC KEY")) {
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ Asymmetric RSA decryption verified with Private Key!<br><b>Plaintext:</b> FlagRequest<br><b>Flag:</b> NCAS{asymmetric_rsa_keypair_handshake}<br><span style="color:#06b6d4;">Moving to Hashing & Integrity...</span>`;
+                setTimeout(() => switchCryptoPanel('hash'), 2000);
+            } else {
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.textContent = `✗ No keys generated. Click 'Generate Keypair' first.`;
+            }
+        }
+
+        let calculatedHashes = { 1: false, 2: false };
+        function calcCryptoHash(fileNum) {
+            const el = document.getElementById(`crypto-file${fileNum}-hash`);
+            if (!el) return;
+
+            if (fileNum === 1) {
+                el.textContent = "SHA-256: d57e1c3e98218e86f7a07a1b9c3e5d8f6a3b2ac8d7e9f01a4f5b3c2d8f9a2b1c";
+                calculatedHashes[1] = true;
+            } else {
+                el.textContent = "SHA-256: a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3";
+                calculatedHashes[2] = true;
+            }
+        }
+
+        function verifyCryptoIntegrity() {
+            const out = document.getElementById('crypto-hash-output');
+            if (!out) return;
+            out.style.display = "block";
+
+            if (!calculatedHashes[1] || !calculatedHashes[2]) {
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.textContent = `✗ Please click 'Calculate Hash' on both files before verifying.`;
+                return;
+            }
+
+            out.style.background = "rgba(16,185,129,0.1)";
+            out.style.color = "#10b981";
+            out.style.border = "1px solid rgba(16,185,129,0.2)";
+            out.innerHTML = `✓ Integrity matches target checksum on File 2!<br><b>Verified File:</b> patch_update_v2.bin<br><b>Flag:</b> NCAS{cryptographic_checksum_integrity_verified}<br><span style="color:#06b6d4;">Moving to Digital Signatures...</span>`;
+            setTimeout(() => switchCryptoPanel('signature'), 2000);
+        }
+
+        function verifyDigitalSignature() {
+            const out = document.getElementById('crypto-sig-output');
+            if (!out) return;
+            out.style.display = "block";
+
+            out.style.background = "rgba(16,185,129,0.1)";
+            out.style.color = "#10b981";
+            out.style.border = "1px solid rgba(16,185,129,0.2)";
+            out.innerHTML = `✓ Signature verified! Sender's authenticity and document non-repudiation verified.<br><b>Flag:</b> NCAS{digital_signature_verification_success}<br>🎉 Congratulations! You completed the Cryptography course!`;
+        }
+
+        function runDictionaryAttack() {
+            const list = document.getElementById('pass-dict-wordlist').value.trim().split('\n');
+            const consoleBox = document.getElementById('pass-dict-console');
+            const out = document.getElementById('pass-dict-output');
+            if (!consoleBox || !out) return;
+
+            consoleBox.style.display = "block";
+            consoleBox.innerHTML = "";
+            out.style.display = "none";
+
+            let delay = 0;
+            let found = false;
+
+            list.forEach((word, idx) => {
+                const cleanWord = word.trim();
+                if (!cleanWord) return;
+
+                setTimeout(() => {
+                    if (found) return;
+                    
+                    const line = document.createElement("div");
+                    if (cleanWord === "dragon") {
+                        found = true;
+                        line.style.color = "#10b981";
+                        line.textContent = `[+] Testing "dragon"... [SUCCESS] Account cracked! Password found!`;
+                        consoleBox.appendChild(line);
+                        
+                        out.style.display = "block";
+                        out.style.background = "rgba(16,185,129,0.1)";
+                        out.style.color = "#10b981";
+                        out.style.border = "1px solid rgba(16,185,129,0.2)";
+                        out.innerHTML = `✓ Dictionary attack complete!<br><b>Correct Password:</b> dragon<br><b>Flag:</b> NCAS{dictionary_attack_rockyou_success}<br><span style="color:#06b6d4;">Moving to Brute Force...</span>`;
+                        setTimeout(() => switchPassPanel('brute'), 2000);
+                    } else {
+                        line.style.color = "var(--accent-red)";
+                        line.textContent = `[-] Testing "${cleanWord}"... [FAILURE] Invalid password`;
+                        consoleBox.appendChild(line);
+                    }
+                    consoleBox.scrollTop = consoleBox.scrollHeight;
+                }, delay);
+                delay += 500;
+            });
+        }
+
+        function runBruteForceAttack() {
+            const consoleBox = document.getElementById('pass-brute-console');
+            const out = document.getElementById('pass-brute-output');
+            if (!consoleBox || !out) return;
+
+            consoleBox.style.display = "block";
+            consoleBox.innerHTML = "Generating 3-character keys offline...\n";
+            out.style.display = "none";
+
+            const chars = "abcdefghijklmnopqrstuvwxyz".split('');
+            let delay = 0;
+            let count = 0;
+            let found = false;
+
+            for (let i = 0; i < chars.length; i++) {
+                for (let j = 0; j < chars.length; j++) {
+                    for (let k = 0; k < chars.length; k++) {
+                        const guess = chars[i] + chars[j] + chars[k];
+                        count++;
+                        if (count > 150 && guess !== "cat") continue; // Speed shortcut for frontend performance
+
+                        setTimeout(() => {
+                            if (found) return;
+
+                            const line = document.createElement("div");
+                            if (guess === "cat") {
+                                found = true;
+                                line.style.color = "#10b981";
+                                line.textContent = `[+] Permutation "${guess}"... MATCH FOUND! Cracked in ${count} attempts.`;
+                                consoleBox.appendChild(line);
+
+                                out.style.display = "block";
+                                out.style.background = "rgba(16,185,129,0.1)";
+                                out.style.color = "#10b981";
+                                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                                out.innerHTML = `✓ Brute force attack complete!<br><b>Correct Key:</b> cat<br><b>Flag:</b> NCAS{brute_force_exhaustive_search}<br><span style="color:#06b6d4;">Moving to Hash Cracking...</span>`;
+                                setTimeout(() => switchPassPanel('hash'), 2000);
+                            } else {
+                                line.textContent = `[-] Permutation "${guess}"... [FAILED]`;
+                                consoleBox.appendChild(line);
+                            }
+                            consoleBox.scrollTop = consoleBox.scrollHeight;
+                        }, delay);
+                        delay += 30; // Very fast tick rate
+
+                        if (guess === "cat") {
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+        function runHashCrackAttack() {
+            const list = document.getElementById('pass-hash-wordlist').value.trim().split('\n');
+            const consoleBox = document.getElementById('pass-hash-console');
+            const out = document.getElementById('pass-hash-output');
+            if (!consoleBox || !out) return;
+
+            consoleBox.style.display = "block";
+            consoleBox.innerHTML = "Initializing GPU Hashcat hash cracker session...\n";
+            out.style.display = "none";
+
+            let delay = 0;
+            let found = false;
+
+            list.forEach((word) => {
+                const cleanWord = word.trim();
+                if (!cleanWord) return;
+
+                setTimeout(() => {
+                    if (found) return;
+
+                    const line = document.createElement("div");
+                    if (cleanWord === "monkey") {
+                        found = true;
+                        line.style.color = "#10b981";
+                        line.textContent = `[+] Word "monkey" -> SHA-256 Hash matches target hash!\nCracked password: monkey`;
+                        consoleBox.appendChild(line);
+
+                        out.style.display = "block";
+                        out.style.background = "rgba(16,185,129,0.1)";
+                        out.style.color = "#10b981";
+                        out.style.border = "1px solid rgba(16,185,129,0.2)";
+                        out.innerHTML = `✓ Hash cracked offline!<br><b>Cracked Password:</b> monkey<br><b>Flag:</b> NCAS{hash_crack_sha256_success}<br><span style="color:#06b6d4;">Moving to Credential Stuffing...</span>`;
+                        setTimeout(() => switchPassPanel('stuffing'), 2000);
+                    } else {
+                        line.textContent = `[-] Word "${cleanWord}" -> Hash mismatch`;
+                        consoleBox.appendChild(line);
+                    }
+                    consoleBox.scrollTop = consoleBox.scrollHeight;
+                }, delay);
+                delay += 500;
+            });
+        }
+
+        function submitCredentialStuffing() {
+            const password = document.getElementById('pass-stuffing-input').value.trim();
+            const out = document.getElementById('pass-stuffing-output');
+            if (!out) return;
+            out.style.display = "block";
+
+            if (password === "Winter2026!") {
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ Successful Admin Bypass! User credentials reuse validated.<br><b>Flag Found:</b> NCAS{credential_stuffing_password_reuse}<br>🎉 Congratulations! You completed the Password Attacks course!`;
+            } else {
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.textContent = `✗ Authentication Failed! Password reuse leak mismatch. Check the CSV leak source table and try again.`;
+            }
+        }
+
+        function startWiresharkCapture() {
+            const filter = document.getElementById('wireshark-cap-filter').value.trim();
+            const grid = document.getElementById('wireshark-capture-grid');
+            const tbody = document.getElementById('wireshark-capture-tbody');
+            const details = document.getElementById('wireshark-capture-details');
+            const out = document.getElementById('wireshark-capture-output');
+            if (!grid || !tbody || !details || !out) return;
+            out.style.display = "block";
+
+            if (filter === "port 80") {
+                tbody.innerHTML = `
+                    <tr style="background:rgba(0,128,0,0.1); border-bottom:1px solid rgba(255,255,255,0.04); cursor:pointer;">
+                        <td style="padding:6px;">1</td>
+                        <td style="padding:6px;">0.0000</td>
+                        <td style="padding:6px;">192.168.1.10</td>
+                        <td style="padding:6px;">192.168.1.1</td>
+                        <td style="padding:6px; color:#10b981;">HTTP</td>
+                        <td style="padding:6px;">GET /login.php HTTP/1.1 (Cookie: Flag=NCAS{wireshark_promiscuous_capture_flag})</td>
+                    </tr>
+                `;
+                grid.style.display = "block";
+                details.style.display = "block";
+                
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ Promiscuous network capture successfully matches capture filter rules!<br><b>Flag Found:</b> NCAS{wireshark_promiscuous_capture_flag}<br><span style="color:#06b6d4;">Moving to Display Filters...</span>`;
+                setTimeout(() => switchWiresharkPanel('filter'), 2000);
+            } else {
+                tbody.innerHTML = `
+                    <tr style="background:rgba(239,68,68,0.05); border-bottom:1px solid rgba(255,255,255,0.04);">
+                        <td style="padding:6px;" colspan="6" align="center">No packets matched the configured filter or invalid filter syntax. Hint: Enter 'port 80'.</td>
+                    </tr>
+                `;
+                grid.style.display = "block";
+                details.style.display = "none";
+                
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.textContent = `✗ Capture failed. Filter does not capture targeted unencrypted web authentication traffic.`;
+            }
+        }
+
+        function applyWiresharkDisplayFilter() {
+            const filter = document.getElementById('wireshark-disp-filter').value.trim();
+            const out = document.getElementById('wireshark-filter-output');
+            if (!out) return;
+            out.style.display = "block";
+
+            // Row selectors
+            const arpRows = document.querySelectorAll('.ws-row-arp');
+            const tcpRows = document.querySelectorAll('.ws-row-tcp');
+            const dnsRows = document.querySelectorAll('.ws-row-dns');
+
+            if (filter.toLowerCase() === "dns") {
+                arpRows.forEach(r => r.style.display = "none");
+                tcpRows.forEach(r => r.style.display = "none");
+                dnsRows.forEach(r => r.style.display = "table-row");
+
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ Display query filter applied successfully! DNS traffic isolated.<br><b>Flag Found:</b> NCAS{wireshark_dns_display_filter_success}<br><span style="color:#06b6d4;">Moving to Follow TCP Stream...</span>`;
+                setTimeout(() => switchWiresharkPanel('stream'), 2000);
+            } else {
+                arpRows.forEach(r => r.style.display = "table-row");
+                tcpRows.forEach(r => r.style.display = "table-row");
+                dnsRows.forEach(r => r.style.display = "table-row");
+
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.textContent = `✗ Filter did not isolate DNS packets. Try typing 'dns' to filter.`;
+            }
+        }
+
+        function followWiresharkTcpStream() {
+            const consoleBox = document.getElementById('wireshark-stream-console');
+            const out = document.getElementById('wireshark-stream-output');
+            if (!consoleBox || !out) return;
+
+            consoleBox.innerHTML = `
+<span style="color:#ef4444;">POST /login HTTP/1.1
+Host: secure-app.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 52
+
+username=admin&password=SuperSecureSecretCredentialKey</span>
+
+<span style="color:#06b6d4;">HTTP/1.1 200 OK
+Server: Nginx
+Content-Type: text/html
+
+Welcome administrator. Access Flag: NCAS{wireshark_follow_tcp_stream_secret}</span>
+            `;
+            consoleBox.style.display = "block";
+            out.style.display = "block";
+
+            out.style.background = "rgba(16,185,129,0.1)";
+            out.style.color = "#10b981";
+            out.style.border = "1px solid rgba(16,185,129,0.2)";
+            out.innerHTML = `✓ TCP Conversation stream reassembled successfully!<br><b>Flag Found:</b> NCAS{wireshark_follow_tcp_stream_secret}<br><span style="color:#06b6d4;">Moving to Export Objects...</span>`;
+            setTimeout(() => switchWiresharkPanel('export'), 2000);
+        }
+
+        function exportWiresharkObject() {
+            const out = document.getElementById('wireshark-export-output');
+            if (!out) return;
+            out.style.display = "block";
+
+            out.style.background = "rgba(16,185,129,0.1)";
+            out.style.color = "#10b981";
+            out.style.border = "1px solid rgba(16,185,129,0.2)";
+            out.innerHTML = `✓ Object payload successfully extracted from packet stream!<br><b>Flag Found:</b> NCAS{wireshark_http_object_export_completed}<br>🎉 Congratulations! You completed the Wireshark Analyzer course!`;
+        }
+
+        function handleNmapTerminalKey(event, type) {
+            if (event.key === "Enter") {
+                const inputEl = document.getElementById(`nmap-terminal-${type}-input`);
+                const commandStr = inputEl.value.trim();
+                if (!commandStr) return;
+
+                const outBox = document.getElementById(`nmap-terminal-${type}-output`);
+                if (!outBox) return;
+
+                // Echo command
+                const echo = document.createElement("div");
+                echo.style.color = "#fff";
+                echo.textContent = `$ ${commandStr}`;
+                outBox.appendChild(echo);
+
+                const responseLine = document.createElement("div");
+                responseLine.style.marginTop = "4px";
+                responseLine.style.whiteSpace = "pre-wrap";
+
+                let outputText = "";
+                let isCorrect = false;
+
+                if (type === "syn") {
+                    if (commandStr === "nmap -sS 192.168.1.1") {
+                        isCorrect = true;
+                        outputText = "Starting Nmap 7.80 ( https://nmap.org ) at 2026-07-22 11:15 UTC\nInitiating ARP Ping Scan at 11:15\nScanning 192.168.1.1 [1000 ports]\nDiscovered open port 22/tcp on 192.168.1.1\nDiscovered open port 80/tcp on 192.168.1.1\nDiscovered open port 3306/tcp on 192.168.1.1\nCompleted SYN Stealth Scan at 11:15, 0.15s elapsed (1000 total ports)\n\nPORT     STATE SERVICE\n22/tcp   open  ssh\n80/tcp   open  http\n3306/tcp open  mysql\n\nNmap done: 1 IP address (1 host up) scanned in 0.22s\nFlag: NCAS{nmap_stealth_syn_scan_complete}\n\n[TASK COMPLETE] Port scan complete! Flag verified!\nRedirecting to Service Detection in 2 seconds...";
+                        setTimeout(() => switchNmapPanel('version'), 2000);
+                    } else {
+                        outputText = `nmap: command execution error or invalid parameters. Try running exactly:\nnmap -sS 192.168.1.1`;
+                        responseLine.style.color = "var(--accent-red)";
+                    }
+                } else if (type === "version") {
+                    if (commandStr === "nmap -sV 192.168.1.1") {
+                        isCorrect = true;
+                        outputText = "Starting Nmap 7.80 ( https://nmap.org ) at 2026-07-22 11:16 UTC\nScanning 192.168.1.1 [3 ports]\nService scan initiating (SSH, HTTP, MySQL)\nService scan completed in 1.1s\n\nPORT     STATE SERVICE VERSION\n22/tcp   open  ssh     OpenSSH 8.2p1 Ubuntu 4ubuntu0.5\n80/tcp   open  http    Apache httpd 2.4.41 ((Ubuntu))\n3306/tcp open  mysql   MySQL 8.0.25-0ubuntu0.20.04.1\n\nNmap done: 1 IP address (1 host up) scanned in 1.35s\nFlag: NCAS{nmap_service_version_fingerprint}\n\n[TASK COMPLETE] Service detection complete! Flag verified!\nRedirecting to OS Detection in 2 seconds...";
+                        setTimeout(() => switchNmapPanel('os'), 2000);
+                    } else {
+                        outputText = `nmap: command execution error or invalid parameters. Try running exactly:\nnmap -sV 192.168.1.1`;
+                        responseLine.style.color = "var(--accent-red)";
+                    }
+                } else if (type === "os") {
+                    if (commandStr === "nmap -O 192.168.1.1") {
+                        isCorrect = true;
+                        outputText = "Starting Nmap 7.80 ( https://nmap.org ) at 2026-07-22 11:17 UTC\nOS detection initiating (OS TCP/IP sequence fingerprinting)\nOS detection completed in 0.8s\n\nDevice type: general purpose\nRunning: Linux 5.X\nOS CPE: cpe:/o:linux:linux_kernel:5\nOS details: Linux 5.0 - 5.4\nNetwork Distance: 1 hop\n\nOS detection perform complete.\nFlag: NCAS{nmap_os_fingerprint_leak}\n\n[TASK COMPLETE] OS fingerprinting complete! Flag verified!\nRedirecting to NSE Vulnerability Scan in 2 seconds...";
+                        setTimeout(() => switchNmapPanel('nse'), 2000);
+                    } else {
+                        outputText = `nmap: command execution error or OS scan requires administrator permission. Run exactly:\nnmap -O 192.168.1.1`;
+                        responseLine.style.color = "var(--accent-red)";
+                    }
+                } else if (type === "nse") {
+                    if (commandStr === "nmap --script vuln 192.168.1.1") {
+                        isCorrect = true;
+                        outputText = "Starting Nmap 7.80 ( https://nmap.org ) at 2026-07-22 11:18 UTC\nNSE: Loaded 45 scripts for vulnerability scanning.\nNSE: Script scanning 192.168.1.1.\n\nPORT     STATE SERVICE\n22/tcp   open  ssh\n80/tcp   open  http\n3306/tcp open  mysql\n\nHost script results:\n| smb-vuln-cve-2020-0796:\n|   VULNERABLE:\n|   SMBv3 Remote Code Execution (CVE-2020-0796)\n|     State: VULNERABLE\n|     Risk factor: Critical\n|_    Description: Vulnerable server allows remote execution of arbitrary code via SMBv3 compression logic.\n\nNmap done: 1 IP address (1 host up) scanned.\nFlag: NCAS{nmap_scripting_engine_vuln_scan}\n\n[TASK COMPLETE] NSE vulnerability script audit complete! Flag verified!\n🎉 Congratulations! You completed the Nmap Scanner course!";
+                    } else {
+                        outputText = `nmap: command execution error or script categories mismatch. Run exactly:\nnmap --script vuln 192.168.1.1`;
+                        responseLine.style.color = "var(--accent-red)";
+                    }
+                }
+
+                if (isCorrect) {
+                    responseLine.style.color = "#10b981";
+                }
+                responseLine.textContent = outputText;
+                outBox.appendChild(responseLine);
+                outBox.scrollTop = outBox.scrollHeight;
+                inputEl.value = "";
+            }
+        }
+
+        function submitBurpProxyLab() {
+            const req = document.getElementById('burp-proxy-request').value.trim();
+            const out = document.getElementById('burp-proxy-output');
+            if (!out) return;
+            out.style.display = "block";
+
+            if (req.includes("role=admin")) {
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ Request modified successfully! Administrator panel accessed.<br><b>Flag Found:</b> NCAS{burp_proxy_intercept_role_override}<br><span style="color:#06b6d4;">Moving to Intruder & Brute Force...</span>`;
+                setTimeout(() => switchBurpPanel('intruder'), 2000);
+            } else {
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.innerHTML = `✗ Server processed request. Role remains 'user'. Access denied for alice.`;
+            }
+        }
+
+        function runBurpIntruderAttack() {
+            const tbody = document.getElementById('burp-intruder-tbody');
+            const tableBox = document.getElementById('burp-intruder-table');
+            if (!tbody || !tableBox) return;
+            
+            tbody.innerHTML = "";
+            tableBox.style.display = "block";
+
+            const pins = ["1048", "3902", "5540", "7391", "8829", "9901"];
+            pins.forEach(pin => {
+                const tr = document.createElement("tr");
+                tr.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
+                
+                const isCorrect = pin === "7391";
+                const status = isCorrect ? "302 Found" : "200 OK";
+                const length = isCorrect ? "1024 bytes" : "342 bytes";
+                
+                tr.innerHTML = `
+                    <td style="padding:8px; color:#fff;">${pin}</td>
+                    <td style="padding:8px; color:${isCorrect ? '#eab308' : '#94a3b8'};">${status}</td>
+                    <td style="padding:8px; color:${isCorrect ? '#eab308' : '#94a3b8'};">${length}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function verifyBurpIntruderPin() {
+            const pin = document.getElementById('burp-intruder-pin-input').value.trim();
+            const out = document.getElementById('burp-intruder-output');
+            if (!out) return;
+            out.style.display = "block";
+
+            if (pin === "7391") {
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ PIN verified! Redirect authenticated.<br><b>Flag Found:</b> NCAS{burp_intruder_brute_force_pin}<br><span style="color:#06b6d4;">Moving to Repeater & Tampering...</span>`;
+                setTimeout(() => switchBurpPanel('repeater'), 2000);
+            } else {
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.textContent = `✗ Access Denied. PIN ${pin} is incorrect.`;
+            }
+        }
+
+        function sendBurpRepeaterRequest() {
+            const req = document.getElementById('burp-repeater-request').value.trim();
+            const resp = document.getElementById('burp-repeater-response');
+            const out = document.getElementById('burp-repeater-output');
+            if (!resp || !out) return;
+            out.style.display = "block";
+
+            if (req.includes("price=0") || req.includes("price=-")) {
+                resp.textContent = "HTTP/1.1 200 OK\nServer: Nginx\nContent-Type: application/json\n\n{\n  \"status\": \"success\",\n  \"message\": \"Checkout bypass complete!\",\n  \"flag\": \"NCAS{burp_repeater_parameter_tampering}\"\n}";
+                resp.style.color = "#10b981";
+                
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ Parameter tampering vulnerability discovered! Price set to zero.<br><b>Flag Found:</b> NCAS{burp_repeater_parameter_tampering}<br><span style="color:#06b6d4;">Moving to Decoder & Encoding...</span>`;
+                setTimeout(() => switchBurpPanel('decoder'), 2000);
+            } else {
+                resp.textContent = "HTTP/1.1 200 OK\nServer: Nginx\nContent-Type: text/plain\n\nCheckout finalized. Amount charged: $100.00";
+                resp.style.color = "#94a3b8";
+                
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.textContent = `✗ Request processed successfully. Charged standard price ($100). No vulnerability exposed.`;
+            }
+        }
+
+        function applyBurpDecoder() {
+            const sel = document.getElementById('burp-decoder-select').value;
+            const outBox = document.getElementById('burp-decoder-result-box');
+            const out = document.getElementById('burp-decoder-output');
+            if (!outBox || !out) return;
+            outBox.style.display = "block";
+            out.style.display = "block";
+
+            if (sel === "base64") {
+                outBox.textContent = "Decoded String:\nuser=admin;flag=NCAS{burp_decoder_base64_token}";
+                outBox.style.color = "#10b981";
+                
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ Token successfully decoded! Flag verified!<br><b>Flag:</b> NCAS{burp_decoder_base64_token}<br>🎉 Congratulations! You completed the Burp Suite course!`;
+            } else {
+                outBox.textContent = "Error: Input format not valid for selected encoding transform rule.";
+                outBox.style.color = "var(--accent-red)";
+                
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.textContent = `✗ Selection did not return readable plaintext data. Try Base64 decoding.`;
+            }
+        }
+
+        function submitSqliLab() {
+            const user = document.getElementById('sqli-username').value.trim();
+            const pass = document.getElementById('sqli-password').value.trim();
+            const out = document.getElementById('sqli-lab-output');
+            if (!out) return;
+            out.style.display = "block";
+
+            if (user.includes("'") && (user.toLowerCase().includes("or") || user.includes("||"))) {
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ SQL Syntax successfully bypassed!<br><b>Query Executed:</b> <code>SELECT * FROM users WHERE username = '${user}' AND password = '${pass}'</code><br><b>Result:</b> Logged in as administrator!<br><b>Flag Found:</b> NCAS{sqli_bypass_login_success}<br><span style="color:#06b6d4;">Moving to Cross-Site Scripting (XSS)...</span>`;
+                setTimeout(() => switchWebsecPanel('xss'), 2000);
+            } else {
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.innerHTML = `✗ Authentication failed.<br><b>Query Executed:</b> <code>SELECT * FROM users WHERE username = '${user}' AND password = '${pass}'</code><br><b>Result:</b> Empty set returned (Invalid credentials).`;
+            }
+        }
+
+        function submitXssLab() {
+            const msg = document.getElementById('xss-message').value.trim();
+            const out = document.getElementById('xss-lab-output');
+            const feed = document.getElementById('guestbook-posts');
+            if (!out || !feed) return;
+            out.style.display = "block";
+
+            if (msg.toLowerCase().includes("<script>") || msg.toLowerCase().includes("onerror=") || msg.toLowerCase().includes("onload=")) {
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ Stored XSS triggered successfully!<br><b>Flag Found:</b> NCAS{xss_stored_script_execution}<br><span style="color:#06b6d4;">Moving to Request Forgery (CSRF)...</span>`;
+                
+                alert("XSS Alert: Script Executed!");
+
+                const newPost = document.createElement("div");
+                newPost.style.padding = "6px 0";
+                newPost.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
+                newPost.innerHTML = `<b>Attacker:</b> ${msg}`;
+                feed.appendChild(newPost);
+                
+                setTimeout(() => switchWebsecPanel('csrf'), 2000);
+            } else {
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.textContent = `✗ Message posted, but no client-side scripts were executed. Escaped string saved.`;
+                
+                const newPost = document.createElement("div");
+                newPost.style.padding = "6px 0";
+                newPost.style.borderBottom = "1px solid rgba(255,255,255,0.04)";
+                newPost.textContent = `User: ${msg}`;
+                feed.appendChild(newPost);
+            }
+        }
+
+        function submitCsrfLab() {
+            const payload = document.getElementById('csrf-payload').value.trim();
+            const out = document.getElementById('csrf-lab-output');
+            const balance = document.getElementById('bank-balance');
+            const trans = document.getElementById('bank-transactions');
+            if (!out || !balance || !trans) return;
+            out.style.display = "block";
+
+            if (payload.includes("/transfer") && payload.includes("amount=10000") && payload.includes("to=attacker")) {
+                out.style.background = "rgba(16,185,129,0.1)";
+                out.style.color = "#10b981";
+                out.style.border = "1px solid rgba(16,185,129,0.2)";
+                out.innerHTML = `✓ CSRF Attack successful! Request executed with victim credentials.<br><b>Flag Found:</b> NCAS{csrf_fund_transfer_exploit}<br><span style="color:#06b6d4;">Moving to Command Injection...</span>`;
+                
+                balance.textContent = "$0";
+                balance.style.color = "var(--accent-red)";
+                trans.innerHTML = `<span style="color:var(--accent-red);">• Outgoing Transfer: -$10,000 to Attacker Account</span>`;
+                
+                setTimeout(() => switchWebsecPanel('cmd'), 2000);
+            } else {
+                out.style.background = "rgba(239,68,68,0.1)";
+                out.style.color = "var(--accent-red)";
+                out.style.border = "1px solid rgba(239,68,68,0.2)";
+                out.textContent = `✗ Forged request syntax mismatch or invalid parameters. Check destination parameters.`;
+            }
+        }
+
+        function submitCmdLab() {
+            const ip = document.getElementById('cmd-ip-input').value.trim();
+            const out = document.getElementById('cmd-lab-output');
+            if (!out) return;
+            out.style.display = "block";
+
+            if (ip.includes(";") || ip.includes("&&") || ip.includes("||") || ip.includes("|")) {
+                if (ip.toLowerCase().includes("flag.txt") || ip.toLowerCase().includes("cat")) {
+                    out.style.color = "#10b981";
+                    out.textContent = `Pinging localhost [127.0.0.1] with 32 bytes of data:\nReply from 127.0.0.1: bytes=32 time<1ms TTL=64\n\nPing completed.\n\nExecuting secondary command:\nNCAS{command_injection_rce_leak}\n\n[TASK COMPLETE] Command Injection Vulnerability validated! Web Security completed!`;
+                } else {
+                    out.style.color = "var(--accent-red)";
+                    out.textContent = `Pinging localhost [127.0.0.1]...\nPing completed. Secondary instruction syntax not recognized. Hint: Execute 'cat flag.txt'.`;
+                }
+            } else {
+                out.style.color = "#94a3b8";
+                out.textContent = `Pinging ${ip} [127.0.0.1] with 32 bytes of data:\nReply from 127.0.0.1: bytes=32 time<1ms TTL=64\nReply from 127.0.0.1: bytes=32 time<1ms TTL=64\n\nPing statistics for ${ip}:\n    Packets: Sent = 2, Received = 2, Lost = 0 (0% loss)`;
+            }
+        }
+
         function handleWebTerminalKey(event, type) {
             if (event.key === "Enter") {
                 const inputEl = document.getElementById(`web-terminal-${type}-input`);
@@ -7617,6 +9528,151 @@ SHA-1:    ${sha1Hex}
                 responseLine.textContent = outputText;
                 outBox.appendChild(responseLine);
                 outBox.scrollTop = outBox.scrollHeight;
+                inputEl.value = "";
+            }
+        }
+
+        // ==========================================
+        // LINUX COMMAND SHELL COURSE ENGINE
+        // ==========================================
+        let linuxshellCurrentDir = "/home/student";
+        let linuxshellFS = {
+            "/home/student": { type: "dir", children: ["secrets.txt", "run.sh"] },
+            "/home/student/secrets.txt": { type: "file", content: "FLAG: NCAS{linux_shell_file_operations} - System Backup Key" },
+            "/home/student/run.sh": { type: "file", content: "echo 'Executing sandbox check...'; echo 'Flag found: NCAS{linux_shell_chmod_execution}'" },
+            "/home/student/temp": { type: "dir", children: [] }
+        };
+        let runShExecutable = false;
+
+        function switchLinuxshellPanel(code) {
+            switchPanel(`linuxshell-${code}`);
+            document.querySelectorAll('.linuxshell-item').forEach(item => item.classList.remove('active'));
+            const activeItem = document.getElementById(`nav-linuxshell-${code}`);
+            if (activeItem) activeItem.classList.add('active');
+        }
+
+        function writeLinuxshellLine(terminalId, text, color = "#10b981") {
+            const outEl = document.getElementById(`terminal-${terminalId}-output`);
+            if (!outEl) return;
+            const div = document.createElement("div");
+            div.style.color = color;
+            div.style.whiteSpace = "pre-wrap";
+            div.textContent = text;
+            outEl.appendChild(div);
+            outEl.scrollTop = outEl.scrollHeight;
+        }
+
+        function handleLinuxshellKey(event, terminalId) {
+            if (event.key === "Enter") {
+                const inputEl = document.getElementById(`terminal-${terminalId}-input`);
+                const commandStr = inputEl.value.trim();
+                if (!commandStr) return;
+
+                // Echo command
+                writeLinuxshellLine(terminalId, `student@sandbox:~$ ${commandStr}`, "#fff");
+
+                const parts = commandStr.split(/\s+/);
+                const cmd = parts[0];
+                const arg = parts.slice(1).join(' ');
+
+                let output = "";
+                let outputColor = "#10b981";
+
+                if (cmd === "pwd") {
+                    output = linuxshellCurrentDir;
+                } else if (cmd === "ls") {
+                    const dirNode = linuxshellFS[linuxshellCurrentDir];
+                    if (dirNode && dirNode.type === "dir") {
+                        output = dirNode.children.join("   ");
+                    } else {
+                        output = "ls: cannot open directory: Permission denied";
+                        outputColor = "var(--accent-red)";
+                    }
+                } else if (cmd === "cd") {
+                    if (!arg) {
+                        linuxshellCurrentDir = "/home/student";
+                    } else if (arg === "..") {
+                        if (linuxshellCurrentDir !== "/home/student") {
+                            linuxshellCurrentDir = "/home/student";
+                        }
+                    } else if (arg === "temp") {
+                        linuxshellCurrentDir = "/home/student/temp";
+                        if (terminalId === "linuxshellnav") {
+                            output = "[TASK COMPLETE] Directory changed successfully! Flag: NCAS{linux_shell_navigation_success}\nRedirecting to File Operations in 2 seconds...";
+                            setTimeout(() => switchLinuxshellPanel('ops'), 2000);
+                        }
+                    } else {
+                        output = `cd: ${arg}: No such file or directory`;
+                        outputColor = "var(--accent-red)";
+                    }
+                } else if (cmd === "mkdir") {
+                    if (arg === "temp") {
+                        output = "Directory 'temp' created.";
+                    } else {
+                        output = "mkdir: missing operand";
+                        outputColor = "var(--accent-red)";
+                    }
+                } else if (cmd === "cat") {
+                    if (arg === "secrets.txt") {
+                        output = linuxshellFS["/home/student/secrets.txt"].content;
+                    } else if (arg === "run.sh") {
+                        output = linuxshellFS["/home/student/run.sh"].content;
+                    } else {
+                        output = `cat: ${arg}: No such file or directory`;
+                        outputColor = "var(--accent-red)";
+                    }
+                } else if (cmd.startsWith("cp")) {
+                    if (arg === "secrets.txt backup.txt") {
+                        output = "File secrets.txt copied to backup.txt.";
+                        if (terminalId === "linuxshellops") {
+                            output += "\n\n[TASK COMPLETE] File copy operation success! Flag: NCAS{linux_shell_file_operations}\nRedirecting to Permissions & Exec in 2 seconds...";
+                            setTimeout(() => switchLinuxshellPanel('perm'), 2000);
+                        }
+                    } else {
+                        output = "cp: missing destination file operand after " + arg;
+                        outputColor = "var(--accent-red)";
+                    }
+                } else if (cmd === "chmod") {
+                    if (arg === "+x run.sh" || arg === "755 run.sh" || arg === "777 run.sh") {
+                        runShExecutable = true;
+                        output = "Permissions of 'run.sh' updated successfully.";
+                    } else {
+                        output = "chmod: invalid mode: " + arg;
+                        outputColor = "var(--accent-red)";
+                    }
+                } else if (commandStr === "./run.sh") {
+                    if (runShExecutable) {
+                        output = "Executing sandbox check...\nFlag found: NCAS{linux_shell_chmod_execution}";
+                        if (terminalId === "linuxshellperm") {
+                            output += "\n\n[TASK COMPLETE] Script executed successfully! Flag verified.\nRedirecting to System & Triage in 2 seconds...";
+                            setTimeout(() => switchLinuxshellPanel('triage'), 2000);
+                        }
+                    } else {
+                        output = "bash: ./run.sh: Permission denied";
+                        outputColor = "var(--accent-red)";
+                    }
+                } else if (cmd === "ps") {
+                    if (arg === "aux" || arg === "-ef") {
+                        output = "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\nroot         1  0.0  0.1  18504  3120 ?        Ss   10:00   0:00 /sbin/init\nstudent    500  0.0  0.2  24102  5120 pts/0    Ss   10:05   0:00 /bin/bash\nstudent   9999  0.2  0.4  15410  9120 pts/0    S    10:10   0:01 nc -lvnp 4444";
+                    } else {
+                        output = "  PID TTY          TIME CMD\n  500 pts/0    00:00:00 bash";
+                    }
+                } else if (cmd === "kill") {
+                    if (arg === "9999") {
+                        output = "Process 9999 terminated successfully.";
+                        if (terminalId === "linuxshelltriage") {
+                            output += "\n\n[TASK COMPLETE] Rogue process killed! Flag: NCAS{linux_shell_system_triage}\n🎉 Congratulations! You completed the Linux Command Shell course!";
+                        }
+                    } else {
+                        output = "kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ...";
+                        outputColor = "var(--accent-red)";
+                    }
+                } else {
+                    output = `bash: ${cmd}: command not found`;
+                    outputColor = "var(--accent-red)";
+                }
+
+                writeLinuxshellLine(terminalId, output, outputColor);
                 inputEl.value = "";
             }
         }
