@@ -5652,6 +5652,7 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                         });
 
                         switchPanel('welcome');
+                        filterAcadDashboardTabs();
 
                         if (currentRole === 'admin') {
                             document.getElementById('admin-dashboard-details').style.display = 'block';
@@ -5748,6 +5749,7 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                 loadQuestion();
             } else if (panelName === 'academic-dashboard') {
                 renderLeaderboard();
+                filterAcadDashboardTabs();
                 renderAcadTabContent();
                 populateInspectStudentDropdown();
             }
@@ -8359,9 +8361,29 @@ SHA-1:    ${sha1Hex}
             });
         }
 
+        function filterAcadDashboardTabs() {
+            const adminOnlyTabs = ['users', 'roles', 'sessions', 'payments'];
+            const tabs = ['users', 'courses', 'labs', 'quizzes', 'certs', 'payments', 'reports', 'analytics', 'roles', 'instructor', 'sessions'];
+            
+            tabs.forEach(t => {
+                const btn = document.getElementById(`acad-tab-${t}`);
+                if (btn) {
+                    if (adminOnlyTabs.includes(t)) {
+                        btn.style.display = (currentRole === 'admin' ? 'block' : 'none');
+                    } else {
+                        btn.style.display = 'block';
+                    }
+                }
+            });
+
+            if (adminOnlyTabs.includes(currentAcadTab) && currentRole !== 'admin') {
+                switchAcadTab('instructor');
+            }
+        }
+
         function switchAcadTab(tabName) {
             currentAcadTab = tabName;
-            const tabs = ['users', 'courses', 'labs', 'quizzes', 'certs', 'payments', 'reports', 'analytics', 'roles', 'instructor'];
+            const tabs = ['users', 'courses', 'labs', 'quizzes', 'certs', 'payments', 'reports', 'analytics', 'roles', 'instructor', 'sessions'];
             tabs.forEach(t => {
                 const btn = document.getElementById(`acad-tab-${t}`);
                 if (btn) {
