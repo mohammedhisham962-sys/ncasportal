@@ -2751,6 +2751,24 @@
                         <!-- Populated dynamically -->
                     </div>
                 </div>
+
+                <div class="result-block">
+                    <div class="result-header">📁 Shared Files & Media Resources</div>
+                    <!-- Upload Form (Faculties & Admins Only) -->
+                    <div id="advisory-uploader-container" style="display: none; margin-top: 15px; border: 1px dashed rgba(59, 130, 246, 0.4); padding: 15px; border-radius: 8px; background: rgba(59, 130, 246, 0.05); margin-bottom: 20px;">
+                        <span style="font-weight: 700; color: #fff; display: block; margin-bottom: 8px;">📤 Upload PDF, Documents, Media, Images, or Voice Notes</span>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                            <input type="file" id="advisory-file-input" class="input-text" style="padding: 6px; max-width: 250px;">
+                            <input type="text" id="advisory-file-desc" class="input-text" placeholder="Resource Description (e.g. Lab Guide)" style="flex: 1; max-width: 300px;">
+                            <button class="btn" onclick="uploadAdvisoryFile()">Upload Resource</button>
+                        </div>
+                    </div>
+                    
+                    <!-- File Download Grid -->
+                    <div id="advisory-files-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <!-- Injected dynamically by JS -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -2760,6 +2778,19 @@
             <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 24px;">
                 Review student gamification metrics, track active leaderboards, and manage course setups, labs, quizzes, and role permissions.
             </p>
+
+            <!-- SPECIFIC STUDENT PROGRESS INSPECTOR (FACULTY & ADMIN ONLY) -->
+            <div class="result-block" style="background: rgba(15, 23, 42, 0.4); border-color: rgba(59, 130, 246, 0.3); margin-bottom: 25px;">
+                <div class="result-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: none;">
+                    <span>🔍 Inspect Specific Student Training Progress</span>
+                    <select id="acad-inspect-student-select" class="input-text" style="max-width: 220px; height: 36px; padding: 4px 10px;" onchange="inspectStudentProgress()">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+                <div id="student-inspected-progress-card" style="display: none; margin-top: 15px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
+                    <!-- Injected dynamically by inspectStudentProgress() -->
+                </div>
+            </div>
 
             <!-- GAMIFICATION OVERVIEW BLOCK (For Faculty & Admins) -->
             <h3 style="color: #fff; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px; margin-bottom: 16px; margin-top: 24px;">🎯 Student Gamification Analytics</h3>
@@ -2849,6 +2880,7 @@
                 <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-analytics" onclick="switchAcadTab('analytics')">Analytics</button>
                 <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-roles" onclick="switchAcadTab('roles')">Roles & Perms</button>
                 <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-instructor" onclick="switchAcadTab('instructor')">👨‍🏫 Instructor Dashboard</button>
+                <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" id="acad-tab-sessions" onclick="switchAcadTab('sessions')">🔌 Active Sessions</button>
             </div>
 
             <!-- Tab Contents -->
@@ -5709,6 +5741,7 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
                 fetchLatestNewsAndCves();
             } else if (panelName === 'academic-rules-center') {
                 loadAcademicAnnouncements();
+                renderAdvisoryFiles();
             } else if (panelName === 'student-user-management') {
                 loadStudentListForManagement();
             } else if (panelName === 'quiz') {
@@ -5716,6 +5749,7 @@ Any user who detects active phishing campaigns, spoofing attempts, or security p
             } else if (panelName === 'academic-dashboard') {
                 renderLeaderboard();
                 renderAcadTabContent();
+                populateInspectStudentDropdown();
             }
 
             // Dynamically show or hide left sidebar depending on hub context
@@ -8118,6 +8152,14 @@ SHA-1:    ${sha1Hex}
             { date: "2026-07-22", student: "student_cadet", course: "CEH", status: "Present" },
             { date: "2026-07-22", student: "faculty_member", course: "CEH", status: "Present" }
         ];
+        let mockSessions = [
+            { username: "student_cadet", ip: "192.168.1.15", device: "Windows 11 (Firefox)", time: "2026-07-22 14:05:12" },
+            { username: "faculty_member", ip: "192.168.1.20", device: "macOS 14 (Safari)", time: "2026-07-22 14:08:34" }
+        ];
+        let mockAdvisoryFiles = [
+            { id: 1, name: "linux_privesc_cheat_sheet.pdf", type: "document/pdf", desc: "Linux Privilege Escalation Cheat Sheet", date: "2026-07-22", data: "data:application/pdf;base64,JVBERi0xLjQK..." },
+            { id: 2, name: "port_scan_advisory.mp3", type: "audio/mp3", desc: "Audio briefing on recent port scans", date: "2026-07-22", data: "data:audio/mp3;base64,SUQzBAAAAAAA..." }
+        ];
         let cyberLabProgress = {
             completedTasks: []
         };
@@ -8133,7 +8175,11 @@ SHA-1:    ${sha1Hex}
             localStorage.setItem('cyber_rooms', JSON.stringify(mockRooms));
             localStorage.setItem('cyber_assignments', JSON.stringify(mockAssignments));
             localStorage.setItem('cyber_attendance', JSON.stringify(mockAttendance));
-            localStorage.setItem('cyber_progress', JSON.stringify(cyberLabProgress));
+            localStorage.setItem('cyber_sessions', JSON.stringify(mockSessions));
+            localStorage.setItem('cyber_advisory_files', JSON.stringify(mockAdvisoryFiles));
+
+            const currentStudent = currentUsername || currentUser || "student_cadet";
+            localStorage.setItem(`cyber_progress_${currentStudent}`, JSON.stringify(cyberLabProgress));
         }
 
         function loadAcadState() {
@@ -8147,11 +8193,31 @@ SHA-1:    ${sha1Hex}
             if (localStorage.getItem('cyber_rooms')) mockRooms = JSON.parse(localStorage.getItem('cyber_rooms'));
             if (localStorage.getItem('cyber_assignments')) mockAssignments = JSON.parse(localStorage.getItem('cyber_assignments'));
             if (localStorage.getItem('cyber_attendance')) mockAttendance = JSON.parse(localStorage.getItem('cyber_attendance'));
-            if (localStorage.getItem('cyber_progress')) cyberLabProgress = JSON.parse(localStorage.getItem('cyber_progress'));
+            if (localStorage.getItem('cyber_sessions')) mockSessions = JSON.parse(localStorage.getItem('cyber_sessions'));
+            if (localStorage.getItem('cyber_advisory_files')) mockAdvisoryFiles = JSON.parse(localStorage.getItem('cyber_advisory_files'));
+
+            const currentStudent = currentUsername || currentUser || "student_cadet";
+            const userProgressKey = `cyber_progress_${currentStudent}`;
+            if (localStorage.getItem(userProgressKey)) {
+                cyberLabProgress = JSON.parse(localStorage.getItem(userProgressKey));
+            } else {
+                cyberLabProgress = { completedTasks: [] };
+            }
+        }
+
+        function getUserProgress(username) {
+            const userProgressKey = `cyber_progress_${username}`;
+            if (localStorage.getItem(userProgressKey)) {
+                return JSON.parse(localStorage.getItem(userProgressKey));
+            }
+            return { completedTasks: [] };
         }
 
         loadAcadState();
-        setTimeout(updateStudentGamificationDetails, 100);
+        setTimeout(() => {
+            updateStudentGamificationDetails();
+            renderAdvisoryFiles();
+        }, 100);
 
         function updateStudentGamificationDetails() {
             const completedCount = cyberLabProgress.completedTasks.length;
@@ -8639,6 +8705,38 @@ SHA-1:    ${sha1Hex}
                         </div>
                     </div>
                 `;
+            } else if (currentAcadTab === 'sessions') {
+                if (currentUserRole !== 'admin') {
+                    html = `
+                        <div style="padding: 12px; background: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); border-radius: 8px; color: var(--accent-red); font-weight: 700; font-size: 0.9rem;">
+                            ⚠️ Access Denied: This console tab is restricted to system administrators.
+                        </div>
+                    `;
+                } else {
+                    html = `
+                        <div class="result-header">🔌 Active User Sessions Forensics</div>
+                        <p style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">Real-time active TCP socket connections to NCAS Portal servers:</p>
+                        <table class="table-results" style="width:100%; margin-top:15px; font-size:0.85rem;">
+                            <thead>
+                                <tr><th>Timestamp</th><th>Username</th><th>IP Address</th><th>Machine / Browser OS</th><th>Status</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody>
+                                ${mockSessions.map(s => `
+                                    <tr>
+                                        <td><code>${s.time}</code></td>
+                                        <td><b>${s.username}</b></td>
+                                        <td><code>${s.ip}</code></td>
+                                        <td><span style="color:#06b6d4;">${s.device}</span></td>
+                                        <td><span style="color:#10b981; font-weight:700;">CONNECTED</span></td>
+                                        <td>
+                                            <button class="btn" style="padding:4px 8px; font-size:0.75rem; background:var(--accent-red);" onclick="terminateUserSession('${s.username}', '${s.ip}')">Terminate Session 🔌</button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                }
             }
             container.innerHTML = html;
         }
@@ -10523,10 +10621,199 @@ Welcome administrator. Access Flag: NCAS{wireshark_follow_tcp_stream_secret}</sp
             }
         }
 
+        function uploadAdvisoryFile() {
+            const fileInput = document.getElementById('advisory-file-input');
+            const descInput = document.getElementById('advisory-file-desc');
+            if (!fileInput || fileInput.files.length === 0) {
+                alert("Please select a file to upload.");
+                return;
+            }
+            const file = fileInput.files[0];
+            const desc = descInput.value.trim() || file.name;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const newResource = {
+                    id: mockAdvisoryFiles.length + 1,
+                    name: file.name,
+                    type: file.type,
+                    desc: desc,
+                    date: new Date().toISOString().split('T')[0],
+                    data: e.target.result
+                };
+                mockAdvisoryFiles.push(newResource);
+                saveAcadState();
+                renderAdvisoryFiles();
+                fileInput.value = "";
+                descInput.value = "";
+                alert("Resource uploaded successfully!");
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderAdvisoryFiles() {
+            const container = document.getElementById('advisory-files-list');
+            if (!container) return;
+            container.innerHTML = "";
+
+            if (mockAdvisoryFiles.length === 0) {
+                container.innerHTML = `<span style="color:var(--text-muted); grid-column:1/-1;">No resources shared yet.</span>`;
+                return;
+            }
+
+            mockAdvisoryFiles.forEach(f => {
+                const card = document.createElement('div');
+                card.className = "result-block";
+                card.style.margin = "0";
+                card.style.background = "rgba(255,255,255,0.01)";
+                card.style.borderColor = "rgba(255,255,255,0.05)";
+                
+                let icon = "📄";
+                if (f.type.startsWith('image/')) icon = "🖼️";
+                else if (f.type.startsWith('audio/')) icon = "🔊";
+                else if (f.type.startsWith('video/')) icon = "🎥";
+                else if (f.type.includes('pdf')) icon = "📕";
+
+                card.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                        <span style="font-size:1.5rem;">${icon}</span>
+                        <div style="flex:1; overflow:hidden;">
+                            <span style="font-weight:700; color:#fff; display:block; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${f.name}</span>
+                            <span style="font-size:0.75rem; color:var(--text-muted);">${f.date} • ${(f.type || 'Unknown Type')}</span>
+                        </div>
+                    </div>
+                    <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">${f.desc}</p>
+                    <a class="btn" href="${f.data}" download="${f.name}" style="display:inline-block; font-size:0.75rem; padding:4px 8px; text-decoration:none; text-align:center; background:#10b981;">Download File 📥</a>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function terminateUserSession(username, ip) {
+            if (!confirm(`Are you sure you want to terminate session for ${username} at IP: ${ip}?`)) return;
+            mockSessions = mockSessions.filter(s => s.username !== username);
+            saveAcadState();
+            alert(`Session for user ${username} terminated and IP ${ip} blacklisted.`);
+            renderAcadTabContent();
+        }
+
+        function populateInspectStudentDropdown() {
+            const select = document.getElementById('acad-inspect-student-select');
+            if (!select) return;
+            select.innerHTML = '<option value="">-- Choose a student to inspect --</option>';
+            mockUsers.forEach(u => {
+                if (u.role === 'student') {
+                    const opt = document.createElement('option');
+                    opt.value = u.username;
+                    opt.textContent = u.username;
+                    select.appendChild(opt);
+                }
+            });
+        }
+
+        function inspectStudentProgress() {
+            const select = document.getElementById('acad-inspect-student-select');
+            const card = document.getElementById('student-inspected-progress-card');
+            if (!select || !card) return;
+            const targetUser = select.value;
+            if (!targetUser) {
+                card.style.display = "none";
+                return;
+            }
+
+            const progress = getUserProgress(targetUser);
+            const completedCount = progress.completedTasks.length;
+            const xp = completedCount * 100;
+            const coins = completedCount * 50;
+            const level = Math.floor(xp / 400) + 1;
+
+            let badges = [];
+            if (progress.completedTasks.includes('pass-dictionary') &&
+                progress.completedTasks.includes('pass-brute') &&
+                progress.completedTasks.includes('pass-hash') &&
+                progress.completedTasks.includes('pass-stuffing')) {
+                badges.push("Password Cracker 🔑");
+            }
+            if (progress.completedTasks.includes('crypto-symmetric') &&
+                progress.completedTasks.includes('crypto-asymmetric') &&
+                progress.completedTasks.includes('crypto-hash') &&
+                progress.completedTasks.includes('crypto-signature')) {
+                badges.push("Crypto Specialist 🔒");
+            }
+            if (progress.completedTasks.includes('linuxshell-nav') &&
+                progress.completedTasks.includes('linuxshell-ops') &&
+                progress.completedTasks.includes('linuxshell-perm') &&
+                progress.completedTasks.includes('linuxshell-triage')) {
+                badges.push("Command Master 🐚");
+            }
+            if (progress.completedTasks.includes('windows-files') &&
+                progress.completedTasks.includes('windows-diag') &&
+                progress.completedTasks.includes('windows-proc') &&
+                progress.completedTasks.includes('windows-net')) {
+                badges.push("Windows Auditor 🪟");
+            }
+
+            const weeklyProgress = progress.completedTasks.includes('linuxshell-nav') ? 100 : 0;
+            const monthlyProgress = Math.min(100, Math.floor((completedCount / 16) * 100));
+
+            card.style.display = "block";
+            card.innerHTML = `
+                <div style="font-weight: 700; color: #fff; font-size: 1rem; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px; margin-bottom: 12px;">
+                    👤 Training File: ${targetUser}
+                </div>
+                <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                    <div class="stat-card" style="padding: 10px; background: rgba(0,0,0,0.15);">
+                        <span class="stat-num" style="font-size: 1.25rem; color:#3b82f6;">${xp} XP</span>
+                        <span class="stat-label" style="font-size: 0.7rem;">Experience</span>
+                    </div>
+                    <div class="stat-card" style="padding: 10px; background: rgba(0,0,0,0.15);">
+                        <span class="stat-num" style="font-size: 1.25rem; color:#eab308;">${coins} Coins</span>
+                        <span class="stat-label" style="font-size: 0.7rem;">Coins Balance</span>
+                    </div>
+                    <div class="stat-card" style="padding: 10px; background: rgba(0,0,0,0.15);">
+                        <span class="stat-num" style="font-size: 1.25rem; color:#a855f7;">Lvl ${level}</span>
+                        <span class="stat-label" style="font-size: 0.7rem;">Cadet Level</span>
+                    </div>
+                    <div class="stat-card" style="padding: 10px; background: rgba(0,0,0,0.15);">
+                        <span class="stat-num" style="font-size: 1.25rem; color:#10b981;">${completedCount}/16</span>
+                        <span class="stat-label" style="font-size: 0.7rem;">Completed Labs</span>
+                    </div>
+                </div>
+                
+                <div style="font-size: 0.8rem; color: #fff; font-weight: 700; margin-bottom: 8px;">🏅 Earned Badges:</div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                    ${badges.length === 0 ? '<span style="color:var(--text-muted);">No badges earned yet.</span>' : badges.map(b => `
+                        <span style="background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size:0.75rem;">${b}</span>
+                    `).join('')}
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted);">
+                            <span>Weekly Mission progress</span>
+                            <span>${weeklyProgress}%</span>
+                        </div>
+                        <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:3px; margin-top:4px; overflow:hidden;">
+                            <div style="height:100%; width:${weeklyProgress}%; background:#3b82f6;"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted);">
+                            <span>Monthly Challenge progress</span>
+                            <span>${monthlyProgress}%</span>
+                        </div>
+                        <div style="height:6px; background:rgba(255,255,255,0.08); border-radius:3px; margin-top:4px; overflow:hidden;">
+                            <div style="height:100%; width:${monthlyProgress}%; background:#10b981;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         injectBackToHubButtons();
         updateOwaspSidebar();
         updateBanditSidebar();
-        toggleAuthMode('login'); // Ensure auth overlay button and fields are initialized!
+        toggleAuthMode('login');
     </script>
 </body>
 </html>
